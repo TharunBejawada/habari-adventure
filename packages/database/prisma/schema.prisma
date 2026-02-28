@@ -1,0 +1,100 @@
+// packages/database/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // or "mysql", depending on final infra decision
+  url      = env("DATABASE_URL")
+}
+
+// --------------------------------------
+// Core Application Models
+// --------------------------------------
+
+model User {
+  id          String    @id @default(uuid())
+  firstName   String
+  lastName    String
+  email       String    @unique
+  password    String
+  role        String    @default("ADMIN")
+  isActive    Boolean   @default(true)
+  loginCount  Int       @default(0)
+  lastLoginAt DateTime? 
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Package {
+  id          String         @id @default(uuid())
+  title       String
+  location    String         // e.g., "Kilimanjaro", "Safari"
+  description String
+  price       Float
+  duration    Int            // Total days
+  difficulty  String?
+  isPublished Boolean        @default(false)
+  itineraries ItineraryDay[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ItineraryDay {
+  id          String   @id @default(uuid())
+  packageId   String
+  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  dayNumber   Int
+  title       String
+  description String
+  mediaUrl    String?  // Image or Video URL for the specific day
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([packageId, dayNumber]) // Ensures no duplicate days for a single package
+}
+
+model Blog {
+  id              String    @id @default(uuid())
+  title           String
+  slug            String    @unique
+  content         String    @db.Text 
+  excerpt         String?   @db.Text
+  featuredImage   String?
+  imageAltText    String?
+  
+  authorName      String
+
+  category        String?
+  tags            String[]  
+
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+  readingTime     Int?      
+
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  faqs            Json?     
+  schemaMarkup    Json?     
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Crew {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  bio       String   @db.Text
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

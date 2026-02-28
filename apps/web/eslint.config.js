@@ -1,4 +1,16 @@
-import { nextJsConfig } from "@repo/eslint-config/next-js";
+import js from "@eslint/js";
+import pluginNext from "@next/eslint-plugin-next";
 
-/** @type {import("eslint").Linter.Config[]} */
-export default nextJsConfig;
+
+export const nextJsConfig = [
+  js.configs.recommended,
+  {
+    plugins: {
+      "@next/next": pluginNext,
+    },
+    rules: {
+      ...pluginNext.configs.recommended.rules,
+      ...pluginNext.configs["core-web-vitals"].rules, 
+    },
+  },
+];
