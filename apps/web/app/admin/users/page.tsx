@@ -40,7 +40,7 @@ export default function UserManagementPage() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:8000/api/v1/users", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -91,7 +91,7 @@ export default function UserManagementPage() {
 
     try {
       const token = localStorage.getItem("adminToken");
-      const url = isEditMode ? `http://localhost:8000/api/v1/users/${editingUserId}` : "http://localhost:8000/api/v1/users";
+      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${editingUserId}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/users`;
       const method = isEditMode ? "PUT" : "POST";
 
       // If editing and password field is left blank, remove it from payload so we don't overwrite with empty string
@@ -129,7 +129,7 @@ export default function UserManagementPage() {
 
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`http://localhost:8000/api/v1/users/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/users/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });

@@ -26,7 +26,7 @@ export default function BlogManagementPage() {
     try {
       const token = localStorage.getItem("adminToken");
       // Notice we don't pass ?publishedOnly=true here because Admins need to see Drafts too!
-      const res = await fetch("http://localhost:8000/api/v1/blogs", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();
@@ -52,7 +52,7 @@ export default function BlogManagementPage() {
 
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`http://localhost:8000/api/v1/blogs/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });

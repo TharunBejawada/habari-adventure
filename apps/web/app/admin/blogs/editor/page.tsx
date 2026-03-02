@@ -60,7 +60,7 @@ function EditorForm() {
     if (isEditMode) {
       const fetchBlog = async () => {
         try {
-          const res = await fetch(`http://localhost:8000/api/v1/blogs/${editId}`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}`);
           const data = await res.json();
           if (data.status === "success") {
             const b = data.data;
@@ -104,8 +104,10 @@ function EditorForm() {
   const addFaq = () => setFaqs([...faqs, { question: "", answer: "" }]);
   const updateFaq = (index: number, field: "question" | "answer", value: string) => {
     const newFaqs = [...faqs];
-    newFaqs[index][field] = value;
-    setFaqs(newFaqs);
+    if (newFaqs[index]) {
+      newFaqs[index][field] = value;
+      setFaqs(newFaqs);
+    }
   };
   const removeFaq = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
 
@@ -131,7 +133,7 @@ function EditorForm() {
         ...(isPublished && { publishedAt: new Date().toISOString() })
       };
 
-      const url = isEditMode ? `http://localhost:8000/api/v1/blogs/${editId}` : "http://localhost:8000/api/v1/blogs";
+      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs`;
       const method = isEditMode ? "PUT" : "POST";
 
       const res = await fetch(url, {
