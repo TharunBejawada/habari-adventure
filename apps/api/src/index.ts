@@ -10,6 +10,7 @@ import { globalLimiter } from "./middleware/rateLimiter"; // <-- Import it here
 dotenv.config();
 
 const app: Express = express();
+app.set("trust proxy", 1);
 const PORT = process.env.PORT || 8000;
 
 app.use(helmet()); 

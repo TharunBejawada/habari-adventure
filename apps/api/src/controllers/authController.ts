@@ -1,7 +1,8 @@
 // apps/api/src/controllers/authController.ts
 import { Request, Response } from "express";
 import { verifyPassword, generateToken } from "../utils/auth";
-import { prisma } from "@repo/database";
+// import { prisma } from "@repo/database";
+import { prisma } from "../prisma";
 
 export const loginAdmin = async (req: Request, res: Response): Promise<void> => {
   try {

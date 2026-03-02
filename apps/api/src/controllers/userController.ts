@@ -1,6 +1,7 @@
 // apps/api/src/controllers/userController.ts
 import { Request, Response } from "express";
-import { prisma } from "@repo/database";
+// import { prisma } from "@repo/database";
+import { prisma } from "../prisma";
 import { hashPassword } from "../utils/auth";
 
 // @route   GET /api/v1/users

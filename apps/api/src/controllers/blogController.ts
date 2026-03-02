@@ -1,6 +1,7 @@
 // apps/api/src/controllers/blogController.ts
 import { Request, Response } from "express";
-import { prisma } from "@repo/database";
+// import { prisma } from "@repo/database";
+import { prisma } from "../prisma";
 
 // @route   GET /api/v1/blogs
 // @desc    Get all blogs (Admin sees all, Public sees only published)
