@@ -69,7 +69,8 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 // @desc    Update a user (including optional password change or soft delete)
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.params.id as string;
     const { firstName, lastName, email, role, isActive, password } = req.body;
 
     // Build the update object dynamically
@@ -99,7 +100,8 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 // @desc    Hard delete a user (Use carefully, prefer soft delete via PUT)
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.params.id as string;
 
     await prisma.user.delete({ where: { id } });
 

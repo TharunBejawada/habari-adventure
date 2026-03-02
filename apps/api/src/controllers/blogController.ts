@@ -28,7 +28,8 @@ export const getBlogs = async (req: Request, res: Response): Promise<void> => {
 // @desc    Get single blog by ID or exact SEO Slug
 export const getBlogByIdOrSlug = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { idOrSlug } = req.params;
+    // const { idOrSlug } = req.params;
+    const idOrSlug = req.params.idOrSlug as string;
     
     const blog = await prisma.blog.findFirst({
       where: {
@@ -79,7 +80,8 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
 // @desc    Update a blog post
 export const updateBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.params.id as string;
     const updateData = req.body;
 
     // Prevent unique constraint errors if they didn't actually change the slug
@@ -108,7 +110,8 @@ export const updateBlog = async (req: Request, res: Response): Promise<void> => 
 // @desc    Delete a blog post
 export const deleteBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    // const { id } = req.params;
+    const id = req.params.id as string;
     await prisma.blog.delete({ where: { id } });
     res.status(200).json({ status: "success", message: "Blog deleted successfully" });
   } catch (error) {
