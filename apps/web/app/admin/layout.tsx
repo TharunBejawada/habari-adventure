@@ -90,9 +90,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   const getHeaderTitle = () => {
-    if (pathname === "/admin") return "Dashboard Overview";
+    if (!pathname || pathname === "/admin") return "Dashboard Overview";
+    
     const pathParts = pathname.split("/").filter(Boolean);
     const lastPart = pathParts[pathParts.length - 1];
+    
+    // Strict TypeScript safety check
+    if (!lastPart) return "Dashboard Overview";
+
     return lastPart.charAt(0).toUpperCase() + lastPart.slice(1).replace("-", " ");
   };
 
