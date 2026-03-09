@@ -3,6 +3,10 @@ import { Router, Request, Response } from "express";
 import authRoutes from "./authRoutes"; // Import the new auth routes
 import userRoutes from "./userRoutes";
 import blogRoutes from "./blogRoutes";
+import { upload } from "../utils/upload";
+import { uploadFile } from "../controllers/uploadController";
+import { getSettings, updateSettings } from "../controllers/settingsController";
+import { requireAuth, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -17,6 +21,14 @@ router.use("/auth", authRoutes);
 router.use("/users", userRoutes);
 
 router.use("/blogs", blogRoutes);
+
+router.post("/upload", upload.single("asset"), uploadFile);
+
+// Public route so the main Next.js website can fetch the header/footer
+router.get("/settings", getSettings);
+
+// Protected route so only Admins can update the header/footer
+router.put("/settings", requireAuth, requireAdmin, updateSettings);
 
 // --- 2. Package & Location Routes ---
 router.use("/packages", (req: Request, res: Response) => {

@@ -1,11 +1,12 @@
 // apps/api/src/index.ts
+import path from "path";
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
 
 import apiRoutes from "./routes";
-import { globalLimiter } from "./middleware/rateLimiter"; // <-- Import it here
+import { globalLimiter } from "./middleware/rateLimiter";
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ app.use(globalLimiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/v1", apiRoutes);
 

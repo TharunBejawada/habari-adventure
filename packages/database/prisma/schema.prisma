@@ -98,3 +98,22 @@ model Crew {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model GlobalSettings {
+  id           String   @id @default(cuid())
+  
+  // Header Content (Stored as JSON array of menus and submenus)
+  headerMenu   Json     @default("[]")
+  
+  // Footer Content
+  websiteInfo  String?  @db.Text
+  phoneNumber  String?
+  email        String?
+  address      String?  @db.Text
+  
+  // Footer Link Blocks (Stored as JSON arrays of { name, url })
+  socialLinks  Json     @default("[]")
+  footerColumns Json     @default("[]") 
+
+  updatedAt    DateTime @updatedAt
+}
