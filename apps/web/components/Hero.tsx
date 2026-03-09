@@ -20,7 +20,8 @@ function AnimatedNumber({ end, duration = 2000, suffix = "+" }: { end: number, d
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        // FIX: Added the question mark (entry?.isIntersecting) to satisfy TypeScript
+        if (entry?.isIntersecting) {
           setIsVisible(true);
           // Unobserve so it only animates once per page load
           if (ref.current) observer.unobserve(ref.current);
