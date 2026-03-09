@@ -112,27 +112,43 @@ export default function SettingsPage() {
 
   // --- Dynamic Footer Column Handlers ---
   const addFooterColumn = () => setFooterColumns([...footerColumns, { title: "", links: [] }]);
+  
   const updateFooterColumnTitle = (index: number, title: string) => {
     const newCols = [...footerColumns];
-    newCols[index].title = title;
-    setFooterColumns(newCols);
+    // FIX: Check if the column exists before updating
+    if (newCols[index]) {
+      newCols[index].title = title;
+      setFooterColumns(newCols);
+    }
   };
+  
   const removeFooterColumn = (index: number) => setFooterColumns(footerColumns.filter((_, i) => i !== index));
 
   const addColumnLink = (colIndex: number) => {
     const newCols = [...footerColumns];
-    newCols[colIndex].links.push({ name: "", url: "" });
-    setFooterColumns(newCols);
+    // FIX: Check if the column exists before pushing a link
+    if (newCols[colIndex]) {
+      newCols[colIndex].links.push({ name: "", url: "" });
+      setFooterColumns(newCols);
+    }
   };
+  
   const updateColumnLink = (colIndex: number, linkIndex: number, field: "name"|"url", value: string) => {
     const newCols = [...footerColumns];
-    newCols[colIndex].links[linkIndex][field] = value;
-    setFooterColumns(newCols);
+    // FIX: Check if both the column AND the link exist before updating
+    if (newCols[colIndex] && newCols[colIndex].links[linkIndex]) {
+      newCols[colIndex].links[linkIndex][field] = value;
+      setFooterColumns(newCols);
+    }
   };
+  
   const removeColumnLink = (colIndex: number, linkIndex: number) => {
     const newCols = [...footerColumns];
-    newCols[colIndex].links = newCols[colIndex].links.filter((_, i) => i !== linkIndex);
-    setFooterColumns(newCols);
+    // FIX: Check if the column exists before filtering its links
+    if (newCols[colIndex]) {
+      newCols[colIndex].links = newCols[colIndex].links.filter((_, i) => i !== linkIndex);
+      setFooterColumns(newCols);
+    }
   };
 
   // Save Settings
