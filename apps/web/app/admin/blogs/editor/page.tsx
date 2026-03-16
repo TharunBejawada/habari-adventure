@@ -49,14 +49,15 @@ function EditorForm() {
   const [metaKeywords, setMetaKeywords] = useState("");
   const [faqs, setFaqs] = useState<{question: string, answer: string}[]>([]);
 
-  // 1. SAFELY REGISTER CUSTOM QUILL BLOTS (Like Horizontal Rule) FOR NEXT.JS
+// 1. SAFELY REGISTER CUSTOM QUILL BLOTS (Like Horizontal Rule) FOR NEXT.JS
   useEffect(() => {
     import("react-quill-new").then((ReactQuillModule) => {
       const Quill = ReactQuillModule.Quill;
       if (!Quill) return;
 
-      // Create Custom Divider (Horizontal Rule) Blot
-      const BlockEmbed = Quill.import("blots/block/embed");
+      // THE FIX: Add 'as any' here to satisfy TypeScript's strict build checks!
+      const BlockEmbed = Quill.import("blots/block/embed") as any;
+      
       class DividerBlot extends BlockEmbed {}
       DividerBlot.blotName = "divider";
       DividerBlot.tagName = "hr";
