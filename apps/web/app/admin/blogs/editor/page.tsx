@@ -10,7 +10,7 @@ import Link from "next/link";
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
   ssr: false,
   loading: () => <div className="h-[500px] w-full bg-white animate-pulse rounded-xl border border-gray-200 flex flex-col items-center justify-center text-gray-400 shadow-sm"><div className="w-8 h-8 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-3"></div>Loading Editor...</div>
-});
+}) as any;
 import "react-quill-new/dist/quill.snow.css";
 
 function EditorForm() {
@@ -457,7 +457,7 @@ function EditorForm() {
                  `}} />
                 
                 <ReactQuill 
-                  ref={quillRef as any}
+                  ref={quillRef}
                   theme="snow" 
                   value={content} 
                   onChange={setContent} 
