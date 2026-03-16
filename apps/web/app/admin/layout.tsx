@@ -214,7 +214,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* Page Content Area */}
         <main className="flex-1 relative overflow-y-auto bg-gray-50 dark:bg-gray-900 focus:outline-none transition-colors duration-200">
-          <div className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="py-6 sm:py-8 px-4 sm:px-6 lg:px-8 max-w-8xl">
             {children}
           </div>
         </main>

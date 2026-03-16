@@ -14,7 +14,11 @@ export default function Header() {
   const [menuItems, setMenuItems] = useState<HeaderItem[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMobileItem, setExpandedMobileItem] = useState<number | null>(null);
+  
+  // --- NEW: Scroll State ---
+  const [isScrolled, setIsScrolled] = useState(false);
 
+  // Fetch Menu Settings
   useEffect(() => {
     if (pathname && !pathname.startsWith("/admin")) {
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings`)
@@ -28,6 +32,7 @@ export default function Header() {
     }
   }, [pathname]);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -37,13 +42,37 @@ export default function Header() {
     return () => { document.body.style.overflow = "unset"; };
   }, [isMobileMenuOpen]);
 
+  // --- NEW: Scroll Event Listener ---
+  useEffect(() => {
+    const handleScroll = () => {
+      // If scrolled down more than 20px, set to true
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   if (pathname && pathname.startsWith("/admin")) return null;
 
   return (
-
-    <div className="w-full px-4 pt-4 pb-2 sticky top-0 z-[100] backdrop-blur-sm bg-white/50 dark:bg-gray-900/50">
+    <div className="w-full px-4 pt-4 pb-2 sticky top-0 z-[100]">
       
-      <header className="w-[96%] max-w-[1400px] mx-auto bg-[#135D66] text-white rounded-2xl px-6 md:px-10 py-5 md:py-6 flex items-center justify-between shadow-xl">
+      {/* UPDATED HEADER TAG:
+        Added dynamic classes based on the `isScrolled` state. 
+        Uses `transition-all duration-300` for a smooth fade effect.
+      */}
+      <header 
+        className={`w-[96%] max-w-[1400px] mx-auto text-white rounded-2xl px-6 md:px-10 flex items-center justify-between transition-all duration-300 ${
+          isScrolled 
+            ? "bg-[#135D66] shadow-xl py-3 md:py-4" // Scrolled state: Solid background, shadow, slightly thinner padding
+            : "bg-transparent shadow-none py-5 md:py-6" // Top state: Transparent, no shadow, wider padding
+        }`}
+      >
         
         {/* Logo Section */}
         <Link href="/" className="flex items-center">

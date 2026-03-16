@@ -1,38 +1,29 @@
 // apps/web/app/admin/blogs/editor/page.tsx
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 
-// Dynamically import ReactQuill to prevent Server-Side Rendering (SSR) crashes
+// Dynamically import ReactQuill to prevent SSR crashes
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
   ssr: false,
-  loading: () => <div className="h-64 w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg flex items-center justify-center text-gray-400">Loading Editor...</div>
+  loading: () => <div className="h-[500px] w-full bg-white animate-pulse rounded-xl border border-gray-200 flex flex-col items-center justify-center text-gray-400 shadow-sm"><div className="w-8 h-8 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-3"></div>Loading Editor...</div>
 });
 import "react-quill-new/dist/quill.snow.css";
 
-// Quill Toolbar Configuration
-const modules = {
-  toolbar: [
-    [{ 'header': [1, 2, 3, 4, false] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    ['link', 'image'],
-    ['clean']
-  ],
-};
-
-// We wrap the actual editor logic in a component so we can use useSearchParams safely
 function EditorForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("id");
   const isEditMode = !!editId;
 
+  const quillRef = useRef<any>(null);
+
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [error, setError] = useState("");
 
   // Form State
@@ -41,22 +32,52 @@ function EditorForm() {
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState(""); // Comma separated
-  const [featuredImage, setFeaturedImage] = useState("");
-  const [imageAltText, setImageAltText] = useState("");
+  const [authorName, setAuthorName] = useState("");
+  const [publishedAt, setPublishedAt] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [readingTime, setReadingTime] = useState<number | "">("");
   
-  // SEO State
+  // Tags & Banner State
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [imageAltText, setImageAltText] = useState("");
+  
+  // SEO & FAQs
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [metaKeywords, setMetaKeywords] = useState("");
-  
-  // FAQs State
   const [faqs, setFaqs] = useState<{question: string, answer: string}[]>([]);
 
-  // Fetch existing data if editing
+  // 1. SAFELY REGISTER CUSTOM QUILL BLOTS (Like Horizontal Rule) FOR NEXT.JS
   useEffect(() => {
+    import("react-quill-new").then((ReactQuillModule) => {
+      const Quill = ReactQuillModule.Quill;
+      if (!Quill) return;
+
+      // Create Custom Divider (Horizontal Rule) Blot
+      const BlockEmbed = Quill.import("blots/block/embed");
+      class DividerBlot extends BlockEmbed {}
+      DividerBlot.blotName = "divider";
+      DividerBlot.tagName = "hr";
+      
+      // Only register if it hasn't been registered yet to prevent hot-reload errors
+      try {
+        Quill.register(DividerBlot);
+      } catch (e) {
+        // Already registered
+      }
+    });
+  }, []);
+
+  // Fetch existing data if editing, and set default author
+  useEffect(() => {
+    const userStr = localStorage.getItem("adminUser");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (!isEditMode) setAuthorName(`${user.firstName} ${user.lastName}`);
+    }
+
     if (isEditMode) {
       const fetchBlog = async () => {
         try {
@@ -69,15 +90,21 @@ function EditorForm() {
             setContent(b.content || "");
             setExcerpt(b.excerpt || "");
             setCategory(b.category || "");
-            setTags(b.tags ? b.tags.join(", ") : "");
+            setTags(b.tags || []);
             setFeaturedImage(b.featuredImage || "");
             setImageAltText(b.imageAltText || "");
             setIsPublished(b.isPublished || false);
             setReadingTime(b.readingTime || "");
+            setAuthorName(b.authorName || authorName);
             setMetaTitle(b.metaTitle || "");
             setMetaDescription(b.metaDescription || "");
             setMetaKeywords(b.metaKeywords || "");
             setFaqs(b.faqs || []);
+            
+            if (b.publishedAt) {
+              const date = new Date(b.publishedAt);
+              setPublishedAt(date.toISOString().slice(0, 16));
+            }
           } else {
             setError(data.message || "Failed to load blog");
           }
@@ -91,7 +118,113 @@ function EditorForm() {
     }
   }, [editId, isEditMode]);
 
-  // Auto-generate Slug from Title (only if slug is empty)
+  // --- UPLOAD HANDLER ---
+  const uploadImageToServer = async (file: File): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append("folder", "blogs"); 
+    formData.append("asset", file);
+
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload?folder=blogs`, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        return data.data.url; 
+      }
+      throw new Error(data.message);
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Failed to upload image. Please try again.");
+      return null;
+    }
+  };
+
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingBanner(true);
+    const url = await uploadImageToServer(file);
+    if (url) setFeaturedImage(url);
+    setIsUploadingBanner(false);
+  };
+
+  // --- RTE IMAGE HANDLER ---
+  const handleRteImageUpload = () => {
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file) {
+        const url = await uploadImageToServer(file);
+        if (url && quillRef.current) {
+          const quill = quillRef.current.getEditor();
+          const range = quill.getSelection();
+          quill.insertEmbed(range ? range.index : 0, "image", url);
+        }
+      }
+    };
+  };
+
+  // --- CUSTOM TOOLBAR CONFIGURATION ---
+  const modules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }, { 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        
+        // Lists, Alignment, & Indents
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'align': [] }], 
+        [{ 'indent': '-1'}, { 'indent': '+1' }], 
+        
+        // Scripts & Block Formats
+        [{ 'script': 'sub'}, { 'script': 'super' }],
+        ['blockquote', 'code-block'],
+        
+        // Media & Custom Divider
+        ['link', 'image', 'video'], 
+        ['divider'], // Custom Horizontal Line button
+        ['clean']
+      ],
+      handlers: {
+        image: handleRteImageUpload,
+        // Handler for our Custom Horizontal Line button
+        divider: function() {
+          const quill = (this as any).quill;
+          const range = quill.getSelection(true);
+          quill.insertText(range.index, '\n');
+          quill.insertEmbed(range.index + 1, 'divider', true);
+          quill.setSelection(range.index + 2);
+        }
+      }
+    }
+  }), []);
+
+  // --- TAGS HANDLER ---
+  const handleAddTag = (e: React.KeyboardEvent | React.MouseEvent) => {
+    if (e.type === 'keydown' && (e as React.KeyboardEvent).key !== 'Enter') return;
+    e.preventDefault();
+    const newTag = tagInput.trim();
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]);
+    }
+    setTagInput("");
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTags(tags.filter(t => t !== tagToRemove));
+  };
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value;
     setTitle(newTitle);
@@ -100,7 +233,6 @@ function EditorForm() {
     }
   };
 
-  // FAQ Handlers
   const addFaq = () => setFaqs([...faqs, { question: "", answer: "" }]);
   const updateFaq = (index: number, field: "question" | "answer", value: string) => {
     const newFaqs = [...faqs];
@@ -111,26 +243,22 @@ function EditorForm() {
   };
   const removeFaq = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
 
-  // Save Handler
+  // --- SAVE HANDLER ---
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!title || !content) return alert("Title and Content are required!");
+    
     setIsSaving(true);
     setError("");
 
     try {
       const token = localStorage.getItem("adminToken");
-      const userStr = localStorage.getItem("adminUser");
-      const user = userStr ? JSON.parse(userStr) : null;
-      const authorName = user ? `${user.firstName} ${user.lastName}` : "Admin Team";
-
       const payload = {
-        title, slug, content, excerpt, category,
-        tags: tags.split(",").map(t => t.trim()).filter(t => t), // Convert to array
+        title, slug, content, excerpt, category, tags,
         featuredImage, imageAltText, isPublished, 
         readingTime: readingTime ? Number(readingTime) : null,
         metaTitle, metaDescription, metaKeywords, faqs, authorName,
-        // If publishing for the first time, set the date
-        ...(isPublished && { publishedAt: new Date().toISOString() })
+        publishedAt: publishedAt ? new Date(publishedAt).toISOString() : (isPublished ? new Date().toISOString() : null)
       };
 
       const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs`;
@@ -138,10 +266,7 @@ function EditorForm() {
 
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(payload)
       });
 
@@ -158,65 +283,180 @@ function EditorForm() {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center text-gray-500">Loading editor...</div>;
+  if (isLoading) return <div className="p-8 text-center text-gray-500 font-medium">Loading editor...</div>;
 
   return (
-    <form onSubmit={handleSave} className="space-y-6 pb-20">
+    <form onSubmit={handleSave} className="space-y-8 max-w-[1400px] mx-auto">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <Link href="/admin/blogs" className="p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-            <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+      {/* Header Actions */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+        <div className="flex items-center gap-4">
+          <Link 
+            href="/admin/blogs" 
+            className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:shadow-sm transition-all text-gray-600 hover:text-gray-900"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </Link>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <h2 className="text-xl md:text-2xl font-extrabold text-gray-900">
               {isEditMode ? "Edit Article" : "Write New Article"}
             </h2>
+            <p className="text-sm text-gray-500 font-medium mt-0.5">Manage your blog content and SEO metadata.</p>
           </div>
         </div>
         <button 
           type="submit" disabled={isSaving}
-          className="px-6 py-2.5 bg-adventure-600 hover:bg-adventure-700 text-white font-medium rounded-lg shadow-sm disabled:opacity-70 transition-colors flex items-center"
+          className="px-8 py-3 bg-[#135D66] hover:bg-[#0e4850] text-white font-bold rounded-lg shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 transition-all flex items-center w-full sm:w-auto justify-center"
         >
-          {isSaving ? "Saving..." : isPublished ? "Publish Updates" : "Save Article"}
+          {isSaving ? "Saving..." : isPublished ? "Update Published Post" : "Save Draft"}
         </button>
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm font-medium">
+        <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg text-red-700 text-sm font-bold shadow-sm">
           {error}
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      {/* --- BANNER IMAGE SECTION --- */}
+      <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <svg className="w-5 h-5 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
+          Blog Banner Image
+        </h3>
+        
+        <div className="relative w-full h-64 md:h-[400px] bg-gray-50 border-2 border-dashed border-gray-300 hover:border-[#135D66] rounded-xl overflow-hidden flex flex-col items-center justify-center group transition-colors">
+          {featuredImage ? (
+             <img src={featuredImage} alt="Banner Preview" className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center mx-auto mb-4 border border-gray-100 text-gray-400 group-hover:text-[#135D66] transition-colors">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+              </div>
+              <p className="text-base font-bold text-gray-700">Click or drag image to upload banner</p>
+              <p className="text-sm text-gray-400 mt-1">High-resolution image (1200 x 600px recommended)</p>
+            </div>
+          )}
+          
+          {isUploadingBanner && (
+            <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center">
+              <div className="w-10 h-10 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-3"></div>
+              <span className="font-bold text-[#135D66]">Uploading to secure server...</span>
+            </div>
+          )}
+
+          <input 
+            type="file" accept="image/*" 
+            onChange={handleBannerUpload}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+        </div>
+
+        <div className="mt-6">
+          <label className="block text-sm font-bold text-gray-700 mb-2">Banner Image Alt Text (Optional but recommended for SEO)</label>
+          <input 
+            type="text" placeholder="Describe the image for search engines and screen readers..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+            value={imageAltText} onChange={(e) => setImageAltText(e.target.value)}
+          />
+        </div>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-8">
         
         {/* --- LEFT COLUMN: MAIN EDITOR --- */}
-        <div className="w-full lg:w-2/3 space-y-6">
+        <div className="w-full lg:w-2/3 space-y-8">
           
-          {/* Main Content Box */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-6">
+          <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+            
+            {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Article Title *</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Article Title *</label>
               <input 
                 type="text" required
-                className="w-full px-4 py-3 text-lg font-semibold border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-adventure-500 outline-none"
+                className="w-full px-4 py-4 text-xl font-bold border border-gray-300 rounded-xl bg-gray-50 focus:bg-white focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] outline-none transition-colors text-gray-900 placeholder-gray-400"
                 placeholder="e.g., The Ultimate Guide to Climbing Kilimanjaro"
                 value={title} onChange={handleTitleChange}
               />
             </div>
 
-            <div className="quill-wrapper">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Article Content *</label>
-              <div className="bg-white dark:bg-gray-50 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
-                 {/* We use a custom wrapper to let Quill auto-expand.
-                   The styling targets .ql-container to remove fixed heights.
-                 */}
+            {/* Author & Category */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Author Name</label>
+                <input 
+                  type="text" placeholder="Enter author name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+                  value={authorName} onChange={(e) => setAuthorName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                <input 
+                  type="text" placeholder="e.g., Safari, Climbing, Travel Tips"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+                  value={category} onChange={(e) => setCategory(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Rich Text Editor */}
+            <div className="quill-wrapper relative">
+              <label className="block text-sm font-bold text-gray-700 mb-2">Article Content *</label>
+              <div className="bg-white rounded-xl overflow-hidden border border-gray-300 focus-within:border-[#135D66] focus-within:ring-1 focus-within:ring-[#135D66] transition-all">
+                 {/* CSS Fixes for Quill: Enhanced Typography, Quotes, & Line Icon */}
                  <style dangerouslySetInnerHTML={{__html: `
-                   .quill-wrapper .ql-container { font-size: 1rem; min-height: 400px; height: auto; }
-                   .quill-wrapper .ql-editor { min-height: 400px; }
+                   /* Editor Dimensions & Text styling */
+                   .quill-wrapper .ql-container { font-size: 1.05rem; min-height: 500px; height: auto; }
+                   .quill-wrapper .ql-editor { min-height: 500px; color: #111827; padding: 1.5rem; line-height: 1.8; }
+                   .quill-wrapper .ql-editor.ql-blank::before { color: #9ca3af; font-style: normal; }
+                   
+                   /* Toolbar Styling */
+                   .quill-wrapper .ql-toolbar { border-bottom: 1px solid #e5e7eb; background: #f9fafb; padding: 12px; border-radius: 0.75rem 0.75rem 0 0; }
+                   
+                   /* Beautiful Blockquotes */
+                   .quill-wrapper .ql-editor blockquote {
+                     border-left: 4px solid #135D66;
+                     background: #F0F9FA;
+                     padding: 1rem 1.5rem;
+                     margin: 1.5rem 0;
+                     color: #374151;
+                     font-style: italic;
+                     border-radius: 0 0.5rem 0.5rem 0;
+                   }
+
+                   /* Custom Horizontal Line (Divider) Icon in Toolbar */
+                   .quill-wrapper .ql-toolbar button.ql-divider {
+                     width: 28px;
+                     position: relative;
+                   }
+                   .quill-wrapper .ql-toolbar button.ql-divider::after {
+                     content: "—";
+                     position: absolute;
+                     top: 50%; left: 50%;
+                     transform: translate(-50%, -50%);
+                     font-weight: 900;
+                     font-size: 18px;
+                     color: #444;
+                   }
+                   .quill-wrapper .ql-toolbar button.ql-divider:hover::after { color: #135D66; }
+
+                   /* Render Horizontal Rules nicely */
+                   .quill-wrapper .ql-editor hr {
+                     border: none;
+                     border-top: 2px solid #e5e7eb;
+                     margin: 2rem 0;
+                   }
+
+                   /* Fix Image alignments visually inside the editor */
+                   .quill-wrapper .ql-editor img { max-width: 100%; border-radius: 8px; margin: 1rem 0; }
+                   .quill-wrapper .ql-editor .ql-align-center img { display: block; margin: 1rem auto; }
+                   .quill-wrapper .ql-editor .ql-align-right img { float: right; margin-left: 1rem; }
+                   .quill-wrapper .ql-editor .ql-align-left img { float: left; margin-right: 1rem; }
                  `}} />
+                
                 <ReactQuill 
+                  ref={quillRef as any}
                   theme="snow" 
                   value={content} 
                   onChange={setContent} 
@@ -224,46 +464,54 @@ function EditorForm() {
                   placeholder="Start writing your amazing adventure..."
                 />
               </div>
+              <p className="text-xs text-gray-400 mt-2 text-right">
+                Tip: To align an image, click the image in the editor, then click the align icons in the toolbar.
+              </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Short Excerpt</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Short Excerpt (Optional)</label>
               <textarea 
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-adventure-500 outline-none"
-                placeholder="A brief 2-3 sentence summary that appears on the blog listing cards..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors resize-none"
+                placeholder="A brief 2-3 sentence summary that will appear on the blog listing cards..."
                 value={excerpt} onChange={(e) => setExcerpt(e.target.value)}
               />
             </div>
           </div>
 
           {/* FAQs Builder */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white">Frequently Asked Questions (Schema)</h3>
-              <button type="button" onClick={addFaq} className="text-sm font-medium text-adventure-600 hover:text-adventure-700 dark:text-adventure-400">
+          <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Frequently Asked Questions</h3>
+                <p className="text-sm text-gray-500 mt-1">Add FAQs to help this article rank for Google Rich Snippets.</p>
+              </div>
+              <button type="button" onClick={addFaq} className="px-4 py-2 bg-[#E9F4F5] text-[#135D66] font-bold text-sm rounded-lg hover:bg-[#135D66] hover:text-white transition-colors">
                 + Add FAQ
               </button>
             </div>
             
             {faqs.length === 0 ? (
-              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">No FAQs added yet. Adding them improves SEO rich snippets.</p>
+              <div className="text-center py-10 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
+                <p className="text-sm font-medium text-gray-500">No FAQs added yet.</p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <div key={index} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 relative">
-                    <button type="button" onClick={() => removeFaq(index)} className="absolute top-2 right-2 text-gray-400 hover:text-red-500">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  <div key={index} className="p-5 bg-gray-50 rounded-xl border border-gray-200 relative group transition-colors hover:border-gray-300">
+                    <button type="button" onClick={() => removeFaq(index)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
-                    <div className="space-y-3">
+                    <div className="space-y-3 pr-6">
                       <input 
                         type="text" placeholder="Question..."
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm font-medium outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] font-bold text-gray-900 placeholder-gray-400 bg-white"
                         value={faq.question} onChange={(e) => updateFaq(index, "question", e.target.value)}
                       />
                       <textarea 
                         rows={2} placeholder="Answer..."
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm outline-none"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-white resize-none"
                         value={faq.answer} onChange={(e) => updateFaq(index, "answer", e.target.value)}
                       />
                     </div>
@@ -275,114 +523,113 @@ function EditorForm() {
         </div>
 
         {/* --- RIGHT COLUMN: SETTINGS & SEO --- */}
-        <div className="w-full lg:w-1/3 space-y-6">
+        <div className="w-full lg:w-1/3 space-y-8">
           
           {/* Publishing Settings */}
-          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">Publishing</h3>
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+            <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
             
-            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Status</span>
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <span className="text-sm font-bold text-gray-700">Visibility</span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-adventure-600"></div>
-                <span className="ml-3 text-sm font-bold text-gray-900 dark:text-white">{isPublished ? 'Published' : 'Draft'}</span>
+                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#98D80D]"></div>
+                <span className={`ml-3 text-sm font-bold ${isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{isPublished ? 'Published' : 'Draft'}</span>
               </label>
             </div>
 
             <div>
-               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Est. Reading Time (Mins)</label>
+               <label className="block text-sm font-bold text-gray-700 mb-2">Override Publish Date</label>
                <input 
-                 type="number" min="1"
-                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
+                 type="datetime-local"
+                 className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 bg-gray-50 focus:bg-white transition-colors"
+                 value={publishedAt} onChange={(e) => setPublishedAt(e.target.value)}
+               />
+               <p className="text-xs text-gray-400 font-medium mt-1.5 leading-relaxed">Leave blank to use the current date and time upon publishing.</p>
+            </div>
+
+            <div>
+               <label className="block text-sm font-bold text-gray-700 mb-2">Est. Reading Time (Mins)</label>
+               <input 
+                 type="number" min="1" placeholder="e.g. 5"
+                 className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
                  value={readingTime} onChange={(e) => setReadingTime(e.target.value ? Number(e.target.value) : "")}
                />
             </div>
           </div>
 
-          {/* Media & Categorization */}
-          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">Organization</h3>
+          {/* Tags */}
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+            <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-3 mb-5">Tags</h3>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+            <div className="flex gap-2 mb-5">
               <input 
-                type="text" placeholder="e.g., Guides, Destinations"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
-                value={category} onChange={(e) => setCategory(e.target.value)}
+                type="text" placeholder="Add a tag and press Enter..."
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+                value={tagInput} 
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleAddTag}
               />
+              <button 
+                type="button" onClick={handleAddTag}
+                className="px-5 py-3 bg-[#135D66] hover:bg-[#0e4850] text-white rounded-xl font-bold text-sm transition-colors shadow-sm"
+              >
+                Add
+              </button>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (Comma separated)</label>
-              <input 
-                type="text" placeholder="hiking, gear, tips"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
-                value={tags} onChange={(e) => setTags(e.target.value)}
-              />
-            </div>
-
-            <div className="pt-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Featured Image URL</label>
-              <input 
-                type="url" placeholder="https://..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm mb-2"
-                value={featuredImage} onChange={(e) => setFeaturedImage(e.target.value)}
-              />
-              {featuredImage && (
-                <div className="w-full h-32 rounded-lg bg-cover bg-center border border-gray-200" style={{ backgroundImage: `url(${featuredImage})` }}></div>
-              )}
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Image Alt Text</label>
-              <input 
-                type="text" placeholder="Describe the image for SEO"
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
-                value={imageAltText} onChange={(e) => setImageAltText(e.target.value)}
-              />
+            <div className="flex flex-wrap gap-2.5">
+              {tags.map((tag, idx) => (
+                <span key={idx} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-bold bg-[#E9F4F5] text-[#135D66] border border-[#135D66]/20">
+                  {tag}
+                  <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-500 hover:bg-white rounded-full p-0.5 transition-colors focus:outline-none">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </span>
+              ))}
+              {tags.length === 0 && <span className="text-sm text-gray-400 font-medium">No tags added yet.</span>}
             </div>
           </div>
 
           {/* SEO Metadata */}
-          <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-            <h3 className="font-bold text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-700 pb-2">SEO Settings</h3>
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+            <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-3">Search Engine Optimization</h3>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL Slug *</label>
-              <div className="flex items-center">
-                <span className="px-3 py-2 bg-gray-100 dark:bg-gray-600 border border-r-0 border-gray-300 dark:border-gray-600 rounded-l-lg text-gray-500 text-sm">/blog/</span>
+              <label className="block text-sm font-bold text-gray-700 mb-2">URL Slug *</label>
+              <div className="flex items-stretch">
+                <span className="px-4 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-xl text-gray-500 text-sm font-medium flex items-center">/blogs/</span>
                 <input 
                   type="text" required
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-r-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-r-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
                   value={slug} onChange={(e) => setSlug(e.target.value)}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Meta Title</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Meta Title</label>
               <input 
                 type="text" placeholder="Title for Search Engines..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
                 value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Meta Description</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Meta Description</label>
               <textarea 
-                rows={3} placeholder="Brief summary for Google results..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
+                rows={4} placeholder="Brief summary to display in Google search results..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors resize-none"
                 value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Meta Keywords</label>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Meta Keywords</label>
               <input 
-                type="text" placeholder="keyword1, keyword2..."
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none text-sm"
+                type="text" placeholder="kilimanjaro, safari, climbing (comma separated)"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
                 value={metaKeywords} onChange={(e) => setMetaKeywords(e.target.value)}
               />
             </div>
@@ -397,8 +644,15 @@ function EditorForm() {
 // Wrap the entire component in a Suspense boundary for Next.js App Router rules
 export default function BlogEditorPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-center text-gray-500">Loading editor tools...</div>}>
-      <EditorForm />
-    </Suspense>
+    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+      <Suspense fallback={
+        <div className="flex flex-col items-center justify-center pt-32 text-gray-500">
+           <div className="w-12 h-12 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-4"></div>
+           <p className="font-bold">Loading Editor Tools...</p>
+        </div>
+      }>
+        <EditorForm />
+      </Suspense>
+    </div>
   );
 }

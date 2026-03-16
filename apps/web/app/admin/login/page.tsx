@@ -106,8 +106,9 @@ export default function AdminLogin() {
           
           {/* --- NEW LOGO SECTION --- */}
           <div className="flex justify-center w-full mb-8 sm:mb-10">
+            <a href="/" className="inline-flex items-center gap-2">
             <Image 
-              src="/logo.png" 
+              src="/logo.png"
               alt="Habari Adventure Logo" 
               width={500} /* Significantly larger base width */
               height={150} /* Scaled up height */
@@ -118,6 +119,7 @@ export default function AdminLogin() {
               className="object-contain w-full max-w-[280px] sm:max-w-[320px] h-auto drop-shadow-sm" 
               priority
             />
+            </a>
           </div>
           {/* --- END LOGO SECTION --- */}
 

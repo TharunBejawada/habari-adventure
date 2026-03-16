@@ -56,7 +56,7 @@ export default function Footer() {
   if (!settings) return null;
 
   return (
-    <footer className="bg-[#FEF9F0] text-[#135D66] pt-12 lg:pt-20 pb-12 px-6 sm:px-8 relative overflow-visible mt-32 lg:mt-40 border-t-2 border-[#135D66]">
+    <footer className="bg-[#FEF9F0] text-[#135D66] pt-12 lg:pt-20 pb-8 px-6 sm:px-8 relative overflow-visible mt-32 lg:mt-40 border-t-2 border-[#135D66]">
       
       {/* --- CAR ANIMATION STYLES --- */}
       <style dangerouslySetInnerHTML={{
@@ -77,7 +77,6 @@ export default function Footer() {
         {/* Right Epic Tree */}
         <div className="absolute bottom-0 right-1 sm:right-3 lg:right-6 z-20">
           <img 
-            // Note: Change this src to your actual tree image filename!
             src="/Righttreepic.png" 
             alt="Scenic Tree" 
             className="w-32 sm:w-48 lg:w-64 object-contain origin-bottom"
@@ -86,18 +85,14 @@ export default function Footer() {
         </div>
 
         {/* Animated Car Container */}
-        {/* The z-30 makes the car drive IN FRONT of the tree. Change to z-10 to drive behind it. */}
         <div className="w-full h-full overflow-hidden absolute inset-0 z-30">
-          {/* Responsive scale applied here (scale-75 on mobile) */}
           <div className="animate-car-drive relative w-[248px] h-[135px] scale-75 sm:scale-100 origin-bottom-left">
-            {/* Car Body */}
             <img 
               className="absolute left-0 bottom-0 h-full w-full object-contain" 
               src="/Left-Car.png" 
               alt="Travlla Safari Car" 
               loading="lazy" 
             />
-            {/* Back Tire (Wobble Fix applied via origin-center and flex container) */}
             <span className="absolute left-[11.1%] bottom-0 w-[43px] h-[43px] flex items-center justify-center">
               <img 
                 src="/Left-Car-tyre.png" 
@@ -106,7 +101,6 @@ export default function Footer() {
                 loading="lazy" 
               />
             </span>
-            {/* Front Tire (Wobble Fix applied) */}
             <span className="absolute right-[10.8%] bottom-0 w-[43px] h-[43px] flex items-center justify-center">
               <img 
                 src="/Left-Car-tyre.png" 
@@ -119,7 +113,7 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* --- FOOTER CONTENT --- */}
+      {/* --- FOOTER MAIN CONTENT --- */}
       <div className="max-w-[1400px] mx-auto w-full lg:w-[96%] flex flex-col lg:flex-row justify-between gap-12 lg:gap-8 relative z-10">
         
         {/* LEFT COLUMN: Logo, Info, and Socials */}
@@ -196,10 +190,27 @@ export default function Footer() {
             </div>
             <span className="font-medium text-sm leading-relaxed text-[#135D66]/80">{settings.address}</span>
           </div>
-
         </div>
-
       </div>
+
+      {/* --- BOTTOM BAR: COPYRIGHT & ADMIN LOGIN --- */}
+      <div className="max-w-[1400px] mx-auto w-full lg:w-[96%] mt-12 pt-6 border-t border-[#135D66]/10 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+        <p className="text-sm font-medium text-[#135D66]/80 text-center md:text-left">
+          &copy; {new Date().getFullYear()} Habari Adventure All Rights Reserved.
+        </p>
+        
+        <Link 
+          href="/admin/login" 
+          className="text-sm font-medium text-[#135D66]/50 hover:text-[#E59A1D] transition-colors flex items-center gap-1.5 group"
+          title="Admin Dashboard Login"
+        >
+          <svg className="w-4 h-4 group-hover:animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          Admin Portal
+        </Link>
+      </div>
+
     </footer>
   );
 }
