@@ -3,6 +3,7 @@ import { Router, Request, Response } from "express";
 import authRoutes from "./authRoutes"; // Import the new auth routes
 import userRoutes from "./userRoutes";
 import blogRoutes from "./blogRoutes";
+import packageRoutes from "./packageRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
@@ -22,6 +23,8 @@ router.use("/users", userRoutes);
 
 router.use("/blogs", blogRoutes);
 
+router.use("/packages", packageRoutes);
+
 router.post("/upload", upload.single("asset"), uploadFile);
 
 // Public route so the main Next.js website can fetch the header/footer
@@ -31,9 +34,9 @@ router.get("/settings", getSettings);
 router.put("/settings", requireAuth, requireAdmin, updateSettings);
 
 // --- 2. Package & Location Routes ---
-router.use("/packages", (req: Request, res: Response) => {
-    res.status(200).json({ message: "Packages endpoints will go here" });
-});
+// router.use("/packages", (req: Request, res: Response) => {
+//     res.status(200).json({ message: "Packages endpoints will go here" });
+// });
 
 // --- 3. Itinerary Routes ---
 router.use("/itineraries", (req: Request, res: Response) => {

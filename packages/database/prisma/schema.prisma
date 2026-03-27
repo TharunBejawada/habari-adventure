@@ -33,31 +33,30 @@ enum Role {
 }
 
 model Package {
-  id          String         @id @default(uuid())
-  title       String
-  location    String         // e.g., "Kilimanjaro", "Safari"
-  description String
-  price       Float
-  duration    Int            // Total days
-  difficulty  String?
-  isPublished Boolean        @default(false)
-  itineraries ItineraryDay[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-}
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String   // e.g., "Lemosha Route"
+  badgeText       String?  // e.g., "Kilimanjaro's Most Scenic Approach"
+  description     String?  // RTE
+  bannerImage     String?
+  tripPlanPdf     String?
+  
+  location        String   // e.g., "Kilimanjaro"
+  category        String   // "Climbing", "Safari", or "Day Trips"
+  
+  // Stored as JSON to handle deep nesting perfectly for the UI
+  quickFacts      Json?    // { image, heading, description, items: [{icon, title, desc}] }
+  whyChoose       Json?    // { image, heading, description, items: [{title, desc}], table: [] }
+  itineraryMeta   Json?    // { heading, description, included: [""], notIncluded: [""] }
+  itineraries     Json?    // Array of tabs: [{ tabName: "8-Day", days: [{ dayNumber, heading, description, timeTaken, image }] }]
+  
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
 
-model ItineraryDay {
-  id          String   @id @default(uuid())
-  packageId   String
-  package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
-  dayNumber   Int
-  title       String
-  description String
-  mediaUrl    String?  // Image or Video URL for the specific day
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@unique([packageId, dayNumber]) // Ensures no duplicate days for a single package
+  isPublished     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Blog {

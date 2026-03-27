@@ -2,13 +2,11 @@
 @import "tailwindcss";
 
 @theme {
-  /* Custom Adventure Colors */
   --color-adventure-50: #f0fdf4;
   --color-adventure-500: #22c55e;
   --color-adventure-600: #16a34a;
   --color-adventure-900: #14532d;
 
-  /* Custom Animations */
   --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-slide-in-right: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-fade-in: fadeIn 1s ease-out forwards;
@@ -29,9 +27,146 @@
   }
 }
 
-/* Base styles for the app */
+
 @layer base {
   body {
     @apply antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   }
 }
+
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+
+  --animate-slide-in-left: slideInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-in-right: slideInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fadeIn 1s ease-out forwards;
+
+  @keyframes slideInLeft {
+    0% { transform: translateX(-50px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideInRight {
+    0% { transform: translateX(50px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+}
+
+@layer base {
+
+  html, body {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 17px !important;
+    line-height: 1.75 !important;
+    font-weight: 400;
+    @apply antialiased bg-[#FDFEFE] text-gray-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif !important;
+    color: #111827;
+  }
+
+
+  h1 {
+    font-size: clamp(56px, 5vw, 64px) !important;
+    line-height: 1.15 !important;
+    font-weight: 700 !important;
+    margin-bottom: 16px !important;
+  }
+
+  h2 {
+    font-size: clamp(36px, 4vw, 40px) !important;
+    line-height: 1.25 !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+    text-align: left !important;
+  }
+
+  h3 {
+    font-size: clamp(22px, 3vw, 24px) !important;
+    line-height: 1.35 !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+  }
+
+  p {
+    margin-bottom: 20px !important;
+  }
+
+  small, figcaption {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    color: #888888 !important;
+  }
+
+  
+  section {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+
+  @media (min-width: 1024px) {
+    section {
+      padding-top: 100px !important;
+      padding-bottom: 100px !important;
+    }
+  }
+
+  [class~="max-w-[1350px]"], [class~="max-w-[1400px]"] {
+    max-width: 1180px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+
+  button[class~="bg-[#135D66]"], a[class~="bg-[#135D66]"] {
+    background-color: #2C5F2E !important;
+    border-radius: 6px !important;
+    padding: 14px 32px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    border: none !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  button[class~="bg-[#135D66]"]:hover, a[class~="bg-[#135D66]"]:hover {
+    background-color: #367538 !important; 
+    box-shadow: 0 4px 12px rgba(44, 95, 46, 0.25) !important;
+    transform: translateY(-2px) !important;
+  }
+
+  button[class~="border-[#135D66]"], a[class~="border-[#135D66]"] {
+    border: 2px solid #2C5F2E !important;
+    color: #2C5F2E !important;
+    background-color: transparent !important;
+    border-radius: 6px !important;
+    padding: 14px 32px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+  }
+}
+
+@layer utilities {
+
+  
+  .section-label {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: #2C5F2E !important;
+    margin-bottom: 8px !important;
+    display: block;
+    font-weight: 600;
+  }
+  
+  .card-grid-gap {
+    gap: 32px !important;
+  }
+} */
