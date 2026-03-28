@@ -431,8 +431,8 @@ function PackageEditorForm() {
                 <label className="block text-sm font-bold text-gray-700 mb-2">Elevation Profile Image</label>
                 <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setWhyChoose, whyChoose, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
                 {whyChoose.image && (
-                  <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden border border-gray-200">
-                     <Image src={whyChoose.image} alt="Preview" fill unoptimized className="object-contain bg-gray-900" />
+                  <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden">
+                     <Image src={whyChoose.image} alt="Preview" fill unoptimized className="object-contain" />
                   </div>
                 )}
               </div>

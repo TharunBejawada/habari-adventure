@@ -121,10 +121,17 @@ export default function PackageLandingPage() {
       <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
-            <Image src={pkg.bannerImage} alt={pkg.title} fill unoptimized className="object-cover object-top" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
-            <div className="absolute inset-0 bg-black/20" />
-          </div>
+  <Image 
+    src={pkg.bannerImage} 
+    alt={pkg.title} 
+    fill 
+    unoptimized 
+    className="object-fill" 
+    priority 
+  />
+  <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
+  <div className="absolute inset-0 bg-black/20" />
+</div>
         ) : (
           <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-900 to-gray-800" />
         )}
@@ -198,7 +205,7 @@ export default function PackageLandingPage() {
 
             {pkg.quickFacts.image && (
               <div className="w-full lg:w-2/5 flex justify-center lg:justify-end reveal-on-scroll delay-200">
-                <div className="relative w-full max-w-[400px] h-[300px]">
+                <div className="relative w-full max-w-[400px] h-[450px]">
                   <Image src={pkg.quickFacts.image} alt="Quick Facts Illustration" fill unoptimized className="object-contain" />
                 </div>
               </div>
@@ -242,7 +249,7 @@ export default function PackageLandingPage() {
 
               {pkg.whyChoose.image && (
                 <div className="w-full lg:w-1/2 reveal-on-scroll delay-200">
-                  <div className="relative w-full h-[250px] md:h-[350px] rounded-3xl overflow-hidden bg-[#0A0D14] shadow-xl">
+                  <div className="relative w-full h-[250px] md:h-[350px] rounded-3xl overflow-hidden">
                     <Image src={pkg.whyChoose.image} alt="Elevation Profile" fill unoptimized className="object-contain p-4 md:p-8" />
                   </div>
                 </div>
@@ -313,6 +320,19 @@ export default function PackageLandingPage() {
               </div>
             )}
 
+            {/* NEW: Centered Image spanning the gap between tabs and the timeline */}
+      {activeVariant?.image && (
+        <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
+          <Image 
+            src={activeVariant.image} 
+            alt={activeVariant.tabName || "Itinerary image"} 
+            fill 
+            unoptimized 
+            className="object-fill" 
+          />
+        </div>
+      )}
+
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
               
               {/* Left Col: Timeline */}
@@ -335,12 +355,6 @@ export default function PackageLandingPage() {
                           <div className="flex items-center gap-2 text-gray-500 text-sm font-medium">
                             <svg className="w-4 h-4 text-[#F51A43]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             {day.timeTaken}
-                          </div>
-                        )}
-                        
-                        {day.image && (
-                          <div className="mt-6 relative w-full h-[250px] md:h-[350px] rounded-2xl overflow-hidden shadow-sm">
-                            <Image src={day.image} alt={day.heading} fill unoptimized className="object-cover" />
                           </div>
                         )}
                       </div>
