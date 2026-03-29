@@ -1,74 +1,130 @@
 // apps/web/components/packages/PreparationGuide.tsx
 "use client";
 
+import { motion } from "framer-motion";
+
 export default function PreparationGuide() {
+  // Animation variants for staggered fade-in effects
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: "easeOut" as const } 
+    },
+  };
+
   return (
-    <section className="py-16 lg:py-24 bg-white border-b border-gray-100 reveal-on-scroll">
-      <div className="max-w-7xl mx-auto px-6 sm:px-12">
-        
-        <div className="mb-12">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+    <section className="py-4 lg:py-12 bg-[#fafafa] overflow-hidden">
+      <motion.div 
+        className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+      >
+        {/* Header Section */}
+        <motion.div className="mb-16" variants={itemVariants}>
+          <h2 className="text-[2.75rem] leading-tight font-bold text-black mb-3 tracking-tight">
             Preparation <span className="text-[#F51A43]">Guide</span>
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-black text-[1.1rem]">
             Train smart, pack right, and understand altitude for a safer, happier summit push.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
+        {/* 3-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
           
           {/* Fitness & Training */}
-          <div>
-            <div className="flex items-center gap-4 mb-4">
-              <svg className="w-12 h-12 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-              <h3 className="text-xl font-bold text-[#F51A43]">Fitness & Training</h3>
+          <motion.div variants={itemVariants}>
+            <div className="flex items-end gap-4 mb-6">
+              {/* Replace src with your actual image path */}
+              <img 
+                src="/fitness-icon.png" 
+                alt="Fitness and Training" 
+                className="w-16 h-16 object-contain"
+              />
+              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Fitness & Training</h3>
             </div>
-            <ul className="space-y-2 text-gray-700 leading-relaxed">
-              <li>8-12 weeks of progressive hikes;</li>
-              <li>add back-to-back long walks</li>
-              <li>Strength work for legs & core;</li>
-              <li>stair sessions</li>
-              <li>Pace yourself: pole pole (slowly) conserves energy</li>
-            </ul>
-          </div>
+            <div className="space-y-0 text-black text-[15px] leading-[1.8]">
+              <p>8–12 weeks of progressive hikes;</p>
+              <p>add back-to-back long walks</p>
+              <p>Strength work for legs & core;</p>
+              <p>stair sessions</p>
+              <p>Pace yourself: pole pole (slowly)</p>
+              <p>conserves energy</p>
+            </div>
+          </motion.div>
 
           {/* Altitude & Health */}
-          <div>
-            <div className="flex items-center gap-4 mb-4">
-              <svg className="w-12 h-12 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-              <h3 className="text-xl font-bold text-[#F51A43]">Altitude & Health</h3>
+          <motion.div variants={itemVariants}>
+            <div className="flex items-end gap-4 mb-6">
+              {/* Replace src with your actual image path */}
+              <img 
+                src="/altitude-icon.png" 
+                alt="Altitude and Health" 
+                className="w-16 h-16 object-contain"
+              />
+              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Altitude & Health</h3>
             </div>
-            <ul className="space-y-2 text-gray-700 leading-relaxed">
-              <li>Acclimatize by climbing high, sleeping low</li>
-              <li>Hydrate well; watch for symptoms; tell your guide early</li>
-              <li>Daily checks with oximeter; conservative decision-making</li>
-            </ul>
-          </div>
+            <div className="space-y-0 text-black text-[15px] leading-[1.8]">
+              <p>Acclimatize by climbing high,</p>
+              <p>sleeping low</p>
+              <p>Hydrate well; watch for symptoms;</p>
+              <p>tell your guide early</p>
+              <p>Daily checks with oximeter;</p>
+              <p>conservative decision-making</p>
+            </div>
+          </motion.div>
 
           {/* Packing Essentials */}
-          <div>
-            <div className="flex items-center gap-4 mb-4">
-              <svg className="w-12 h-12 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-              <h3 className="text-xl font-bold text-[#F51A43]">Packing Essentials</h3>
+          <motion.div variants={itemVariants}>
+            <div className="flex items-end gap-4 mb-6">
+              {/* Replace src with your actual image path */}
+              <img 
+                src="/packing-icon.png" 
+                alt="Packing Essentials" 
+                className="w-16 h-16 object-contain"
+              />
+              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Packing Essentials</h3>
             </div>
-            <ul className="space-y-2 text-gray-700 leading-relaxed">
-              <li>Broken-in boots, camp shoes, trekking poles</li>
-              <li>Layering: base, mid, waterproof shell; warm hat & gloves</li>
-              <li>0 to -10°C sleeping bag (<span className="text-[#F51A43]">rental available</span>)</li>
-              <li>Daypack 25-35L + rain cover; 2-3L hydration</li>
-              <li>Headlamp, sunglasses (UV), sunscreen, personal meds, power bank</li>
-            </ul>
-          </div>
+            <div className="space-y-0 text-black text-[15px] leading-[1.8]">
+              <p>Broken-in boots, camp shoes,</p>
+              <p>trekking poles</p>
+              <p>Layering: base, mid, waterproof shell;</p>
+              <p>warm hat & gloves</p>
+              <p>0 to -10°C sleeping bag (<span className="text-[#F51A43]">rental available</span>)</p>
+              <p>Daypack 25–35L + rain cover;</p>
+              <p>2–3L hydration</p>
+              <p>Headlamp, sunglasses (UV), sunscreen,</p>
+              <p>personal meds, power bank</p>
+            </div>
+          </motion.div>
 
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-100">
-          <p className="text-gray-700 font-medium">
+        {/* Footer Section */}
+        <motion.div 
+          variants={itemVariants}
+          className="mt-16 pt-4"
+        >
+          <p className="text-black text-lg">
             <span className="text-[#F51A43]">Need rentals?</span> Reserve sleeping bags, down jackets, and poles in advance.
           </p>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     </section>
   );
 }

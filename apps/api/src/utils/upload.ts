@@ -27,11 +27,22 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "video/mp4"];
+  const allowedMimeTypes = [
+    // Images & Video
+    "image/jpeg", 
+    "image/png", 
+    "image/webp", 
+    "image/gif", 
+    "video/mp4",
+    // Documents
+    "application/pdf", // For .pdf
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // For .docx
+    "application/msword" // For older .doc
+  ];
   if (allowedMimeTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Invalid file type. Only JPG, PNG, WEBP, GIF, and MP4 are allowed."));
+    cb(new Error("Invalid file type. Only JPG, PNG, WEBP, GIF, MP4, PDF, DOCX, and DOC are allowed."));
   }
 };
 
