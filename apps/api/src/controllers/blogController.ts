@@ -183,7 +183,7 @@ export const getTopCategories = async (req: Request, res: Response): Promise<voi
       take: 6
     });
 
-    const formatted = categories.map(c => ({
+    const formatted = categories.map((c :any) => ({
       category: c.category,
       count: c._count.category
     }));
@@ -204,8 +204,8 @@ export const getTopTags = async (req: Request, res: Response): Promise<void> => 
     });
 
     const tagCounts: Record<string, number> = {};
-    blogs.forEach(blog => {
-      blog.tags.forEach(tag => {
+    blogs.forEach((blog: any) => {
+      blog.tags.forEach((tag: any) => {
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
       });
     });

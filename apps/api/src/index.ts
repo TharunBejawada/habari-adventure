@@ -11,6 +11,8 @@ import { globalLimiter } from "./middleware/rateLimiter";
 dotenv.config();
 
 const app: Express = express();
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 app.set("trust proxy", 1);
 const PORT = process.env.PORT || 8000;
 

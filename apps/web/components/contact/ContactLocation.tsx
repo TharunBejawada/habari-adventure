@@ -74,11 +74,11 @@ export default function ContactLocation() {
         </div>
 
         {/* --- PRIVACY LINE --- */}
-        <div className="w-full max-w-3xl border-t border-gray-200 pt-8 mt-4">
+        {/* <div className="w-full max-w-3xl border-t border-gray-200 pt-8 mt-4">
           <p className="text-gray-400 text-xs md:text-sm font-medium">
             <span className="font-bold text-gray-500">Privacy:</span> By submitting the form above, you agree that we may contact you about your trip request. Your information is secure and will never be shared with third parties.
           </p>
-        </div>
+        </div> */}
 
       </div>
     </section>

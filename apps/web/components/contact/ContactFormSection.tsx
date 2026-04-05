@@ -13,17 +13,27 @@ export default function ContactFormSection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // Form State
+  // Form State Updated for Client Feedback
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
-    month: "",
+    monthYear: "",
     length: "",
     groupSize: "",
     include: "",
     message: ""
   });
+
+  // Get current YYYY-MM to prevent past date selection
+  const [minMonth, setMinMonth] = useState("");
+  useEffect(() => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    setMinMonth(`${yyyy}-${mm}`);
+  }, []);
 
   // 1. Scroll Intersection Observer for Animations
   useEffect(() => {
@@ -61,8 +71,16 @@ export default function ContactFormSection() {
     alert("Quote request sent! We will get back to you shortly.");
   };
 
-  // Check if all required fields are filled to enable button
-  const isFormValid = Object.values(formData).every(val => val.trim() !== "") && isCaptchaVerified;
+  // Check if required fields are filled to enable button (excludes lastName and phone)
+  const isFormValid = 
+    formData.firstName.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    formData.monthYear.trim() !== "" &&
+    formData.length.trim() !== "" &&
+    formData.groupSize.trim() !== "" &&
+    formData.include.trim() !== "" &&
+    formData.message.trim() !== "" &&
+    isCaptchaVerified;
 
   return (
     <section ref={sectionRef} className="w-full py-20 lg:py-32 bg-white relative overflow-hidden z-10">
@@ -92,7 +110,6 @@ export default function ContactFormSection() {
         {/* ========================================== */}
         {/* LEFT SIDE: CONTACT CARDS & CHEAT SHEET     */}
         {/* ========================================== */}
-        {/* Add opacity-0 initially. When isVisible becomes true, add the animation classes */}
         <div className={`w-full lg:w-[45%] flex flex-col pt-4 opacity-0 ${isVisible ? 'animate-fade-left-scroll' : ''}`}>
           
           <h2 className="text-4xl font-extrabold text-[#135D66] mb-2">
@@ -164,7 +181,6 @@ export default function ContactFormSection() {
         {/* ========================================== */}
         {/* RIGHT SIDE: QUOTE FORM CONTAINER           */}
         {/* ========================================== */}
-        {/* Add opacity-0 initially. When isVisible becomes true, add the animation classes */}
         <div className={`w-full lg:w-[55%] opacity-0 ${isVisible ? 'animate-fade-right-scroll' : ''}`}>
           
           <div className="bg-[#FFF9F0] rounded-[40px] p-8 md:p-12 shadow-xl border border-orange-50">
@@ -178,46 +194,69 @@ export default function ContactFormSection() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               
+              {/* Row 1: First & Last Name */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <input 
-                  type="text" name="name" placeholder="Full Name *" required
-                  value={formData.name} onChange={handleInputChange}
+                  type="text" name="firstName" placeholder="First Name *" required
+                  value={formData.firstName} onChange={handleInputChange}
                   className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
                 />
+                <input 
+                  type="text" name="lastName" placeholder="Last Name (Optional)"
+                  value={formData.lastName} onChange={handleInputChange}
+                  className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                />
+              </div>
+
+              {/* Row 2: Email & Phone */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <input 
                   type="email" name="email" placeholder="Email *" required
                   value={formData.email} onChange={handleInputChange}
                   className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <input 
-                  type="tel" name="phone" placeholder="WhatsApp / Phone *" required
+                  type="tel" name="phone" placeholder="WhatsApp / Phone (Optional)"
                   value={formData.phone} onChange={handleInputChange}
                   className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
                 />
-                <input 
-                  type="text" name="month" placeholder="Month of Travel *" required
-                  value={formData.month} onChange={handleInputChange}
-                  className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
-                />
               </div>
 
+              {/* Row 3: Month/Year & Trip Length */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="relative">
+                  {/* Floating label fallback for Month input since placeholders behave weirdly on native date pickers */}
+                  <span className="absolute -top-2 left-6 bg-[#FFF9F0] px-1 text-xs font-bold text-gray-500">
+                    Month & Year of Travel *
+                  </span>
+                  <input 
+                    type="month" name="monthYear" required
+                    min={minMonth}
+                    value={formData.monthYear} onChange={handleInputChange}
+                    className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700 bg-white"
+                  />
+                </div>
                 <input 
                   type="number" name="length" min="1" placeholder="Total Trip Length (days) *" required
                   value={formData.length} onChange={handleInputChange}
                   className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
                 />
-                <input 
-                  type="number" name="groupSize" min="1" placeholder="Group Size *" required
-                  value={formData.groupSize} onChange={handleInputChange}
-                  className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
-                />
               </div>
 
-              <div>
+              {/* Row 4: Group Size & Inclusions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <select 
+                  name="groupSize" required
+                  value={formData.groupSize} onChange={handleInputChange}
+                  className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-500 appearance-none bg-white cursor-pointer"
+                >
+                  <option value="" disabled>Group Size *</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                  <option value="10+">10+</option>
+                </select>
+
                 <select 
                   name="include" required
                   value={formData.include} onChange={handleInputChange}
@@ -233,9 +272,10 @@ export default function ContactFormSection() {
                 </select>
               </div>
 
+              {/* Row 5: Message */}
               <div>
                 <textarea 
-                  name="message" placeholder="Message (must-see experiences, dates, constraints) *" rows={4} required
+                  name="message" placeholder="Message (must-see experiences, constraints) *" rows={4} required
                   value={formData.message} onChange={handleInputChange}
                   className="w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700 resize-none"
                 ></textarea>
@@ -249,8 +289,15 @@ export default function ContactFormSection() {
                 />
               </div>
 
+              {/* --- PRIVACY LINE MOVED HERE --- */}
+              <div className="w-full border-t border-gray-200 pt-6 mt-4 mb-2">
+                <p className="text-gray-400 text-xs md:text-sm font-medium">
+                  <span className="font-bold text-gray-500">Privacy:</span> By submitting the form above, you agree that we may contact you about your trip request. Your information is secure and will never be shared with third parties.
+                </p>
+              </div>
+
               {/* Submit Button (Disabled until form is valid) */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <button 
                   type="submit"
                   disabled={!isFormValid}

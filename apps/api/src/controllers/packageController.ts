@@ -70,3 +70,25 @@ export const deletePackage = async (req: Request, res: Response) => {
     res.status(400).json({ status: "error", message: error.message });
   }
 };
+
+export const getPackagesByLocation = async (req: Request, res: Response) => {
+  try {
+    const { location } = req.params;
+    const locationStr = Array.isArray(location) ? location[0] : location;
+
+    const packages = await prisma.package.findMany({
+      where: {
+        isPublished: true, // Only fetch published packages for the user facing UI
+        location: {
+          contains: locationStr,
+          mode: 'insensitive' // Safely handles "Mt. Kilimanjaro" vs "mt kilimanjaro"
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    res.status(200).json({ status: "success", data: packages });
+  } catch (error: any) {
+    res.status(500).json({ status: "error", message: error.message });
+  }
+};
