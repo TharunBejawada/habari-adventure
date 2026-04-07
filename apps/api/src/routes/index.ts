@@ -4,6 +4,7 @@ import authRoutes from "./authRoutes"; // Import the new auth routes
 import userRoutes from "./userRoutes";
 import blogRoutes from "./blogRoutes";
 import packageRoutes from "./packageRoutes";
+import crewRoutes from "./crewRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
@@ -24,6 +25,8 @@ router.use("/users", userRoutes);
 router.use("/blogs", blogRoutes);
 
 router.use("/packages", packageRoutes);
+
+router.use("/crew", crewRoutes);
 
 router.post("/upload", upload.single("asset"), uploadFile);
 

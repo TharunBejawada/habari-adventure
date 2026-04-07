@@ -96,16 +96,6 @@ model Blog {
   @@index([category])
 }
 
-model Crew {
-  id        String   @id @default(uuid())
-  name      String
-  role      String
-  bio       String   @db.Text
-  imageUrl  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model GlobalSettings {
   id           String   @id @default(cuid())
   
@@ -123,4 +113,44 @@ model GlobalSettings {
   footerColumns Json     @default("[]") 
 
   updatedAt    DateTime @updatedAt
+}
+
+// --- CREW MANAGEMENT ---
+
+model CrewSettings {
+  id                String   @id @default("singleton")
+  heroBannerImage   String?
+  porterBannerImage String?
+  porterDescription String?  @db.Text // RTE Content
+  
+  updatedAt         DateTime @updatedAt
+  modifiedBy        String?  // Stores the admin email/ID who last updated it
+}
+
+model CrewTeam {
+  id            String       @id @default(uuid())
+  name          String
+  priorityOrder Int          @default(0)
+  
+  members       CrewMember[] // Relation to members
+  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  modifiedBy    String?
+}
+
+model CrewMember {
+  id            String   @id @default(uuid())
+  teamId        String
+  team          CrewTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  
+  image         String?
+  name          String
+  designation   String
+  description   String?  @db.Text // RTE Content
+  priorityOrder Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  modifiedBy    String?
 }
