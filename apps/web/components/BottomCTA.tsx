@@ -20,14 +20,14 @@ export default function BottomCTA() {
         <div className="w-full lg:w-[50%] relative z-20 text-center lg:text-left">
           
           <h3 className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl mb-2 md:mb-3 tracking-wide`}>
-            Built On Trust
+            BUILT ON TRUST
           </h3>
           
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-md">
             Ready to Begin Your African Safari?
           </h2>
 
-          <div className="text-white/90 text-sm md:text-base leading-relaxed mb-8 space-y-4 max-w-lg mx-auto lg:mx-0 text-left">
+          <div className="text-left text-white/90 text-sm md:text-base leading-relaxed mb-8 space-y-4 max-w-lg mx-auto lg:mx-0 text-left">
             <p>Whether you dream of:</p>
             <ul className="space-y-2 ml-2">
               <li className="flex items-center gap-3">
@@ -48,12 +48,15 @@ export default function BottomCTA() {
             </p>
           </div>
 
-          <Link 
+          {/* <Link 
             href="/contact" 
             className="inline-block bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20 text-center"
           >
             Start your Tanzania safari tours today
-          </Link>
+          </Link> */}
+          <Link href="/contact" className="btn-primary">
+  Start your Tanzania safari tours today
+</Link>
         </div>
 
         {/* --- RIGHT SIDE: Polaroid Collage --- */}

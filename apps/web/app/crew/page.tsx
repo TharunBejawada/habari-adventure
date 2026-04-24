@@ -116,7 +116,8 @@ export default function OurCrewPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-[#135D66]" />
         )}
         
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f16] via-[#0a0f16]/40 to-transparent opacity-90" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f16] via-[#0a0f16]/40 to-transparent opacity-90" /> */}
+        <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
           <span className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl mb-2 block tracking-wide`}>

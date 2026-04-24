@@ -42,7 +42,7 @@ export default function HolidayPackages() {
             Safari + <span className="text-[#E59A1D]">Zanzibar</span> Holiday Packages
           </h2>
           
-          <p className="text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+          <p className="text-left text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
             After your adventure-filled wildlife safari Tanzania or Kilimanjaro climbing journey, unwind on the white-sand beaches of Zanzibar. Our combined Tanzania safari packages include carefully curated experiences.
           </p>
 
@@ -59,7 +59,7 @@ export default function HolidayPackages() {
         <div className="bg-[#E9F4F5] rounded-[30px] p-6 md:p-10 relative shadow-inner">
           
           {/* Filters */}
-          <div className="flex flex-wrap items-center gap-3 mb-8">
+          <div className="label-primary flex flex-wrap items-center gap-8 mb-8">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -84,7 +84,7 @@ export default function HolidayPackages() {
             </button>
 
             {/* Cards Scroll Container */}
-            <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar">
+            <div className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-6 hide-scrollbar">
               {packages.map((pkg, idx) => (
                 <div 
                   key={idx} 

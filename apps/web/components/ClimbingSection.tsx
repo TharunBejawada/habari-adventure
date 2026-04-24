@@ -26,12 +26,15 @@ export default function ClimbingSection() {
           </p>
 
           <div className="flex flex-wrap items-center gap-6 pt-2">
-            <Link 
+            {/* <Link 
               href="/climbing" 
               className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-sm md:text-base py-3 md:py-4 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#98D80D]/20"
             >
               View Expeditions
-            </Link>
+            </Link> */}
+            <Link href="/climbing" className="btn-primary">
+  View Expeditions
+</Link>
             
             {/* Happy Customers Mini-Stat */}
             <div className="flex items-center gap-3">
@@ -77,7 +80,7 @@ export default function ClimbingSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {/* CARD 1: Kilimanjaro */}
-          <div className="bg-[#0A484F] rounded-[30px] p-2.5 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/kili-mount.jpg" alt="Mount Kilimanjaro" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -109,7 +112,7 @@ export default function ClimbingSection() {
           </div>
 
           {/* CARD 2: Mount Meru */}
-          <div className="bg-[#0A484F] rounded-[30px] p-2.5 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/meru-mount.jpg" alt="Mount Meru" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -141,7 +144,7 @@ export default function ClimbingSection() {
           </div>
 
           {/* CARD 3: Mount Kenya */}
-          <div className="bg-[#0A484F] rounded-[30px] p-2.5 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/kenya-mount.jpg" alt="Mount Kenya" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />

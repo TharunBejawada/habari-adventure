@@ -60,7 +60,7 @@ export default function FAQSection() {
         {/* --- LEFT SIDE: Sticky Header & Intro --- */}
         <div className="w-full lg:w-[40%] lg:sticky lg:top-32">
           <span className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl tracking-wide mb-2 block`}>
-            Got Questions?
+            GOT QUESTIONS?
           </span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] leading-tight mb-6">
             Frequently Asked <br /> Questions

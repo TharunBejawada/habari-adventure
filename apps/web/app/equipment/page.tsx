@@ -90,6 +90,7 @@ export default function OurEquipmentPage() {
             priority
           />
           <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">

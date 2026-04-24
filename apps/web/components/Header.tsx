@@ -63,14 +63,14 @@ export default function Header() {
     <div className="w-full px-4 pt-4 pb-2 sticky top-0 z-[100]">
       
       {/* UPDATED HEADER TAG:
-        Added dynamic classes based on the `isScrolled` state. 
-        Uses `transition-all duration-300` for a smooth fade effect.
+        Added a Glassmorphism effect to the un-scrolled state so white text 
+        and logos are always visible on light background images.
       */}
       <header 
-        className={`w-[96%] max-w-[1400px] mx-auto text-white rounded-2xl px-6 md:px-10 flex items-center justify-between transition-all duration-300 ${
+        className={`w-[96%] max-w-[1400px] mx-auto text-white rounded-2xl px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${
           isScrolled 
-            ? "bg-[#135D66] shadow-xl py-3 md:py-4" // Scrolled state: Solid background, shadow, slightly thinner padding
-            : "bg-transparent shadow-none py-5 md:py-6" // Top state: Transparent, no shadow, wider padding
+            ? "bg-[#135D66] shadow-xl py-3 md:py-4 border border-transparent" // Scrolled: Solid brand color
+            : "bg-black/30 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-white/20 py-4 md:py-5" // Top: Frosted glass effect
         }`}
       >
         

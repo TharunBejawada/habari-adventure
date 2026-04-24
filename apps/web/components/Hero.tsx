@@ -102,150 +102,156 @@ export default function Hero() {
 
       {/* --- HERO SECTION --- */}
       {/* Background pulls underneath the header with -mt-[130px] */}
-      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[130px] rounded-b-[40px] shadow-2xl">
+      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[130px] rounded-b-[40px] shadow-2xl min-h-[90vh] flex flex-col justify-center">
         
-        {/* Animated Clouds */}
-        <div className="absolute top-[180px] w-full z-10 pointer-events-none opacity-80">
-            <div className="inline-block whitespace-nowrap animate-moveCloud">
-                <img src="/Cloud1.png" alt="Cloud" width="168" height="131" loading="lazy" />
-            </div>
+  {/* Animated Clouds */}
+  <div className="absolute top-[180px] w-full z-10 pointer-events-none opacity-80">
+      <div className="inline-block whitespace-nowrap animate-moveCloud">
+          <img src="/Cloud1.png" alt="Cloud" width="168" height="131" loading="lazy" />
+      </div>
+  </div>
+  <div className="absolute top-20 w-full z-10 pointer-events-none opacity-80">
+      <div className="inline-block whitespace-nowrap animate-moveCloud-slow">
+          <img src="/Cloud2.png" alt="Cloud" width="168" height="131" loading="lazy" />  
+      </div>
+  </div>
+
+  {/* Decorative Background Image (Fits perfectly without stretching using object-cover) */}
+  <div className="absolute inset-0 z-0">
+    <Image 
+      src="/slider-bg.jpg" 
+      alt="Mountains Background" 
+      fill 
+      className="object-cover object-top w-full h-full opacity-60 mix-blend-overlay"
+      priority
+    />
+  </div>
+
+  {/* Main Hero Content */}
+  <div className="max-w-[1400px] mx-auto w-[96%] relative z-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+    
+    {/* LEFT SIDE: Text & Actions (Added dark overlay, padding, rounded corners, and vertical center support) */}
+    <div className="max-w-[640px] w-full lg:w-[50%] flex flex-col items-start justify-center relative z-30 bg-[rgba(0,0,0,0.35)] p-6 sm:p-8 lg:p-10 rounded-3xl backdrop-blur-sm">
+      
+      <h2 className={`${caveat.className} text-white text-4xl md:text-5xl lg:text-6xl mb-2 tracking-wide`}>
+        Tanzania Safari Tours
+      </h2>
+      <h1 className={`${caveat.className} text-white text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 drop-shadow-lg`}>
+        & Kilimanjaro Climbing Adventures
+      </h1>
+
+      <p className="text-white text-lg md:text-xl font-semibold tracking-wide mb-3">
+        Experience authentic African safari adventures with trusted Tanzania experts.
+      </p>
+
+      <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl mb-8">
+        Explore Serengeti wildlife and conquer Kilimanjaro with expertly guided Tanzania safari and climbing adventures designed for unforgettable journeys. Whether you're planning your first wildlife safari Tanzania or preparing for a life-changing Kilimanjaro climbing expedition, we ensure every detail is seamless.
+      </p>
+
+      {/* <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20">
+        Start Your Adventure
+      </Link> */}
+      <Link href="/contact" className="btn-primary">
+  Start Your Adventure
+</Link>
+
+      {/* Trip Category Finder (Stacks on mobile, inline on desktop) */}
+      <div className="mt-12 bg-white rounded-3xl md:rounded-full p-4 md:p-3 w-full flex flex-col md:flex-row items-center gap-4 md:gap-2 shadow-2xl">
+        <div className="flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-gray-200 pb-3 md:pb-0">
+          <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Category</label>
+          <select className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer appearance-none">
+            <option>Safari</option>
+            <option>Climbing</option>
+            <option>Zanzibar & Leisure</option>
+          </select>
         </div>
-        <div className="absolute top-20 w-full z-10 pointer-events-none opacity-80">
-            <div className="inline-block whitespace-nowrap animate-moveCloud-slow">
-                <img src="/Cloud2.png" alt="Cloud" width="168" height="131" loading="lazy" />  
-            </div>
+
+        <div className="flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-gray-200 pb-3 md:pb-0">
+          <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Date</label>
+          <input type="date" className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer" />
         </div>
 
-        {/* Decorative Background Image (Fits perfectly without stretching using object-cover) */}
-        <div className="absolute inset-0 z-0">
-          <Image 
-            src="/slider-bg.jpg" 
-            alt="Mountains Background" 
-            fill 
-            className="object-cover object-top w-full h-full opacity-60 mix-blend-overlay"
-            priority
-          />
+        <div className="flex-1 w-full px-4 pb-3 md:pb-0">
+          <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Travelers</label>
+          <input type="number" min="1" placeholder="2 Adults" className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none" />
         </div>
 
-        {/* Main Hero Content */}
-        <div className="max-w-[1400px] mx-auto w-[96%] relative z-20 flex flex-col lg:flex-row items-center justify-between gap-12">
-          
-          {/* LEFT SIDE: Text & Actions */}
-          <div className="w-full lg:w-[50%] flex flex-col items-start relative z-30">
-            
-            <h2 className={`${caveat.className} text-white text-4xl md:text-5xl lg:text-6xl mb-2 tracking-wide`}>
-              Tanzania Safari Tours
-            </h2>
-            <h1 className={`${caveat.className} text-white text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 drop-shadow-lg`}>
-              & Kilimanjaro Climbing Adventures
-            </h1>
+        <button className="w-full md:w-14 h-12 md:h-14 mt-2 md:mt-0 bg-[#98D80D] hover:bg-[#86C00B] rounded-full flex items-center justify-center transition-colors shrink-0 text-[#135D66]">
+          <span className="label-primary md:hidden font-bold mr-2">Search</span>
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </button>
+      </div>
 
-            <p className="text-white text-lg md:text-xl font-semibold tracking-wide mb-3">
-              Experience authentic African safari adventures with trusted Tanzania experts.
-            </p>
-
-            <p className="text-white/85 text-sm md:text-base leading-relaxed max-w-2xl mb-8">
-              Explore Serengeti wildlife and conquer Kilimanjaro with expertly guided Tanzania safari and climbing adventures designed for unforgettable journeys. Whether you're planning your first wildlife safari Tanzania or preparing for a life-changing Kilimanjaro climbing expedition, we ensure every detail is seamless.
-            </p>
-
-            <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20">
-              Start Your Adventure
-            </Link>
-
-            {/* Trip Category Finder (Stacks on mobile, inline on desktop) */}
-            <div className="mt-12 bg-white rounded-3xl md:rounded-full p-4 md:p-3 w-full max-w-3xl flex flex-col md:flex-row items-center gap-4 md:gap-2 shadow-2xl">
-              <div className="flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-gray-200 pb-3 md:pb-0">
-                <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Category</label>
-                <select className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer appearance-none">
-                  <option>Safari</option>
-                  <option>Climbing</option>
-                  <option>Zanzibar & Leisure</option>
-                </select>
-              </div>
-
-              <div className="flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-gray-200 pb-3 md:pb-0">
-                <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Date</label>
-                <input type="date" className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer" />
-              </div>
-
-              <div className="flex-1 w-full px-4 pb-3 md:pb-0">
-                <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Travelers</label>
-                <input type="number" min="1" placeholder="2 Adults" className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none" />
-              </div>
-
-              <button className="w-full md:w-14 h-12 md:h-14 mt-2 md:mt-0 bg-[#98D80D] hover:bg-[#86C00B] rounded-full flex items-center justify-center transition-colors shrink-0 text-[#135D66]">
-                <span className="md:hidden font-bold mr-2">Search</span>
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              </button>
-            </div>
-
-            {/* Dynamic Social Follow */}
-            <div className="flex items-center gap-6 mt-10">
-              <span className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-4">
-                Follow Us <span className="w-12 h-[1px] bg-white/50 block"></span>
-              </span>
-              <div className="flex flex-wrap gap-4 text-white">
-                {socialLinks.map((social: LinkItem, idx: number) => (
-                  <a key={idx} href={social.url} target="_blank" rel="noreferrer" title={social.name} className="hover:text-[#98D80D] transition-colors">
-                    {getSocialIcon(social.name)}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-          </div>
-
-          {/* RIGHT SIDE: Plane and Traveler Images */}
-          <div className="w-full lg:w-[50%] min-h-[400px] lg:min-h-0 relative z-20 mt-16 lg:mt-0">
-            <div className="relative w-full h-full flex justify-end items-end">
-              
-              {/* Airplane Line - Fixed to Top Right */}
-              <div className="absolute top-[-80px] md:top-[-100px] right-0 w-[80%] md:w-[60%] lg:w-[120%] xl:w-[100%] pointer-events-none z-10">
-                  <img src="/Plane-With-Line.png" alt="Airplane" loading="lazy" className="w-full h-auto drop-shadow-lg animate-pulse" />
-              </div>
-              
-              {/* Traveler Image */}
-              <div className="relative z-20 w-full sm:w-3/4 lg:w-[90%] xl:w-[85%] ml-auto">
-                  <img src="/right-pic.png" alt="Happy Traveler" loading="lazy" className="w-full h-auto drop-shadow-2xl" />
-              </div>
-            </div>
-          </div>
-
+      {/* Dynamic Social Follow */}
+      <div className="flex items-center gap-6 mt-10">
+        <span className="text-white text-xs font-bold tracking-[0.2em] uppercase flex items-center gap-4">
+          Follow Us <span className="w-12 h-[1px] bg-white/50 block"></span>
+        </span>
+        <div className="flex flex-wrap gap-4 text-white">
+          {socialLinks.map((social: LinkItem, idx: number) => (
+            <a key={idx} href={social.url} target="_blank" rel="noreferrer" title={social.name} className="hover:text-[#98D80D] transition-colors">
+              {getSocialIcon(social.name)}
+            </a>
+          ))}
         </div>
-      </section>
+      </div>
+
+    </div>
+
+    {/* RIGHT SIDE: Plane and Traveler Images */}
+    <div className="w-full lg:w-[50%] min-h-[400px] lg:min-h-0 relative z-20 mt-16 lg:mt-0">
+      <div className="relative w-full h-full flex justify-end items-end">
+        
+        {/* Airplane Line - Fixed to Top Right */}
+        <div className="absolute top-[-80px] md:top-[-100px] right-0 w-[80%] md:w-[60%] lg:w-[120%] xl:w-[100%] pointer-events-none z-10">
+            <img src="/Plane-With-Line.png" alt="Airplane" loading="lazy" className="w-full h-auto drop-shadow-lg animate-pulse" />
+        </div>
+        
+        {/* Traveler Image */}
+        <div className="relative z-20 w-full sm:w-3/4 lg:w-[90%] xl:w-[85%] ml-auto">
+            <img src="/right-pic.png" alt="Happy Traveler" loading="lazy" className="w-full h-auto drop-shadow-2xl" />
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* --- STATS / TRUST BAR --- */}
       <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-16 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/20 p-8 md:p-10">
-          
-          <div className="flex items-center justify-center gap-6 py-4 md:py-0">
-            <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            </div>
-            <div>
-              <p className="text-white text-lg font-medium tracking-wide">Happy Travelers</p>
-              {/* REPLACED STATIC TEXT WITH ANIMATED COUNTER */}
-              <h3 className="text-[#E59A1D] text-4xl font-black mt-1">
-                <AnimatedNumber end={2000} />
-              </h3>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-6 py-4 md:py-0">
-            <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
-            </div>
-            <div>
-              <p className="text-white text-lg font-medium tracking-wide">Years of Safari Expertise</p>
-              {/* REPLACED STATIC TEXT WITH ANIMATED COUNTER */}
-              <h3 className="text-[#E59A1D] text-4xl font-black mt-1">
-                <AnimatedNumber end={13} />
-              </h3>
-            </div>
-          </div>
-
-        </div>
+  {/* Updated divider color to #E0E0E0 */}
+  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E0E0E0] p-8 md:p-10 gap-10 md:gap-0">
+    
+    {/* Converted to flex-col and text-center for perfect horizontal/vertical alignment */}
+    <div className="flex flex-col items-center justify-center gap-4 py-4 md:py-6 h-full text-center">
+      <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
       </div>
+      <div className="flex flex-col items-center">
+        <p className="text-white text-lg font-medium tracking-wide">Happy Travelers</p>
+        {/* REPLACED STATIC TEXT WITH ANIMATED COUNTER */}
+        <h3 className="text-[#E59A1D] text-4xl font-black mt-1">
+          <AnimatedNumber end={2000} />
+        </h3>
+      </div>
+    </div>
+
+    {/* Converted to flex-col and text-center for perfect horizontal/vertical alignment */}
+    <div className="flex flex-col items-center justify-center gap-4 py-4 md:py-6 h-full text-center">
+      <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+      </div>
+      <div className="flex flex-col items-center">
+        <p className="text-white text-lg font-medium tracking-wide">Years of Safari Expertise</p>
+        {/* REPLACED STATIC TEXT WITH ANIMATED COUNTER */}
+        <h3 className="text-[#E59A1D] text-4xl font-black mt-1">
+          <AnimatedNumber end={13} />
+        </h3>
+      </div>
+    </div>
+
+  </div>
+</div>
     </>
   );
 }
