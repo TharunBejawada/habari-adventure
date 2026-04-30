@@ -1,0 +1,243 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Caveat } from "next/font/google";
+
+const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
+
+export default function DeparturesPage() {
+  const [dates, setDates] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- 1. FETCH DATA ---
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          // Filter out past dates so users only see future trips
+          const futureDates = data.data.filter((d: any) => new Date(d.startDate) >= new Date(new Date().setHours(0,0,0,0)));
+          setDates(futureDates);
+        }
+      })
+      .catch(err => console.error("Failed to fetch schedule", err))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  // --- 2. GROUP DATA BY YEAR AND MONTH ---
+  const groupedSchedule = useMemo(() => {
+    const groups: Record<string, Record<string, any[]>> = {};
+    
+    // The API already returns these sorted by startDate ascending!
+    dates.forEach(dateObj => {
+      const d = new Date(dateObj.startDate);
+      const year = d.getFullYear().toString();
+      const month = d.toLocaleString('en-US', { month: 'long' }); // e.g., "September"
+      
+      if (!groups[year]) groups[year] = {};
+      if (!groups[year][month]) groups[year][month] = [];
+      
+      groups[year][month].push(dateObj);
+    });
+    
+    return groups;
+  }, [dates]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-[#FDFEFE] min-h-screen font-sans text-gray-800 pb-24">
+      
+      {/* ========================================== */}
+      {/* 1. HERO SECTION (Reused from Locations)    */}
+      {/* ========================================== */}
+      <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[120px] z-0 bg-[#135D66]">
+        
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+            @keyframes fadeInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+            .animate-fade-left { animation: fadeInLeft 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+            .animate-fade-right { animation: fadeInRight 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+            @keyframes moveCloudContact { 0% { transform: translateX(-20vw); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateX(110vw); opacity: 0; } }
+            .animate-cloud-horizontal { animation: moveCloudContact 40s linear infinite; }
+            @keyframes movePlaneDiag { 0% { transform: translate(-20vw, -5vh) rotate(15deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translate(110vw, 15vh) rotate(15deg); opacity: 0; } }
+            .animate-plane-diagonal { animation: movePlaneDiag 25s linear infinite; }
+            @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-30px); } }
+            @keyframes floatDown { 0%, 100% { transform: translateY(-30px); } 50% { transform: translateY(0); } }
+            .animate-balloon-1 { animation: floatUp 6s ease-in-out infinite; }
+            .animate-balloon-2 { animation: floatDown 7s ease-in-out infinite; }
+          `
+        }} />
+
+        <div className="absolute inset-0 z-0">
+          <Image src="/contact-mountains.png" alt="Mountains Background" fill className="object-cover object-bottom opacity-50 mix-blend-overlay" priority />
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
+        </div>
+
+        <div className="absolute top-[25%] lg:top-[30%] w-full z-10 pointer-events-none">
+          <div className="inline-block animate-cloud-horizontal">
+            <Image src="/Cloud3.png" alt="Cloud" width={350} height={200} className="w-[180px] md:w-[320px] opacity-80" />
+          </div>
+        </div>
+
+        <div className="absolute top-[10%] lg:top-[15%] w-full z-10 pointer-events-none">
+          <div className="inline-block animate-plane-diagonal">
+            <Image src="/plane.png" alt="Airplane" width={300} height={150} className="w-[180px] md:w-[300px] drop-shadow-xl" />
+          </div>
+        </div>
+
+        <div className="absolute top-[10%] right-0 lg:right-5 z-10 pointer-events-none hidden md:block">
+          <div className="relative w-[200px] h-[350px]">
+            <div className="absolute top-0 right-14 animate-balloon-1">
+              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={140} height={190} className="w-[100px] lg:w-[130px] drop-shadow-xl" />
+            </div>
+            <div className="absolute top-32 right-[-10px] animate-balloon-2">
+              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} className="w-[70px] lg:w-[90px] drop-shadow-lg" />
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
+          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+            Upcoming <span className={`${caveat.className} text-[#E59A1D] font-normal`}>Departures</span>
+          </h1>
+          <p className="animate-fade-left font-medium text-white/90 text-sm md:text-lg leading-relaxed max-w-3xl drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+            Join a scheduled group climb or safari. Fixed dates, guaranteed adventures, and amazing new friends.
+          </p>
+        </div>
+      </section>
+
+      {/* ========================================== */}
+      {/* 2. SCHEDULE LISTING SECTION                */}
+      {/* ========================================== */}
+      <section className="relative z-20 -mt-24 mb-16 px-4 md:px-8 max-w-5xl mx-auto">
+        
+        {dates.length === 0 ? (
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-16 text-center">
+            <h3 className="text-2xl font-extrabold text-[#135D66] mb-3">No Upcoming Dates</h3>
+            <p className="text-gray-500">We are currently updating our schedule. Please check back soon or contact us for a private booking!</p>
+          </div>
+        ) : (
+          <div className="space-y-16">
+            {Object.entries(groupedSchedule).map(([year, months]) => (
+              <div key={year} className="space-y-8 animate-fade-in">
+                
+                {/* Year Header */}
+                <h2 className="text-4xl md:text-5xl font-black text-gray-900 border-b-4 border-[#98D80D] inline-block pb-2">
+                  {year}
+                </h2>
+
+                <div className="space-y-12">
+                  {Object.entries(months).map(([month, monthDates]) => (
+                    <div key={month} className="space-y-6">
+                      
+                      {/* Month Header */}
+                      <h3 className="text-2xl font-extrabold text-[#135D66] flex items-center gap-4">
+                        {month} 
+                        <span className="flex-1 h-px bg-gray-200 block"></span>
+                      </h3>
+
+                      {/* Departures Grid/List */}
+                      <div className="space-y-4">
+                        {monthDates.map((d: any) => {
+                          const isSoldOut = d.status === "Sold Out";
+                          const isGuaranteed = d.status === "Guaranteed";
+                          const startDate = new Date(d.startDate);
+                          const endDate = new Date(d.endDate);
+                          const isLowAvailability = !isSoldOut && d.availableSeats <= 3;
+
+                          return (
+                            <div key={d.id} className={`bg-white rounded-2xl border ${isSoldOut ? 'border-gray-200 opacity-75' : 'border-[#135D66]/20 shadow-lg hover:shadow-xl hover:-translate-y-1'} transition-all duration-300 p-4 md:p-6 flex flex-col md:flex-row gap-6 items-start md:items-center`}>
+                              
+                              {/* Left: Start Date Box */}
+                              <div className="flex flex-row md:flex-col items-center justify-center w-full md:w-28 bg-[#F0F9FA] rounded-xl p-3 shrink-0 text-center border border-[#135D66]/10 gap-2 md:gap-0">
+                                <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">{startDate.toLocaleString('en-US', { month: 'short' })}</span>
+                                <span className="text-3xl md:text-4xl font-black text-[#135D66] leading-none">{startDate.getDate()}</span>
+                              </div>
+
+                              {/* Middle: Trip Details */}
+                              <div className="flex-1 space-y-3">
+                                {/* Badges */}
+                                <div className="flex flex-wrap items-center gap-2">
+                                  {d.isFullMoon && (
+                                    <span className="text-[10px] md:text-xs font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                                      <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> Full Moon Summit
+                                    </span>
+                                  )}
+                                  <span className={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-sm ${
+                                    isSoldOut ? 'bg-red-50 text-red-600 border border-red-200' :
+                                    isGuaranteed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                  }`}>
+                                    {d.status}
+                                  </span>
+                                </div>
+
+                                {/* Titles */}
+                                <div>
+                                  <h4 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-tight">
+                                    {d.package?.title}
+                                  </h4>
+                                  {d.title && <p className="text-sm font-bold text-[#E59A1D] mt-0.5">{d.title}</p>}
+                                </div>
+
+                                {/* Date Range & Explore Link */}
+                                <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">
+                                  <span className="flex items-center gap-1.5">
+                                    <svg className="w-4 h-4 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    {startDate.toLocaleDateString()} — {endDate.toLocaleDateString()}
+                                  </span>
+                                  <span className="text-gray-300 hidden md:inline">|</span>
+                                  <Link href={`/packages/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#98D80D] transition-colors flex items-center gap-1 group">
+                                    Explore Trip Details
+                                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                                  </Link>
+                                </div>
+                              </div>
+
+                              {/* Right: Pricing & CTA */}
+                              <div className="w-full md:w-auto flex flex-row md:flex-col items-center md:items-end justify-between md:justify-center border-t md:border-t-0 md:border-l border-gray-100 pt-4 md:pt-0 md:pl-6 shrink-0 gap-4 md:gap-2">
+                                <div className="text-left md:text-right">
+                                  <p className="text-sm font-bold text-gray-400">From</p>
+                                  <p className="text-3xl font-black text-gray-900">${d.price}</p>
+                                  <p className={`text-xs font-bold mt-1 ${isSoldOut ? 'text-red-500' : isLowAvailability ? 'text-orange-500' : 'text-gray-500'}`}>
+                                    {isSoldOut ? '0 Seats Left' : `${d.availableSeats} of ${d.totalSeats} Seats Left`}
+                                  </p>
+                                </div>
+                                
+                                {isSoldOut ? (
+                                  <button disabled className="w-full md:w-auto px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-xl cursor-not-allowed uppercase tracking-wider text-sm">
+                                    Sold Out
+                                  </button>
+                                ) : (
+                                  <Link href={`/book?date=${d.id}&package=${d.package?.slug}`} className="w-full md:w-auto px-8 py-3 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] shadow-lg shadow-[#98D80D]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center">
+                                    Book Now
+                                  </Link>
+                                )}
+                              </div>
+
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+    </div>
+  );
+}

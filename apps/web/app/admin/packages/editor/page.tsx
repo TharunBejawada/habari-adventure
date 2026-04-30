@@ -263,24 +263,94 @@ function PackageEditorForm() {
   };
 
   // --- SAVE LOGIC ---
+  // const handleSave = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setIsSaving(true);
+  //   try {
+  //       // const { id, ...coreData } = coreInfo;
+  //       const coreData = { ...coreInfo };
+  //       const updateIdentifier = coreData.id || editSlug;
+  //       if (!isEditMode) {
+  //       delete (coreData as any).id; 
+  //     } else {
+  //       // If editing, make sure we actually have an ID
+  //       if (!coreData.id) {
+  //          alert("Error: Package ID is missing! Please refresh the page and try again.");
+  //          setIsSaving(false);
+  //          return; 
+  //       }
+  //     }
+  //     const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries };
+  //     const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${updateIdentifier}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
+  //     const method = isEditMode ? "PUT" : "POST";
+      
+  //     const token = localStorage.getItem("adminToken");
+  //     const res = await fetch(url, {
+  //       method, headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+  //       body: JSON.stringify(payload)
+  //     });
+  //     const data = await res.json();
+  //     if (data.status === "success") router.push("/admin/packages");
+  //   } catch (err) {
+  //     alert("Error saving package");
+  //   } finally {
+  //     setIsSaving(false);
+  //   }
+  // };
+  // --- SAVE LOGIC ---
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
+    
     try {
-        const { id, ...coreData } = coreInfo;
-      const payload = { ...coreInfo, quickFacts, whyChoose, itineraryMeta, itineraries };
-      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${id}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
+      const coreData = { ...coreInfo };
+      
+      // 1. Strictly use the database ID
+      const updateIdentifier = coreData.id; 
+      
+      if (!isEditMode) {
+        delete (coreData as any).id; 
+      } else {
+        // If EDITING, strictly require the ID
+        if (!updateIdentifier) {
+           alert("Error: This package is corrupted and has no database ID. Please go back to the packages list, delete this package, and recreate it.");
+           setIsSaving(false);
+           return; 
+        }
+      }
+
+      const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries };
+      
+      const url = isEditMode 
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${updateIdentifier}` 
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
+        
       const method = isEditMode ? "PUT" : "POST";
       
       const token = localStorage.getItem("adminToken");
       const res = await fetch(url, {
-        method, headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        method, 
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${token}` 
+        },
         body: JSON.stringify(payload)
       });
+      
       const data = await res.json();
-      if (data.status === "success") router.push("/admin/packages");
+      
+      if (data.status === "success") {
+        router.push("/admin/packages");
+      } else {
+        if (data.message && data.message.includes("Unique constraint failed on the fields: (`slug`)")) {
+          alert(`The URL slug "${coreData.slug}" is already in use by another package. Please change the title or manually edit the slug to make it unique.`);
+        } else {
+          alert(data.message || "Failed to save package.");
+        }
+      }
     } catch (err) {
-      alert("Error saving package");
+      alert("Error saving package. Please check your connection.");
+      console.error(err);
     } finally {
       setIsSaving(false);
     }
@@ -290,6 +360,16 @@ function PackageEditorForm() {
 
   return (
     <form onSubmit={handleSave} className="space-y-8 max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
+      {/* Back to Dashboard Link */}
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
+          >
+            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
       
       {/* Header Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">

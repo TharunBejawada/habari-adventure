@@ -4,7 +4,11 @@ import authRoutes from "./authRoutes"; // Import the new auth routes
 import userRoutes from "./userRoutes";
 import blogRoutes from "./blogRoutes";
 import packageRoutes from "./packageRoutes";
+import bookingRoutes from "./bookingRoutes";
 import crewRoutes from "./crewRoutes";
+import locationRoutes from "./locationRoutes";
+import upcomingDateRoutes from "./upcomingDateRoutes"
+import pricingRoutes from "./pricingRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
@@ -27,6 +31,14 @@ router.use("/blogs", blogRoutes);
 router.use("/packages", packageRoutes);
 
 router.use("/crew", crewRoutes);
+
+router.use("/bookings", bookingRoutes);
+
+router.use("/locations", locationRoutes);
+
+router.use("/upcoming-dates", upcomingDateRoutes);
+
+router.use("/pricing", pricingRoutes);
 
 router.post("/upload", upload.single("asset"), uploadFile);
 

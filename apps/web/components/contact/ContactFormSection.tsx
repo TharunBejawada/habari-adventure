@@ -11,6 +11,7 @@ const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 export default function ContactFormSection() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
   // Form State Updated for Client Feedback
@@ -62,13 +63,40 @@ export default function ContactFormSection() {
     setIsCaptchaVerified(!!value); // If value exists, it's verified
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isCaptchaVerified) return; // Failsafe
+    if (!isCaptchaVerified) return; 
     
-    // Process form submission here (e.g., API call)
-    console.log("Submitting:", formData);
-    alert("Quote request sent! We will get back to you shortly.");
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        alert("Quote request sent successfully! We will get back to you shortly.");
+        // Clear the form on success
+        setFormData({
+          firstName: "", lastName: "", email: "", phone: "",
+          monthYear: "", length: "", groupSize: "", include: "", message: ""
+        });
+        // Optional: Reset captcha here if you have a ref to it
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Failed to connect to the server. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Check if required fields are filled to enable button (excludes lastName and phone)
@@ -296,19 +324,26 @@ export default function ContactFormSection() {
                 </p>
               </div>
 
-              {/* Submit Button (Disabled until form is valid) */}
+              {/* Submit Button (Disabled until form is valid or while submitting) */}
               <div className="pt-2">
                 <button 
                   type="submit"
-                  disabled={!isFormValid}
-                  className={`font-bold text-lg py-4 px-10 rounded-full transition-all shadow-lg w-full md:w-auto
-                    ${isFormValid 
+                  disabled={!isFormValid || isSubmitting}
+                  className={`font-bold text-lg py-4 px-10 rounded-full transition-all shadow-lg w-full md:w-auto flex items-center justify-center gap-2
+                    ${isFormValid && !isSubmitting
                       ? "bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] hover:-translate-y-1 shadow-[#98D80D]/20 cursor-pointer" 
                       : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                     }
                   `}
                 >
-                  Request Trip Quote
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
+                      Sending...
+                    </>
+                  ) : (
+                    "Request Trip Quote"
+                  )}
                 </button>
               </div>
 

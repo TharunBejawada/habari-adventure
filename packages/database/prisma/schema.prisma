@@ -57,6 +57,9 @@ model Package {
   isPublished     Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  upcomingDates UpcomingDate[]
+  pricing       PackagePricing?
 }
 
 model Blog {
@@ -153,4 +156,68 @@ model CrewMember {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   modifiedBy    String?
+}
+
+model Booking {
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String?  // Optional
+  email       String
+  phone       String?  // Optional
+  monthYear   String
+  length      String   // Stored as string or int, string is safer for form inputs
+  groupSize   String
+  include     String
+  message     String
+  status      String   @default("New") // E.g., "New", "Contacted", "Closed"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Location {
+  id              String    @id @default(uuid())
+  slug            String    @unique
+  title           String
+  bannerImage     String?
+  overviewText    String    // Rich text describing the location
+  youtubeVideoUrl String?   // Optional YouTube embed or watch link
+  isPublished     Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Optional for later: If you want to link packages directly to this model
+  // packages     Package[] 
+}
+
+model UpcomingDate {
+  id             String   @id @default(uuid())
+  packageId      String
+  package        Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  title          String?  
+  startDate      DateTime
+  endDate        DateTime
+  price          Float    
+  isFullMoon     Boolean  @default(false)
+  
+  totalSeats     Int      @default(12)
+  availableSeats Int      @default(12)
+  status         String   @default("Scheduled") 
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model PackagePricing {
+  id            String   @id @default(uuid())
+  packageId     String   @unique // @unique enforces the 1-to-1 rule
+  package       Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  tier1         Float    // 1 Person
+  tier2         Float    // 2-4 People
+  tier3         Float    // 5-9 People
+  tier4         Float    // 10+ People
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }

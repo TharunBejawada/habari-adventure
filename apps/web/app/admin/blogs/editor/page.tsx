@@ -288,6 +288,16 @@ function EditorForm() {
 
   return (
     <form onSubmit={handleSave} className="space-y-8 max-w-[1400px] mx-auto">
+      {/* Back to Dashboard Link */}
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
+          >
+            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
       
       {/* Header Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
@@ -645,7 +655,7 @@ function EditorForm() {
 // Wrap the entire component in a Suspense boundary for Next.js App Router rules
 export default function BlogEditorPage() {
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <Suspense fallback={
         <div className="flex flex-col items-center justify-center pt-32 text-gray-500">
            <div className="w-12 h-12 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-4"></div>

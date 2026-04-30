@@ -74,11 +74,21 @@ export default function PackagesAdminPage() {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-8 min-h-screen bg-gray-50">
+    <div className="max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-8 min-h-screen">
       
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <div>
+          {/* Back to Dashboard Link */}
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
+          >
+            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#135D66]">Manage Packages</h1>
           <p className="text-gray-500 font-medium mt-1">Create, edit, and manage your adventure itineraries.</p>
         </div>

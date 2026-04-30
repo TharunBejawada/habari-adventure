@@ -33,6 +33,14 @@ const STATIC_FILTERS = [
   }
 ];
 
+// Helper to extract YouTube ID for iframe embed
+const getYouTubeEmbedUrl = (url: string) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}?rel=0` : null;
+};
+
 export default function LocationLandingPage() {
   const params = useParams();
   
@@ -41,6 +49,7 @@ export default function LocationLandingPage() {
   const locationSlug = decodedUrl.replace(/-/g, ' '); 
 
   const [packages, setPackages] = useState<any[]>([]);
+  const [locationData, setLocationData] = useState<any>(null); // Added state for location overview
   const [isLoading, setIsLoading] = useState(true);
 
   // Search, Pagination & Filter State
@@ -51,14 +60,19 @@ export default function LocationLandingPage() {
 
   // --- 1. FETCH DATA ---
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/location/${encodeURIComponent(locationSlug)}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") setPackages(data.data);
-      })
-      .catch(err => console.error("Failed to fetch packages", err))
-      .finally(() => setIsLoading(false));
-  }, [locationSlug]);
+    setIsLoading(true);
+    // Fetch both packages and the location metadata simultaneously
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/location/${encodeURIComponent(locationSlug)}`).then(res => res.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${params.location}`).then(res => res.json())
+    ])
+    .then(([packData, locData]) => {
+      if (packData.status === "success") setPackages(packData.data);
+      if (locData.status === "success") setLocationData(locData.data);
+    })
+    .catch(err => console.error("Failed to fetch data", err))
+    .finally(() => setIsLoading(false));
+  }, [locationSlug, params.location]);
 
   // --- 2. SMART PARSING FOR RANGES ---
   const checkRangeFilter = (category: string, selectedValues: string[], factDesc: string) => {
@@ -153,7 +167,7 @@ export default function LocationLandingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#F51A43] rounded-full animate-spin mb-6"></div>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
       </div>
     );
   }
@@ -225,6 +239,52 @@ export default function LocationLandingPage() {
       </section>
 
       {/* ========================================== */}
+      {/* 1.5 LOCATION OVERVIEW (NEW 80% BOX)        */}
+      {/* ========================================== */}
+      {locationData && (locationData.overviewText || locationData.bannerImage || locationData.youtubeVideoUrl) && (
+        <section className="relative z-20 -mt-24 mb-16 px-4">
+          <div className="w-[95%] md:w-[80%] max-w-6xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
+            
+            {/* Media Left Half */}
+            {(locationData.bannerImage || locationData.youtubeVideoUrl) && (
+              <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-[400px] bg-gray-100 shrink-0">
+                {locationData.youtubeVideoUrl ? (
+                  <iframe 
+                    className="absolute inset-0 w-full h-full object-cover"
+                    src={getYouTubeEmbedUrl(locationData.youtubeVideoUrl) || ""}
+                    title={`${locationData.title || displayTitle} Video`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  ></iframe>
+                ) : (
+                  <Image src={locationData.bannerImage} alt={locationData.title || displayTitle} fill className="object-cover" unoptimized />
+                )}
+              </div>
+            )}
+
+            {/* Text Right Half */}
+            {/* ADDED min-w-0 here to prevent flexbox from overflowing its grid constraints */}
+            <div className={`min-w-0 w-full ${(locationData.bannerImage || locationData.youtubeVideoUrl) ? 'lg:w-1/2' : 'w-full'} p-8 md:p-12 flex flex-col justify-center`}>
+              <h2 className="text-3xl font-extrabold text-[#135D66] mb-4 truncate">
+                {locationData.title || displayTitle}
+              </h2>
+              
+              {/* ADDED break-words and nested element limits ([&_img]:max-w-full) so rich text respects boundaries */}
+              <div 
+                className="text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
+                dangerouslySetInnerHTML={{ 
+                  __html: locationData.overviewText
+                    .replace(/<ul>/g, '<ul style="list-style-type: disc; padding-left: 1.5rem;">')
+                    .replace(/<ol>/g, '<ol style="list-style-type: decimal; padding-left: 1.5rem;">') 
+                }}
+              />
+            </div>
+
+          </div>
+        </section>
+      )}
+
+      {/* ========================================== */}
       {/* 2. MAIN CONTENT (FILTERS & GRID)           */}
       {/* ========================================== */}
       <section className="py-16">
@@ -238,7 +298,7 @@ export default function LocationLandingPage() {
                 {Object.keys(activeFilters).length > 0 && (
                   <button 
                     onClick={() => { setActiveFilters({}); setCurrentPage(1); }}
-                    className="text-xs font-bold text-[#F51A43] hover:underline"
+                    className="text-xs font-bold text-[#98D80D] hover:underline"
                   >
                     Clear All
                   </button>
@@ -339,7 +399,7 @@ export default function LocationLandingPage() {
                       </div>
                       
                       <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#F51A43] transition-colors">{pkg.title}</h3>
+                        <h3 className="text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#98D80D] transition-colors">{pkg.title}</h3>
                         {pkg.badgeText && (
                           <p className="text-sm font-bold text-[#E59A1D] mb-3">{pkg.badgeText}</p>
                         )}
@@ -349,7 +409,7 @@ export default function LocationLandingPage() {
 </p>
                         
                         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#135D66] group-hover:text-[#F51A43] transition-colors flex items-center gap-1">
+                          <span className="text-sm font-bold text-[#135D66] group-hover:text-[#98D80D] transition-colors flex items-center gap-1">
                             Explore Route 
                             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                           </span>

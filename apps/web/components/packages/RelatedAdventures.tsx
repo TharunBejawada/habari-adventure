@@ -60,13 +60,13 @@ export default function RelatedAdventures({ currentCategory }: { currentCategory
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
-              {title.split(" ")[0]} {title.split(" ")[1]} <span className="text-[#F51A43]">{title.split(" ")[2]}</span>
+              {title.split(" ")[0]} {title.split(" ")[1]} <span className="text-[#98D80D]">{title.split(" ")[2]}</span>
             </h2>
             <p className="text-gray-600 text-lg">
               {subtitle}
             </p>
           </div>
-          <button className="bg-[#F51A43] hover:bg-[#d41538] text-white font-bold py-3 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
+          <button className="bg-[#98D80D] hover:bg-[#d41538] text-white font-bold py-3 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
             {buttonText}
           </button>
         </div>
@@ -77,7 +77,7 @@ export default function RelatedAdventures({ currentCategory }: { currentCategory
               <div className="relative w-full h-[220px] rounded-xl overflow-hidden mb-6">
                 <Image src={item.image} alt={item.title} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-700" />
               </div>
-              <h3 className="text-xl font-bold text-[#F51A43] mb-2 group-hover:text-[#d41538] transition-colors">{item.title}</h3>
+              <h3 className="text-xl font-bold text-[#98D80D] mb-2 group-hover:text-[#d41538] transition-colors">{item.title}</h3>
               <p className="text-gray-900 font-medium mb-4 leading-snug">{item.desc}</p>
               <ul className="space-y-1.5">
                 {item.bullets.map((bullet, bIdx) => (

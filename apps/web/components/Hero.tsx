@@ -102,7 +102,7 @@ export default function Hero() {
 
       {/* --- HERO SECTION --- */}
       {/* Background pulls underneath the header with -mt-[130px] */}
-      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[130px] rounded-b-[40px] shadow-2xl min-h-[90vh] flex flex-col justify-center">
+      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[130px] rounded-b-[40px] shadow-2xl">
         
   {/* Animated Clouds */}
   <div className="absolute top-[180px] w-full z-10 pointer-events-none opacity-80">
@@ -131,7 +131,7 @@ export default function Hero() {
   <div className="max-w-[1400px] mx-auto w-[96%] relative z-20 flex flex-col lg:flex-row items-center justify-between gap-12">
     
     {/* LEFT SIDE: Text & Actions (Added dark overlay, padding, rounded corners, and vertical center support) */}
-    <div className="max-w-[640px] w-full lg:w-[50%] flex flex-col items-start justify-center relative z-30 bg-[rgba(0,0,0,0.35)] p-6 sm:p-8 lg:p-10 rounded-3xl backdrop-blur-sm">
+    <div className="max-w-[640px] w-full lg:w-[50%] flex flex-col items-start justify-center relative z-30 p-6 sm:p-8 lg:p-10 rounded-3xl">
       
       <h2 className={`${caveat.className} text-white text-4xl md:text-5xl lg:text-6xl mb-2 tracking-wide`}>
         Tanzania Safari Tours
@@ -148,12 +148,9 @@ export default function Hero() {
         Explore Serengeti wildlife and conquer Kilimanjaro with expertly guided Tanzania safari and climbing adventures designed for unforgettable journeys. Whether you're planning your first wildlife safari Tanzania or preparing for a life-changing Kilimanjaro climbing expedition, we ensure every detail is seamless.
       </p>
 
-      {/* <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20">
+      <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20">
         Start Your Adventure
-      </Link> */}
-      <Link href="/contact" className="btn-primary">
-  Start Your Adventure
-</Link>
+      </Link>
 
       {/* Trip Category Finder (Stacks on mobile, inline on desktop) */}
       <div className="mt-12 bg-white rounded-3xl md:rounded-full p-4 md:p-3 w-full flex flex-col md:flex-row items-center gap-4 md:gap-2 shadow-2xl">

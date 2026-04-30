@@ -48,15 +48,12 @@ export default function BottomCTA() {
             </p>
           </div>
 
-          {/* <Link 
+          <Link 
             href="/contact" 
             className="inline-block bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20 text-center"
           >
             Start your Tanzania safari tours today
-          </Link> */}
-          <Link href="/contact" className="btn-primary">
-  Start your Tanzania safari tours today
-</Link>
+          </Link>
         </div>
 
         {/* --- RIGHT SIDE: Polaroid Collage --- */}

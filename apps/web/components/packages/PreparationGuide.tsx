@@ -36,7 +36,7 @@ export default function PreparationGuide() {
         {/* Header Section */}
         <motion.div className="mb-16" variants={itemVariants}>
           <h2 className="text-[2.75rem] leading-tight font-bold text-black mb-3 tracking-tight">
-            Preparation <span className="text-[#F51A43]">Guide</span>
+            Preparation <span className="text-[#98D80D]">Guide</span>
           </h2>
           <p className="text-black text-[1.1rem]">
             Train smart, pack right, and understand altitude for a safer, happier summit push.
@@ -55,7 +55,7 @@ export default function PreparationGuide() {
                 alt="Fitness and Training" 
                 className="w-16 h-16 object-contain"
               />
-              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Fitness & Training</h3>
+              <h3 className="text-[1.35rem] font-medium text-[#98D80D] pb-1">Fitness & Training</h3>
             </div>
             <div className="space-y-0 text-black text-[15px] leading-[1.8]">
               <p>8–12 weeks of progressive hikes;</p>
@@ -76,7 +76,7 @@ export default function PreparationGuide() {
                 alt="Altitude and Health" 
                 className="w-16 h-16 object-contain"
               />
-              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Altitude & Health</h3>
+              <h3 className="text-[1.35rem] font-medium text-[#98D80D] pb-1">Altitude & Health</h3>
             </div>
             <div className="space-y-0 text-black text-[15px] leading-[1.8]">
               <p>Acclimatize by climbing high,</p>
@@ -97,14 +97,14 @@ export default function PreparationGuide() {
                 alt="Packing Essentials" 
                 className="w-16 h-16 object-contain"
               />
-              <h3 className="text-[1.35rem] font-medium text-[#F51A43] pb-1">Packing Essentials</h3>
+              <h3 className="text-[1.35rem] font-medium text-[#98D80D] pb-1">Packing Essentials</h3>
             </div>
             <div className="space-y-0 text-black text-[15px] leading-[1.8]">
               <p>Broken-in boots, camp shoes,</p>
               <p>trekking poles</p>
               <p>Layering: base, mid, waterproof shell;</p>
               <p>warm hat & gloves</p>
-              <p>0 to -10°C sleeping bag (<span className="text-[#F51A43]">rental available</span>)</p>
+              <p>0 to -10°C sleeping bag (<span className="text-[#98D80D]">rental available</span>)</p>
               <p>Daypack 25–35L + rain cover;</p>
               <p>2–3L hydration</p>
               <p>Headlamp, sunglasses (UV), sunscreen,</p>
@@ -120,7 +120,7 @@ export default function PreparationGuide() {
           className="mt-16 pt-4"
         >
           <p className="text-black text-lg">
-            <span className="text-[#F51A43]">Need rentals?</span> Reserve sleeping bags, down jackets, and poles in advance.
+            <span className="text-[#98D80D]">Need rentals?</span> Reserve sleeping bags, down jackets, and poles in advance.
           </p>
         </motion.div>
 

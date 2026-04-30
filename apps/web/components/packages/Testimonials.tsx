@@ -68,7 +68,7 @@ export default function Testimonials() {
           viewport={{ once: true, margin: "-100px" }}
           variants={containerRightVariants}
         >
-          <motion.p variants={itemVariants} className="text-[#F51A43] font-bold text-[11px] uppercase tracking-wider mb-4">
+          <motion.p variants={itemVariants} className="text-[#98D80D] font-bold text-[11px] uppercase tracking-wider mb-4">
             What Our Travellers Say
           </motion.p>
           
@@ -81,9 +81,9 @@ export default function Testimonials() {
           </motion.p>
 
           <motion.div variants={itemVariants} className="mb-10">
-            <p className="text-[#F51A43] font-medium text-xl mb-1">~ Sarah b</p>
+            <p className="text-[#98D80D] font-medium text-xl mb-1">~ Sarah b</p>
             <p className="text-black text-[13px] mb-3">Date of experience: February 2024</p>
-            <a href="#" className="text-black text-[13px] font-medium hover:text-[#F51A43] transition-colors flex items-center gap-1">
+            <a href="#" className="text-black text-[13px] font-medium hover:text-[#98D80D] transition-colors flex items-center gap-1">
               Read full testimonial 
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
             </a>

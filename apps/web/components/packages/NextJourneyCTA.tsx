@@ -35,7 +35,7 @@ export default function NextJourneyCTA() {
 
   return (
     // Added pt-12 to give a little breathing room at the top, removed min-h entirely
-    <section className="relative pt-12 bg-[#FAFAFA] border-b-[6px] border-[#F51A43] overflow-hidden flex items-end">
+    <section className="relative pt-12 bg-[#FAFAFA] border-b-[6px] border-[#98D80D] overflow-hidden flex items-end">
     
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10 w-full">
         
@@ -71,7 +71,7 @@ export default function NextJourneyCTA() {
           >
             <motion.h2 
               variants={textVariants}
-              className="text-3xl md:text-[2.5rem] font-bold text-[#F51A43] mb-4 leading-[1.15] tracking-tight"
+              className="text-3xl md:text-[2.5rem] font-bold text-[#98D80D] mb-4 leading-[1.15] tracking-tight"
             >
               Excited to start your <br className="hidden lg:block" /> next journey?
             </motion.h2>
@@ -117,10 +117,10 @@ export default function NextJourneyCTA() {
               whileTap={{ scale: 0.95 }}
               className="group flex flex-col items-center gap-3 cursor-pointer"
             >
-              <div className="w-[85px] h-[85px] rounded-full border-[2.5px] border-[#333] flex items-center justify-center text-[#333] group-hover:border-[#F51A43] group-hover:text-[#F51A43] transition-colors duration-300 bg-transparent">
+              <div className="w-[85px] h-[85px] rounded-full border-[2.5px] border-[#333] flex items-center justify-center text-[#333] group-hover:border-[#98D80D] group-hover:text-[#98D80D] transition-colors duration-300 bg-transparent">
                 <FiMail className="w-8 h-8" strokeWidth={1.5} />
               </div>
-              <span className="font-medium text-black text-[15px] leading-tight text-center group-hover:text-[#F51A43] transition-colors">
+              <span className="font-medium text-black text-[15px] leading-tight text-center group-hover:text-[#98D80D] transition-colors">
                 Send an<br/>Enquiry
               </span>
             </motion.a>

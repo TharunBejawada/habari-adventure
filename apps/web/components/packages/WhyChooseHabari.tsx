@@ -74,7 +74,7 @@ export default function WhyChooseHabari() {
           className="mb-12 lg:mb-16" // Slightly reduced margin to bring text closer to title
         >
           <h2 className="text-4xl md:text-[3rem] font-bold text-black tracking-tight">
-            Why Choose <span className="text-[#F51A43]">Habari Adventure?</span>
+            Why Choose <span className="text-[#98D80D]">Habari Adventure?</span>
           </h2>
         </motion.div>
 
@@ -92,7 +92,7 @@ export default function WhyChooseHabari() {
           >
             {reasons.map((reason, idx) => (
               <motion.div key={idx} variants={itemVariants} className="max-w-xs">
-                <h4 className="text-[1.3rem] font-medium text-[#F51A43] mb-1">
+                <h4 className="text-[1.3rem] font-medium text-[#98D80D] mb-1">
                   {reason.title}
                 </h4>
                 <p className="text-black text-[15px] font-normal leading-snug">

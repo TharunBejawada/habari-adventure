@@ -1,5 +1,5 @@
 /* apps/web/app/globals.css */
-/* @import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
   --color-adventure-50: #f0fdf4;
@@ -32,9 +32,9 @@
   body {
     @apply antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100;
   }
-} */
+}
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -71,10 +71,10 @@
     @apply antialiased bg-[#FDFEFE] text-gray-900;
   }
 
-  /* h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: 'Playfair Display', serif !important;
     color: #111827;
-  } */
+  }
   
   h1, h2 {
     font-family: 'Playfair Display', serif !important;
@@ -104,9 +104,9 @@
     margin-bottom: 16px !important;
   }
 
-  /* p {
+  p {
     margin-bottom: 20px !important;
-  } */
+  }
 
   small, figcaption {
     font-size: 13px !important;
@@ -115,7 +115,7 @@
   }
 
   
-  /* button[class~="bg-[#135D66]"], a[class~="bg-[#135D66]"] {
+  button[class~="bg-[#135D66]"], a[class~="bg-[#135D66]"] {
     background-color: #2C5F2E !important;
     border-radius: 6px !important;
     padding: 14px 32px !important;
@@ -139,7 +139,7 @@
     padding: 14px 32px !important;
     font-weight: 600 !important;
     letter-spacing: 0.04em !important;
-  } */
+  }
 }
 
 @layer utilities {
@@ -164,27 +164,22 @@
     @apply py-16 lg:py-[100px] w-full;
   }
 
-  /* 2. Global Container Width
-    Locks max-width to 1180px, centers it, and adds safe mobile padding
-  */
+  
   .container-global {
     @apply max-w-[1180px] mx-auto w-full px-4 sm:px-6;
   }
 
   @layer components {
-  /* Primary CTA Button */
   .btn-primary {
     @apply inline-flex items-center justify-center bg-[#2C5F2E] hover:bg-[#37753a] text-white font-semibold text-base py-[14px] px-[32px] rounded-[6px] transition-all duration-300 hover:shadow-md text-center;
   }
 
-  /* Secondary / Outline Button */
   .btn-secondary {
     @apply inline-flex items-center justify-center bg-transparent border-2 border-[#2C5F2E] text-[#2C5F2E] hover:bg-[#2C5F2E] hover:text-white font-semibold text-base py-[14px] px-[32px] rounded-[6px] transition-all duration-300 hover:shadow-md text-center;
   }
 
-  /* Section Labels (Brand Green + Uppercase) */
   .label-primary {
     @apply text-[#2C5F2E] uppercase font-bold tracking-wider;
   }
 }
-}
+} */

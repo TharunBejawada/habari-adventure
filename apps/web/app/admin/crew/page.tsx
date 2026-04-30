@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { FaPlus, FaEdit, FaTrash, FaImage, FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
+import Link from "next/link";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -160,6 +161,16 @@ export default function AdminCrewDashboard() {
     <div className="p-6 max-w-7xl mx-auto font-sans">
       <div className="flex justify-between items-center mb-8">
         <div>
+          {/* Back to Dashboard Link */}
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
+          >
+            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
           <h1 className="text-3xl font-extrabold text-[#135D66]">Manage 'Our Crew'</h1>
           <p className="text-gray-500 mt-1">Configure banners, teams, and individual crew members.</p>
         </div>

@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link"; // Added for the Book Now button
 
 import UpcomingDates from "../../../components/packages/UpcomingDates";
 import PreparationGuide from "../../../components/packages/PreparationGuide";
@@ -18,6 +19,7 @@ export default function PackageLandingPage() {
   const slug = params.slug as string;
 
   const [pkg, setPkg] = useState<any>(null);
+  const [pricing, setPricing] = useState<any>(null); // NEW: State for Pricing
   const [isLoading, setIsLoading] = useState(true);
   
   // Interaction State
@@ -28,16 +30,26 @@ export default function PackageLandingPage() {
   // --- FETCH DATA ---
   useEffect(() => {
     if (!slug) return;
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${slug}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success" && data.data.isPublished) {
-          setPkg(data.data);
+    
+    // Fetch both the Package and the Pricing list concurrently
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${slug}`).then(res => res.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pricing`).then(res => res.json())
+    ])
+      .then(([pkgData, pricingData]) => {
+        if (pkgData.status === "success" && pkgData.data.isPublished) {
+          setPkg(pkgData.data);
+          
+          // Find the specific pricing for this package
+          if (pricingData.status === "success") {
+            const matchedPricing = pricingData.data.find((p: any) => p.packageId === pkgData.data.id);
+            setPricing(matchedPricing || null);
+          }
         } else {
           router.push("/packages");
         }
       })
-      .catch(err => console.error("Failed to fetch package", err))
+      .catch(err => console.error("Failed to fetch data", err))
       .finally(() => setIsLoading(false));
   }, [slug, router]);
 
@@ -54,7 +66,7 @@ export default function PackageLandingPage() {
 
     document.querySelectorAll(".reveal-on-scroll").forEach(el => observer.observe(el));
     return () => observer.disconnect();
-  }, [isLoading, pkg, activeVariantIdx]);
+  }, [isLoading, pkg, activeVariantIdx, pricing]); // Added pricing as a dependency
 
   // --- HORIZONTAL SCROLL FOR TABS ---
   const scrollTabs = (direction: 'left' | 'right') => {
@@ -67,8 +79,8 @@ export default function PackageLandingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#F51A43] rounded-full animate-spin mb-6"></div>
-        <p className="text-[#F51A43] font-bold text-xl animate-pulse">Preparing your adventure...</p>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
+        <p className="text-[#98D80D] font-bold text-xl animate-pulse">Preparing your adventure...</p>
       </div>
     );
   }
@@ -102,6 +114,7 @@ export default function PackageLandingPage() {
         .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
         .delay-100 { transition-delay: 100ms; }
         .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
         
         /* 1. FORCE HERO TEXT WRAPPING TO PREVENT OVERFLOW */
         .rte-content { word-break: break-word; overflow-wrap: break-word; max-width: 100%; }
@@ -121,18 +134,17 @@ export default function PackageLandingPage() {
       <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
-  <Image 
-    src={pkg.bannerImage} 
-    alt={pkg.title} 
-    fill 
-    unoptimized 
-    className="object-fill" 
-    priority 
-  />
-  <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
-  {/* <div className="absolute inset-0 bg-black/20" /> */}
-  <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
-</div>
+            <Image 
+              src={pkg.bannerImage} 
+              alt={pkg.title} 
+              fill 
+              unoptimized 
+              className="object-fill" 
+              priority 
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+            <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
+          </div>
         ) : (
           <div className="absolute inset-0 z-0 bg-gradient-to-br from-gray-900 to-gray-800" />
         )}
@@ -146,7 +158,7 @@ export default function PackageLandingPage() {
             
             {pkg.badgeText && (
               <h3 className="text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
-                <span className="text-[#F51A43]">Kilimanjaro's</span> {pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}
+                <span className="text-[#98D80D]">Kilimanjaro's</span> {pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}
               </h3>
             )}
 
@@ -157,7 +169,12 @@ export default function PackageLandingPage() {
             />
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="bg-[#F51A43] hover:bg-[#d41538] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
+              <button 
+                onClick={() => {
+                  document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="bg-[#98D80D] hover:bg-[#d41538] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
+              >
                 See Dates & Prices
               </button>
               
@@ -172,7 +189,7 @@ export default function PackageLandingPage() {
       </section>
 
       {/* ========================================== */}
-      {/* 2. QUICK FACTS (Reduced Padding)           */}
+      {/* 2. QUICK FACTS                             */}
       {/* ========================================== */}
       {pkg.quickFacts && (
         <section className="py-12 lg:py-20 bg-white border-b border-gray-100 overflow-hidden">
@@ -180,7 +197,7 @@ export default function PackageLandingPage() {
             
             <div className="w-full lg:w-3/5 reveal-on-scroll">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                Quick <span className="text-[#F51A43]">Facts</span>
+                Quick <span className="text-[#98D80D]">Facts</span>
               </h2>
               <div 
                 className="text-gray-600 text-lg mb-10 rte-content" 
@@ -196,7 +213,7 @@ export default function PackageLandingPage() {
                       </div>
                     )}
                     <div>
-                      <h4 className="font-bold text-[#F51A43] text-lg mb-1">{fact.title}</h4>
+                      <h4 className="font-bold text-[#98D80D] text-lg mb-1">{fact.title}</h4>
                       <p className="text-gray-800 font-medium text-sm sm:text-base leading-snug">{fact.desc}</p>
                     </div>
                   </div>
@@ -217,7 +234,7 @@ export default function PackageLandingPage() {
       )}
 
       {/* ========================================== */}
-      {/* 3. WHY CHOOSE THIS ROUTE (Reduced Padding) */}
+      {/* 3. WHY CHOOSE THIS ROUTE                   */}
       {/* ========================================== */}
       {pkg.whyChoose && (
         <section className="py-12 lg:py-20 bg-white border-b border-gray-100 overflow-hidden">
@@ -226,7 +243,7 @@ export default function PackageLandingPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal-on-scroll">
               <div>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                  Why Choose <span className="text-[#F51A43]">{pkg.title.split(" ")[0]}</span>
+                  Why Choose <span className="text-[#98D80D]">{pkg.title.split(" ")[0]}</span>
                 </h2>
                 <div className="text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description }} />
               </div>
@@ -242,7 +259,7 @@ export default function PackageLandingPage() {
               <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-10">
                 {pkg.whyChoose.items?.map((item: any, idx: number) => (
                   <div key={idx} className={`reveal-on-scroll delay-${(idx % 3) * 100}`}>
-                    <h4 className="text-xl font-bold text-[#F51A43] mb-2">{item.title}</h4>
+                    <h4 className="text-xl font-bold text-[#98D80D] mb-2">{item.title}</h4>
                     <p className="text-gray-700 leading-relaxed text-lg">{item.desc}</p>
                   </div>
                 ))}
@@ -284,13 +301,13 @@ export default function PackageLandingPage() {
               )}
             </div>
 
-            {/* 4. SCROLLABLE VARIANT TABS */}
+            {/* SCROLLABLE VARIANT TABS */}
             {pkg.itineraries.length > 1 && (
               <div className="relative flex items-center mb-12 reveal-on-scroll group">
                 
                 {/* Left Arrow (Shows if > 3 tabs) */}
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#F51A43] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                   </button>
                 )}
@@ -303,7 +320,7 @@ export default function PackageLandingPage() {
                       onClick={() => setActiveVariantIdx(idx)}
                       className={`px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap shrink-0 ${
                         activeVariantIdx === idx 
-                          ? "bg-[#F51A43] text-white shadow-lg" 
+                          ? "bg-[#98D80D] text-white shadow-lg" 
                           : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:text-gray-900"
                       }`}
                     >
@@ -314,25 +331,25 @@ export default function PackageLandingPage() {
 
                 {/* Right Arrow (Shows if > 3 tabs) */}
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#F51A43] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 )}
               </div>
             )}
 
-            {/* NEW: Centered Image spanning the gap between tabs and the timeline */}
-      {activeVariant?.image && (
-        <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
-          <Image 
-            src={activeVariant.image} 
-            alt={activeVariant.tabName || "Itinerary image"} 
-            fill 
-            unoptimized 
-            className="object-fill" 
-          />
-        </div>
-      )}
+            {/* Centered Image */}
+            {activeVariant?.image && (
+              <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
+                <Image 
+                  src={activeVariant.image} 
+                  alt={activeVariant.tabName || "Itinerary image"} 
+                  fill 
+                  unoptimized 
+                  className="object-fill" 
+                />
+              </div>
+            )}
 
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
               
@@ -342,11 +359,11 @@ export default function PackageLandingPage() {
                   {activeVariant?.days.map((day: any, idx: number) => (
                     <div key={idx} className={`relative pl-8 md:pl-12 reveal-on-scroll delay-${(idx % 5) * 100}`}>
                       <div className="absolute left-[7px] top-3 bottom-[-40px] w-[2px] bg-gray-200 last:hidden"></div>
-                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#F51A43] rounded-full z-10"></div>
+                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#98D80D] rounded-full z-10"></div>
 
                       <div>
                         <div className="flex flex-wrap items-baseline gap-3 mb-2">
-                          <span className="text-[#F51A43] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
+                          <span className="text-[#98D80D] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
                           <h4 className="text-gray-900 font-bold text-lg md:text-xl uppercase tracking-wide">{day.heading}</h4>
                         </div>
                         
@@ -354,7 +371,7 @@ export default function PackageLandingPage() {
                         
                         {day.timeTaken && (
                           <div className="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                            <svg className="w-4 h-4 text-[#F51A43]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <svg className="w-4 h-4 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             {day.timeTaken}
                           </div>
                         )}
@@ -368,7 +385,7 @@ export default function PackageLandingPage() {
               <div className="w-full lg:w-2/5">
                 <div className="sticky top-32 space-y-10 reveal-on-scroll delay-200">
                   
-                  {/* 3. INCLUDED FIX: Flex alignment & Green Checkmarks */}
+                  {/* INCLUDED FIX */}
                   {pkg.itineraryMeta?.included?.length > 0 && pkg.itineraryMeta.included[0] !== "" && (
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-6">What's Included</h3>
@@ -385,7 +402,7 @@ export default function PackageLandingPage() {
                     </div>
                   )}
 
-                  {/* 3. NOT INCLUDED FIX: Flex alignment & Red Crosses */}
+                  {/* NOT INCLUDED FIX */}
                   {pkg.itineraryMeta?.notIncluded?.length > 0 && pkg.itineraryMeta.notIncluded[0] !== "" && (
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-6">Not Included</h3>
@@ -406,6 +423,87 @@ export default function PackageLandingPage() {
               </div>
 
             </div>
+          </div>
+        </section>
+      )}
+
+      {/* ========================================== */}
+      {/* 5. PRICING SECTION (NEW)                   */}
+      {/* ========================================== */}
+      {pricing && (
+        <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100 scroll-mt-24">
+          <div className="max-w-7xl mx-auto px-6 sm:px-12">
+            
+            <div className="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
+              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
+                Pricing & <span className="text-[#98D80D]">Group Sizes</span>
+              </h2>
+              <p className="text-gray-600 text-lg">
+                Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              
+              {/* Tier 1 */}
+              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll">
+                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Solo Traveler</h4>
+                <p className="text-sm text-gray-400 font-medium mb-6">1 Person</p>
+                <p className="text-4xl font-black text-gray-900 mb-2">${pricing.tier1}</p>
+                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              </div>
+
+              {/* Tier 2 */}
+              <div className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
+                  Most Popular
+                </div>
+                <div className="w-16 h-16 mx-auto bg-[#F0F9FA] rounded-full flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-[#135D66] uppercase tracking-widest mb-2">Small Group</h4>
+                <p className="text-sm text-gray-500 font-medium mb-6">2 to 4 People</p>
+                <p className="text-4xl font-black text-gray-900 mb-2">${pricing.tier2}</p>
+                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              </div>
+
+              {/* Tier 3 */}
+              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200">
+                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Medium Group</h4>
+                <p className="text-sm text-gray-400 font-medium mb-6">5 to 9 People</p>
+                <p className="text-4xl font-black text-gray-900 mb-2">${pricing.tier3}</p>
+                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              </div>
+
+              {/* Tier 4 */}
+              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300">
+                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                </div>
+                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Large Group</h4>
+                <p className="text-sm text-gray-400 font-medium mb-6">10+ People</p>
+                <p className="text-4xl font-black text-gray-900 mb-2">${pricing.tier4}</p>
+                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              </div>
+
+            </div>
+
+            <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
+              <Link 
+                href={'/contact'} 
+                className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#98D80D]/30"
+              >
+                Book This Trip Now
+              </Link>
+              <p className="text-gray-400 text-sm font-medium mt-4">Want to customize this trip? Contact us for a bespoke quote.</p>
+            </div>
+
           </div>
         </section>
       )}
@@ -433,7 +531,7 @@ export default function PackageLandingPage() {
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="pb-4 font-bold text-gray-900 w-1/3">Feature</th>
-                    <th className="pb-4 font-extrabold text-[#F51A43] w-1/3 text-lg">{pkg.title}</th>
+                    <th className="pb-4 font-extrabold text-[#98D80D] w-1/3 text-lg">{pkg.title}</th>
                     <th className="pb-4 font-bold text-gray-500 w-1/3 text-lg">Other Routes</th>
                   </tr>
                 </thead>

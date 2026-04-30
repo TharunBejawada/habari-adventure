@@ -131,7 +131,7 @@ export default function OurServicesPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className="text-[#F51A43] font-bold text-sm uppercase tracking-widest mb-4 block">
+          <span className="text-[#98D80D] font-bold text-sm uppercase tracking-widest mb-4 block">
             Excellence in Adventure
           </span>
           <h1 className="text-white text-5xl md:text-6xl font-extrabold uppercase tracking-tight mb-4 drop-shadow-lg">
@@ -143,7 +143,7 @@ export default function OurServicesPage() {
           
           {/* CAVEAT / DISCLAIMER */}
           <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/10 px-4 py-2 rounded-full mt-4">
-            <svg className="w-4 h-4 text-[#F51A43]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <svg className="w-4 h-4 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <p className="text-sm text-gray-300 font-medium">
               Note: All itineraries are fully customizable to meet your specific travel needs.
             </p>
@@ -177,7 +177,7 @@ export default function OurServicesPage() {
                       onClick={() => scrollToSection(item.id)}
                       className={`text-sm font-medium transition-all w-full text-left py-2 ${
                         activeSection === item.id 
-                          ? "text-[#F51A43] font-bold border-l-2 border-[#F51A43] pl-4" 
+                          ? "text-[#98D80D] font-bold border-l-2 border-[#98D80D] pl-4" 
                           : "text-gray-500 hover:text-gray-900 pl-4 border-l-2 border-transparent"
                       }`}
                     >
@@ -203,7 +203,7 @@ export default function OurServicesPage() {
             
             {/* Overview */}
             <div id="overview" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Overview</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Overview</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Habari adventure is the finest leading local tour operator based in Kilimanjaro Tanzania. Over years of experience Habari adventure has a proven expertise on Mount Kilimanjaro and wildlife safari. Whether you are a seasoned adventurer or a first-time hiker, our well-trained guides are committed to helping you achieve your goals and create an unforgettable experience during your climb.
@@ -212,7 +212,7 @@ export default function OurServicesPage() {
                 {/* Highlight Stats Block with Animated Counters */}
                 <div className="bg-[#F9FAFB] p-8 rounded-2xl border border-gray-100 my-8 grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center">
-                    <span className="block text-4xl font-extrabold text-[#F51A43] mb-2">
+                    <span className="block text-4xl font-extrabold text-[#98D80D] mb-2">
                       <AnimatedCounter value={98} suffix="%" />
                     </span>
                     <span className="text-sm font-bold text-gray-700 uppercase tracking-widest">Summit Success</span>
@@ -234,16 +234,16 @@ export default function OurServicesPage() {
                 <p>
                   We are renowned for having the best guides and experts of Kilimanjaro and Safari. Our local presence is exactly what makes it possible for Habari Adventure to give accurate, competent and up-to-date travel advice to our clients and ensure the highest comfort and safety standards in our expedition. We are a fully licensed operator, which actually organizes and runs its own trips.
                 </p>
-                <blockquote className="border-l-4 border-[#F51A43] pl-6 italic text-gray-800 font-medium my-8 text-xl">
+                <blockquote className="border-l-4 border-[#98D80D] pl-6 italic text-gray-800 font-medium my-8 text-xl">
                   "Journey is the destination and Habari Adventure never lose to fulfill the expectation of the specific destination you desire" <br/>
-                  <span className="text-sm font-bold text-[#F51A43] not-italic mt-2 block">— Stan Wilfred, C.E.O</span>
+                  <span className="text-sm font-bold text-[#98D80D] not-italic mt-2 block">— Stan Wilfred, C.E.O</span>
                 </blockquote>
               </div>
             </div>
 
             {/* Accommodation */}
             <div id="accommodation" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Accommodation</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Accommodation</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Hotels before and after trip accommodation options range from <strong>3 to 5-star hotels</strong> depending on your budget and preferences. Our climbs include overnight accommodations in Moshi on the day preceding and the day following the climb. Therefore, if you arrive the day before the climb begins and leave the day after the climb ends, you will not need to book any extra hotel rooms since amount paid for Kilimanjaro includes it.
@@ -252,7 +252,7 @@ export default function OurServicesPage() {
                   Safari accommodation depends on your safari budget list between the Luxury, Midrange or Camping Safari. In Luxury safari based on staying at Tarangire SAFARI Lodge, Serengeti Serena Lodge, Elewana camps and Semetu lodge in the Serengeti. In Ngorongoro clients stay at Lions paw and Ngorongoro Serena lodge. In the same way, midrange Safari can offer camping options from the most basic and adventurous to luxury tented camps.
                 </p>
                 <div className="bg-gray-900 text-white p-8 rounded-2xl my-8 flex items-start gap-6 shadow-xl">
-                  <div className="w-12 h-12 bg-[#F51A43] rounded-full flex items-center justify-center shrink-0">
+                  <div className="w-12 h-12 bg-[#98D80D] rounded-full flex items-center justify-center shrink-0">
                     <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                   </div>
                   <div>
@@ -267,7 +267,7 @@ export default function OurServicesPage() {
 
             {/* Meals */}
             <div id="meals" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Meals on the Mountain</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Meals on the Mountain</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Supplying your body with continuous calories is an important factor in successfully climbing Kilimanjaro. A hiker on Kilimanjaro can burn <strong>5,000 to 8,000 calories a day</strong> in order to keep well fueled you have to eat. Therefore, our Habari adventure mountain chefs are brilliant at what they do always get countless compliments for their ability to create delicious restaurant-like meals in mountain conditions.
@@ -283,7 +283,7 @@ export default function OurServicesPage() {
 
             {/* Safety */}
             <div id="safety" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Safety & Awareness</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Safety & Awareness</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Climbing Kilimanjaro is probably one of the most dangerous things you will ever do. Every year, innumerable people are evacuated from the mountain. When selecting an operator, your safety should take precedence over any other consideration. Beware of companies that downplay the potential dangers of high-altitude trekking.
@@ -293,19 +293,19 @@ export default function OurServicesPage() {
                 </p>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none pl-0">
                   <li className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <svg className="w-6 h-6 text-[#F51A43] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-6 h-6 text-[#98D80D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="font-medium text-gray-800">WFR Certified Guides</span>
                   </li>
                   <li className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <svg className="w-6 h-6 text-[#F51A43] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-6 h-6 text-[#98D80D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="font-medium text-gray-800">Emergency Oxygen Cylinders</span>
                   </li>
                   <li className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <svg className="w-6 h-6 text-[#F51A43] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-6 h-6 text-[#98D80D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="font-medium text-gray-800">Comprehensive First Aid Kits</span>
                   </li>
                   <li className="flex items-center gap-3 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <svg className="w-6 h-6 text-[#F51A43] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <svg className="w-6 h-6 text-[#98D80D] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     <span className="font-medium text-gray-800">Evacuation Protocols</span>
                   </li>
                 </ul>
@@ -314,7 +314,7 @@ export default function OurServicesPage() {
 
             {/* Altitude Effect */}
             <div id="altitude" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Altitude Effect</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Altitude Effect</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   At high altitude the air pressure is lower and thus there are less gases overall. If you are climbing Kilimanjaro, you should be aware of a condition called <strong>Acute Mountain Sickness, or AMS</strong>.
@@ -327,7 +327,7 @@ export default function OurServicesPage() {
 
             {/* Health & Medication */}
             <div id="health" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#F51A43] mb-6">Health Checks & Medication</h2>
+              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Health Checks & Medication</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Before the climb, you will fill out a medical clearance form for the crew to assess your general physical condition. Twice daily, in the morning and evening, our guides will conduct health checks using a pulse oximeter, to measure oxygen saturation in your blood and your pulse rate.
@@ -335,7 +335,7 @@ export default function OurServicesPage() {
                 <p>
                   On Kilimanjaro, oxygen saturation percentages are regularly in the 80's. However, when oxygen saturation drops below 80%, we monitor that climber very closely. It is important that you be open, active and honest when answering these questions and with your guide overall.
                 </p>
-                <h4 className="text-xl font-bold text-[#F51A43] mt-8 mb-4">Regarding Diamox</h4>
+                <h4 className="text-xl font-bold text-[#98D80D] mt-8 mb-4">Regarding Diamox</h4>
                 <p>
                   Many climbers turn to Diamox, a prescription drug that helps prevent or lessen the effects of high altitude on the body. Diamox is the brand name for the generic drug acetazolamide. At Habari Adventure, we understand the importance of safety when climbing Kilimanjaro. Trust in our knowledge and experience, and you'll be sure to reach the summit in the safest and most satisfying way possible.
                 </p>
