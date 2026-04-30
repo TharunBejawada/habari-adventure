@@ -44,7 +44,7 @@ export const upsertPricing = async (req: Request, res: Response) => {
 export const deletePricing = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await prisma.packagePricing.delete({ where: { id } });
+    await prisma.packagePricing.delete({ where: { id: id as string } });
     res.status(200).json({ status: "success", message: "Pricing deleted successfully" });
   } catch (error: any) {
     res.status(400).json({ status: "error", message: error.message });
