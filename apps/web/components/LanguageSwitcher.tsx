@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "../lib/languages"; // Assuming this is where we saved it
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "../lib/languages";
 
 export default function LanguageSwitcher() {
   const router = useRouter();
@@ -14,11 +14,19 @@ export default function LanguageSwitcher() {
   const activeLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLangCode) 
                      || SUPPORTED_LANGUAGES.find(lang => lang.code === DEFAULT_LANGUAGE);
 
+  // NEW: Helper function to aggressively clear cookies across all domain scopes
+  const clearGoogleTranslateCookies = () => {
+    const domain = window.location.hostname;
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+  };
+
   // Sync Google Translate when the URL changes
   useEffect(() => {
     const code = activeLang?.code || 'en';
     if (code === 'en') {
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      clearGoogleTranslateCookies();
     } else {
       document.cookie = `googtrans=/en/${code}; path=/;`;
     }
@@ -27,9 +35,9 @@ export default function LanguageSwitcher() {
   const handleLanguageChange = (langCode: string) => {
     setIsOpen(false);
     
-    // 1. Set the Google Translate cookie
+    // 1. Set or aggressively clear the Google Translate cookie
     if (langCode === 'en') {
-      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      clearGoogleTranslateCookies();
     } else {
       document.cookie = `googtrans=/en/${langCode}; path=/;`;
     }
@@ -53,7 +61,7 @@ export default function LanguageSwitcher() {
 
   return (
     <div className="relative inline-block text-left">
-      {/* DROPDOWN BUTTON (Customizable to match your NavBar) */}
+      {/* DROPDOWN BUTTON */}
       <button 
         type="button" 
         onClick={() => setIsOpen(!isOpen)}

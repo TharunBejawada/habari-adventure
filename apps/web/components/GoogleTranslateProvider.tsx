@@ -63,6 +63,19 @@ export default function GoogleTranslateProvider({ children }: { children: React.
         
         /* 6. Hide our injection container */
         #google_translate_element { display: none !important; }
+
+        /* 7. AGGRESSIVE: Hide the floating top-right widget, loading spinner, and dynamic IDs */
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc,
+        .goog-te-spinner-pos,
+        .goog-te-spinner-animation,
+        div[id^="goog-gt-"] {
+          display: none !important;
+          opacity: 0 !important;
+          visibility: hidden !important;
+          pointer-events: none !important;
+          z-index: -9999 !important;
+        }
       `}} />
       
       <div id="google_translate_element"></div>
