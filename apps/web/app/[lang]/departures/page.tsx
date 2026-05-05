@@ -34,7 +34,7 @@ export default function DeparturesPage() {
     dates.forEach(dateObj => {
       const d = new Date(dateObj.startDate);
       const year = d.getFullYear().toString();
-      const month = d.toLocaleString('en-US', { month: 'long' }); // e.g., "September"
+      const month = d.toLocaleString('en-US', { month: 'long' }); 
       
       if (!groups[year]) groups[year] = {};
       if (!groups[year][month]) groups[year][month] = [];
@@ -57,7 +57,7 @@ export default function DeparturesPage() {
     <div className="bg-[#FDFEFE] min-h-screen font-sans text-gray-800 pb-24">
       
       {/* ========================================== */}
-      {/* 1. HERO SECTION (Reused from Locations)    */}
+      {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
       <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[120px] z-0 bg-[#135D66]">
         
@@ -168,11 +168,6 @@ export default function DeparturesPage() {
                               <div className="flex-1 space-y-3">
                                 {/* Badges */}
                                 <div className="flex flex-wrap items-center gap-2">
-                                  {d.isFullMoon && (
-                                    <span className="text-[10px] md:text-xs font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 px-3 py-1 rounded-full shadow-sm flex items-center gap-1.5">
-                                      <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span> Full Moon Summit
-                                    </span>
-                                  )}
                                   <span className={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-sm ${
                                     isSoldOut ? 'bg-red-50 text-red-600 border border-red-200' :
                                     isGuaranteed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-blue-50 text-blue-700 border border-blue-200'
@@ -181,12 +176,46 @@ export default function DeparturesPage() {
                                   </span>
                                 </div>
 
-                                {/* Titles */}
+                                {/* Titles & NEW Icons */}
                                 <div>
-                                  <h4 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-tight">
-                                    {d.package?.title}
-                                  </h4>
-                                  {d.title && <p className="text-sm font-bold text-[#E59A1D] mt-0.5">{d.title}</p>}
+                                  <div className="flex items-center flex-wrap gap-2">
+                                    <h4 className="text-xl md:text-2xl font-extrabold text-gray-900 leading-tight">
+                                      {d.package?.title}
+                                    </h4>
+                                    
+                                    {/* Event Icons Container */}
+                                    <div className="flex items-center gap-1.5 text-xl relative top-[1px]">
+                                      {d.isFullMoon && (
+                                        <div className="group relative cursor-help flex items-center justify-center">
+                                          <span>🌗</span>
+                                          {/* Custom Tooltip */}
+                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                            Full Moon Summit
+                                          </div>
+                                        </div>
+                                      )}
+                                      
+                                      {d.isChristmas && (
+                                        <div className="group relative cursor-help flex items-center justify-center">
+                                          <span>🎄</span>
+                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                            Christmas Summit
+                                          </div>
+                                        </div>
+                                      )}
+                                      
+                                      {d.isNewYear && (
+                                        <div className="group relative cursor-help flex items-center justify-center">
+                                          <span>⭐</span>
+                                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                            New Year Summit
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {d.title && <p className="text-sm font-bold text-[#E59A1D] mt-1">{d.title}</p>}
                                 </div>
 
                                 {/* Date Range & Explore Link */}
@@ -196,7 +225,7 @@ export default function DeparturesPage() {
                                     {startDate.toLocaleDateString()} — {endDate.toLocaleDateString()}
                                   </span>
                                   <span className="text-gray-300 hidden md:inline">|</span>
-                                  <Link href={`/packages/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#98D80D] transition-colors flex items-center gap-1 group">
+                                  <Link href={`/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#98D80D] transition-colors flex items-center gap-1 group">
                                     Explore Trip Details
                                     <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                   </Link>

@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+// 1. Added category to the interface
 interface Location {
   id: string;
   slug: string;
   title: string;
+  category: string; 
   bannerImage?: string;
   isPublished: boolean;
   createdAt: string;
@@ -17,10 +19,19 @@ export default function LocationsAdminPage() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  
+  // 2. Added state for the selected category filter
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const fetchLocations = async () => {
+  // 3. Updated fetch function to use the new category endpoint when needed
+  const fetchLocations = async (categoryFilter: string) => {
+    setIsLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`);
+      const endpoint = categoryFilter === "All" 
+        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`
+        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/category/${encodeURIComponent(categoryFilter)}`;
+        
+      const res = await fetch(endpoint);
       const data = await res.json();
       if (data.status === "success") setLocations(data.data);
     } catch (error) {
@@ -30,7 +41,10 @@ export default function LocationsAdminPage() {
     }
   };
 
-  useEffect(() => { fetchLocations(); }, []);
+  // 4. Trigger fetch whenever the selected category changes
+  useEffect(() => { 
+    fetchLocations(selectedCategory); 
+  }, [selectedCategory]);
 
   const handleDelete = async (id: string, title: string) => {
     if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
@@ -71,6 +85,22 @@ export default function LocationsAdminPage() {
         </Link>
       </div>
 
+      {/* 5. NEW: Filter Bar */}
+      <div className="flex items-center gap-3">
+        <label className="font-bold text-black-700 text-sm">Filter by Category:</label>
+        <select 
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-white text-gray-900 font-medium shadow-sm transition-colors cursor-pointer"
+        >
+          <option value="All">All Locations</option>
+          <option value="Climbing">Climbing</option>
+          <option value="Safari">Safari</option>
+          <option value="Destinations">Destinations</option>
+          <option value="Day Trips">Day Trips</option>
+        </select>
+      </div>
+
       {/* Data Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         {isLoading ? (
@@ -78,7 +108,17 @@ export default function LocationsAdminPage() {
         ) : locations.length === 0 ? (
           <div className="p-16 text-center">
             <h3 className="text-xl font-bold text-gray-800 mb-2">No Locations Found</h3>
-            <p className="text-gray-500">Create your first destination landing page.</p>
+            <p className="text-gray-500">
+              {selectedCategory === "All" ? "Create your first destination landing page." : `No locations found in the "${selectedCategory}" category.`}
+            </p>
+            {selectedCategory !== "All" && (
+              <button 
+                onClick={() => setSelectedCategory("All")}
+                className="mt-4 px-4 py-2 text-sm font-bold text-[#135D66] bg-[#E9F4F5] rounded-lg hover:bg-[#135D66] hover:text-white transition-colors"
+              >
+                Clear Filter
+              </button>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -86,6 +126,8 @@ export default function LocationsAdminPage() {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200 text-sm font-bold text-gray-500 uppercase tracking-wider">
                   <th className="p-4 pl-6">Location</th>
+                  {/* Added Category Column */}
+                  <th className="p-4">Category</th>
                   <th className="p-4">Slug (URL)</th>
                   <th className="p-4">Status</th>
                   <th className="p-4 text-right pr-6">Actions</th>
@@ -102,16 +144,30 @@ export default function LocationsAdminPage() {
                         <p className="font-extrabold text-gray-900 text-base">{loc.title}</p>
                       </div>
                     </td>
-                    <td className="p-4"><span className="text-gray-500">/destinations/{loc.slug}</span></td>
+                    
+                    {/* Render Category */}
                     <td className="p-4">
-                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${loc.isPublished ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+                      <span className="text-gray-700 font-medium">{loc.category || "Uncategorized"}</span>
+                    </td>
+                    
+                    {/* Render raw slug without the hardcoded /destinations/ */}
+                    <td className="p-4">
+                      <span className="text-gray-500 font-mono text-sm bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                        {loc.slug}
+                      </span>
+                    </td>
+                    
+                    <td className="p-4">
+                      <span className={`inline-flex px-3 py-1 rounded-full text-xs font-bold ${loc.isPublished ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
                         {loc.isPublished ? 'Published' : 'Draft'}
                       </span>
                     </td>
+                    
                     <td className="p-4 text-right pr-6">
                       <div className="flex justify-end gap-2">
-                        <Link href={`/admin/locations/editor?slug=${loc.slug}`} className="p-2 text-gray-400 hover:text-[#E59A1D] hover:bg-orange-50 rounded-lg">Edit</Link>
-                        <button onClick={() => handleDelete(loc.id, loc.title)} disabled={isDeleting === loc.id} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg">Delete</button>
+                        {/* We MUST encode the slug here to ensure slashes in the path are handled safely in the URL parameters */}
+                        <Link href={`/admin/locations/editor?slug=${encodeURIComponent(loc.slug)}`} className="p-2 text-gray-400 hover:text-[#E59A1D] hover:bg-orange-50 rounded-lg transition-colors">Edit</Link>
+                        <button onClick={() => handleDelete(loc.id, loc.title)} disabled={isDeleting === loc.id} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">Delete</button>
                       </div>
                     </td>
                   </tr>

@@ -4,7 +4,8 @@ import {prisma} from "../prisma";
 export const getAllPricing = async (req: Request, res: Response) => {
   try {
     const pricing = await prisma.packagePricing.findMany({
-      include: { package: { select: { title: true, slug: true } } },
+      // NEW: Added location: true
+      include: { package: { select: { title: true, slug: true, location: true } } },
       orderBy: { createdAt: 'desc' }
     });
     res.status(200).json({ status: "success", data: pricing });
@@ -32,7 +33,8 @@ export const upsertPricing = async (req: Request, res: Response) => {
         tier3: Number(tier3),
         tier4: Number(tier4),
       },
-      include: { package: { select: { title: true } } }
+      // NEW: Added location: true so the live update to the table doesn't break the filter
+      include: { package: { select: { title: true, location: true } } }
     });
 
     res.status(200).json({ status: "success", data: pricing });

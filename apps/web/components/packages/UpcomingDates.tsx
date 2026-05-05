@@ -1,73 +1,3 @@
-// // apps/web/components/packages/UpcomingDates.tsx
-// "use client";
-
-// export default function UpcomingDates() {
-//   // Static mock data for now
-//   const dates = [
-//     { id: 1, date: "12 Jan 2026", variant: "8-Day Lemosho", spots: "6 Spots", price: "$2,450", status: "RESERVE" },
-//     { id: 2, date: "9 Feb 2026", variant: "7-Day Lemosho", spots: "Waitlist", price: "$2,150", status: "JOIN WAITLIST" },
-//     { id: 3, date: "15 Jun 2026", variant: "8-Day Lemosho", spots: "9 Spots", price: "$2,490", status: "RESERVE" },
-//   ];
-
-//   return (
-//     <section className="py-16 lg:py-24 bg-white border-b border-gray-100 reveal-on-scroll">
-//       <div className="max-w-7xl mx-auto px-6 sm:px-12">
-        
-//         <div className="mb-10">
-//           <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
-//             Upcoming <span className="text-[#98D80D]">Dates</span>
-//           </h2>
-//           <p className="text-gray-600 text-lg">
-//             Join a group or go private. Early season and group discounts available.
-//           </p>
-//         </div>
-
-//         <div className="overflow-x-auto">
-//           <table className="w-full text-left border-collapse min-w-[700px]">
-//             <thead>
-//               <tr className="border-b border-gray-200">
-//                 <th className="pb-4 font-bold text-[#98D80D] w-1/5">Start Date</th>
-//                 <th className="pb-4 font-bold text-[#98D80D] w-1/5">Route Variant</th>
-//                 <th className="pb-4 font-bold text-[#98D80D] w-1/5">Availability</th>
-//                 <th className="pb-4 font-bold text-[#98D80D] w-1/5">Price (USD)</th>
-//                 <th className="pb-4 w-1/5"></th>
-//               </tr>
-//             </thead>
-//             <tbody className="divide-y divide-gray-100">
-//               {dates.map((row) => (
-//                 <tr key={row.id} className="hover:bg-gray-50 transition-colors">
-//                   <td className="py-5 font-semibold text-gray-900">{row.date}</td>
-//                   <td className="py-5 text-gray-700">{row.variant}</td>
-//                   <td className="py-5 text-gray-700">{row.spots}</td>
-//                   <td className="py-5 text-gray-700">{row.price}</td>
-//                   <td className="py-5 text-right">
-//                     {row.status === "RESERVE" ? (
-//                       <button className="bg-[#98D80D] hover:bg-[#d41538] text-white font-bold py-2 px-6 rounded-full text-xs uppercase tracking-wider transition-all shadow-sm hover:-translate-y-0.5">
-//                         {row.status}
-//                       </button>
-//                     ) : (
-//                       <button className="bg-white border-2 border-gray-200 text-gray-600 hover:border-[#98D80D] hover:text-[#98D80D] font-bold py-1.5 px-6 rounded-full text-xs uppercase tracking-wider transition-all">
-//                         {row.status}
-//                       </button>
-//                     )}
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-
-//         <div className="mt-8">
-//           <p className="text-gray-700 font-medium">
-//             Want your own dates? <a href="/contact" className="text-[#98D80D] hover:underline font-bold">Contact us</a>
-//           </p>
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// }
-
 // apps/web/components/packages/UpcomingDates.tsx
 "use client";
 
@@ -77,21 +7,36 @@ import Link from "next/link";
 
 export default function UpcomingDates() {
   const params = useParams();
-  const slug = params.slug as string;
+  
+  // Extract lang for links
+  const lang = (params.lang as string) || "en";
+
+  // FIX: Safely decode parameters just like the main page to get the correct database slug
+  const categoryParam = params.category ? decodeURIComponent(params.category as string) : "";
+  const locationParam = params.location ? decodeURIComponent(params.location as string) : "";
+  
+  // Handle catch-all arrays or single strings for the package slug
+  const packageParamRaw = params.packageSlug;
+  const packageParam = Array.isArray(packageParamRaw) 
+    ? packageParamRaw.map(p => decodeURIComponent(p)).join('/') 
+    : (packageParamRaw ? decodeURIComponent(packageParamRaw as string) : "");
+
+  // Reconstruct the full database slug and strip any accidental leading slashes
+  const fullDbSlug = `${categoryParam}/${locationParam}/${packageParam}`.replace(/^\/+/, '');
 
   const [dates, setDates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!slug) return;
+    if (!fullDbSlug || fullDbSlug === "//") return;
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates`)
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
-          // Filter out past dates AND ensure they belong to THIS package
+          // Filter out past dates AND ensure they belong to THIS specific package
           const packageDates = data.data.filter((d: any) => 
-            d.package?.slug === slug && 
+            d.package?.slug === fullDbSlug && 
             new Date(d.startDate) >= new Date(new Date().setHours(0,0,0,0))
           );
           setDates(packageDates);
@@ -99,10 +44,8 @@ export default function UpcomingDates() {
       })
       .catch(err => console.error("Failed to fetch dates", err))
       .finally(() => setIsLoading(false));
-  }, [slug]);
+  }, [fullDbSlug]);
 
-  // If there are no dates scheduled, we can either hide the section entirely by returning null, 
-  // or show a friendly message. A friendly message is usually better for conversions!
   if (!isLoading && dates.length === 0) {
     return (
       <section className="py-16 lg:py-24 bg-white border-b border-gray-100">
@@ -113,7 +56,7 @@ export default function UpcomingDates() {
           <p className="text-gray-600 text-lg mb-6">
             We are currently organizing our next group departures for this route.
           </p>
-          <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold py-3 px-8 rounded-full transition-all">
+          <Link href={`/${lang}/contact`} className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold py-3 px-8 rounded-full transition-all shadow-md">
             Request Private Dates
           </Link>
         </div>
@@ -161,13 +104,42 @@ export default function UpcomingDates() {
                       <td className="py-5 font-bold text-gray-900 pl-4">{startDate}</td>
                       
                       <td className="py-5">
-                        <div className="flex flex-col gap-1">
-                          <span className="font-bold text-gray-800">{row.title || "Standard Departure"}</span>
-                          {row.isFullMoon && (
-                            <span className="text-[10px] font-bold text-yellow-700 bg-yellow-50 border border-yellow-200 px-2 py-0.5 rounded-full w-fit">
-                              🌕 FULL MOON
-                            </span>
-                          )}
+                        <div className="flex flex-col gap-1.5">
+                          
+                          <div className="flex items-center flex-wrap gap-2">
+                            <span className="font-bold text-gray-800">{row.title || "Standard Departure"}</span>
+                            
+                            {/* NEW: Event Icons Container */}
+                            <div className="flex items-center gap-1.5 text-lg relative top-[1px]">
+                              {row.isFullMoon && (
+                                <div className="group/icon relative cursor-help flex items-center justify-center">
+                                  <span>🌗</span>
+                                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/icon:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                    Full Moon Summit
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {row.isChristmas && (
+                                <div className="group/icon relative cursor-help flex items-center justify-center">
+                                  <span>🎄</span>
+                                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/icon:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                    Christmas Summit
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {row.isNewYear && (
+                                <div className="group/icon relative cursor-help flex items-center justify-center">
+                                  <span>⭐</span>
+                                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/icon:block bg-gray-900 text-white text-[10px] font-bold py-1 px-2.5 rounded whitespace-nowrap shadow-lg z-20 before:content-[''] before:absolute before:top-full before:left-1/2 before:-translate-x-1/2 before:border-4 before:border-transparent before:border-t-gray-900">
+                                    New Year Summit
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
                         </div>
                       </td>
 
@@ -194,7 +166,8 @@ export default function UpcomingDates() {
                           </button>
                         ) : (
                           <Link 
-                            href={`/book?date=${row.id}&package=${slug}`} 
+                            // Passed the fullDbSlug safely to the booking page
+                            href={`/${lang}/book?date=${row.id}&package=${encodeURIComponent(fullDbSlug)}`} 
                             className="inline-block bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
                           >
                             BOOK NOW
@@ -212,7 +185,7 @@ export default function UpcomingDates() {
         <div className="mt-8 pt-6 border-t border-gray-100 flex items-center gap-2">
           <svg className="w-5 h-5 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           <p className="text-gray-700 font-medium">
-            Want your own private dates? <Link href="/contact" className="text-[#135D66] hover:text-[#98D80D] hover:underline font-bold transition-colors">Contact us for a custom departure.</Link>
+            Want your own private dates? <Link href={`/${lang}/contact`} className="text-[#135D66] hover:text-[#98D80D] hover:underline font-bold transition-colors">Contact us for a custom departure.</Link>
           </p>
         </div>
 

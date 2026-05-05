@@ -4,10 +4,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Caveat } from "next/font/google";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
 export default function WhyChooseUs() {
+  const { getLocalizedUrl } = useLocalizedUrl();
   const features = [
     "13+ years of experience in Tanzania safari tours",
     "Licensed and certified mountain crew for Kilimanjaro",
@@ -110,7 +112,7 @@ export default function WhyChooseUs() {
           {/* Bottom Action Row (Button + Avatars) */}
           <div className="flex flex-wrap items-center gap-8 border-t border-gray-200 pt-8 w-full">
             <Link 
-              href="/tours" 
+              href={getLocalizedUrl("/contact")} 
               className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-base py-3 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#98D80D]/20"
             >
               Discover More

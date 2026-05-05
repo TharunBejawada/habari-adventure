@@ -3,8 +3,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 export default function ClimbingSection() {
+  const { getLocalizedUrl } = useLocalizedUrl();
   return (
     <section className="w-full bg-[#135D66] relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden z-20">
       
@@ -27,7 +29,7 @@ export default function ClimbingSection() {
 
           <div className="flex flex-wrap items-center gap-6 pt-2">
             <Link 
-              href="/climbing" 
+              href={getLocalizedUrl("/climbing/Kilimanjaro")}
               className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-sm md:text-base py-3 md:py-4 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#98D80D]/20"
             >
               View Expeditions

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 interface LinkItem { name: string; url: string; }
 interface FooterColumn { title: string; links: LinkItem[]; }
@@ -33,6 +34,7 @@ const getSocialIcon = (name: string) => {
 
 export default function Footer() {
   const pathname = usePathname();
+  const { getLocalizedUrl } = useLocalizedUrl();
   const [settings, setSettings] = useState<any>(null);
 
   useEffect(() => {
@@ -118,7 +120,7 @@ export default function Footer() {
         
         {/* LEFT COLUMN: Logo, Info, and Socials */}
         <div className="w-full lg:w-[28%] space-y-6">
-          <Link href="/">
+          <Link href={getLocalizedUrl("/")}>
             <Image 
               src="/logo.png" 
               alt="Travlla Logo" 
@@ -157,7 +159,7 @@ export default function Footer() {
               <ul className="space-y-2 lg:space-y-3">
                 {col.links.map((link, lIdx) => (
                   <li key={lIdx}>
-                    <Link href={link.url} className="text-sm font-medium text-[#135D66]/80 hover:text-[#98D80D] transition-colors inline-block py-1 lg:py-0">
+                    <Link href={getLocalizedUrl(link.url)} className="text-sm font-medium text-[#135D66]/80 hover:text-[#98D80D] transition-colors inline-block py-1 lg:py-0">
                       {link.name}
                     </Link>
                   </li>

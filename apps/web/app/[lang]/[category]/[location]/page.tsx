@@ -1,4 +1,4 @@
-// apps/web/app/destinations/[location]/page.tsx
+// apps/web/app/[lang]/[category]/[location]/page.tsx
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -38,18 +38,24 @@ const getYouTubeEmbedUrl = (url: string) => {
   if (!url) return null;
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
-  return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}?rel=0` : null;
+  return (match && match[2] && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}?rel=0` : null;
 };
 
 export default function LocationLandingPage() {
   const params = useParams();
   
-  // Fully decode the URL to handle %20 and other encoded characters
-  const decodedUrl = decodeURIComponent(params.location as string);
-  const locationSlug = decodedUrl.replace(/-/g, ' '); 
+  // Extract the language from the URL (defaulting to 'en')
+  const lang = (params.lang as string) || "en";
+  
+  // FIX: Safely reconstruct the full database slug since /destinations/ was removed
+  const categoryParam = params.category as string;
+  const locationParam = params.location as string;
+  
+  // If the route is /[lang]/[category]/[location], combine them (e.g., "safari/serengeti")
+  const fullDbSlug = categoryParam ? `${categoryParam}/${locationParam}` : locationParam;
 
   const [packages, setPackages] = useState<any[]>([]);
-  const [locationData, setLocationData] = useState<any>(null); // Added state for location overview
+  const [locationData, setLocationData] = useState<any>(null); 
   const [isLoading, setIsLoading] = useState(true);
 
   // Search, Pagination & Filter State
@@ -58,21 +64,34 @@ export default function LocationLandingPage() {
   const itemsPerPage = 6;
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
 
-  // --- 1. FETCH DATA ---
+  // --- 1. FETCH DATA (CHAINED) ---
   useEffect(() => {
     setIsLoading(true);
-    // Fetch both packages and the location metadata simultaneously
-    Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/location/${encodeURIComponent(locationSlug)}`).then(res => res.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${params.location}`).then(res => res.json())
-    ])
-    .then(([packData, locData]) => {
-      if (packData.status === "success") setPackages(packData.data);
-      if (locData.status === "success") setLocationData(locData.data);
-    })
-    .catch(err => console.error("Failed to fetch data", err))
-    .finally(() => setIsLoading(false));
-  }, [locationSlug, params.location]);
+    
+    // STEP 1: Fetch Location exactly by its database slug
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${encodeURIComponent(fullDbSlug)}?lang=${lang}`)
+      .then(res => res.json())
+      .then(locData => {
+        if (locData.status === "success" && locData.data) {
+          setLocationData(locData.data);
+          
+          // STEP 2: Use the exact database title to fetch the associated packages
+          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/location/${encodeURIComponent(locData.data.title)}?lang=${lang}`);
+        }
+        throw new Error("Location not found");
+      })
+      .then(res => {
+        if (!res) return null;
+        return res.json();
+      })
+      .then(packData => {
+        if (packData && packData.status === "success") {
+          setPackages(packData.data);
+        }
+      })
+      .catch(err => console.error("Failed to fetch data", err))
+      .finally(() => setIsLoading(false));
+  }, [fullDbSlug, lang]);
 
   // --- 2. SMART PARSING FOR RANGES ---
   const checkRangeFilter = (category: string, selectedValues: string[], factDesc: string) => {
@@ -98,7 +117,7 @@ export default function LocationLandingPage() {
         if (val === "Over 5,000m") return maxNum > 5000;
       }
       
-      // String Inclusion Checks (For Difficulty, Seasons, etc.)
+      // String Inclusion Checks
       return text.includes(val.toLowerCase());
     });
   };
@@ -119,11 +138,9 @@ export default function LocationLandingPage() {
       return Object.entries(activeFilters).every(([filterCategory, selectedValues]) => {
         if (selectedValues.length === 0) return true; 
         
-        // Find this category in the package's quick facts
         const packageFact = pkg.quickFacts?.items?.find((f: any) => f.title === filterCategory);
         if (!packageFact) return false; 
 
-        // Use our smart range checker
         return checkRangeFilter(filterCategory, selectedValues, packageFact.desc);
       });
     });
@@ -172,8 +189,9 @@ export default function LocationLandingPage() {
     );
   }
 
-  // Formatting Location Title for Hero
-  const displayTitle = locationSlug.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  // Formatting Location Title for Hero (Using the DB title with a safe fallback)
+  const fallbackTitle = locationParam ? locationParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Destination";
+  const displayTitle = locationData?.title || fallbackTitle;
 
   return (
     <div className="bg-[#FDFEFE] min-h-screen font-sans text-gray-800 pb-24">
@@ -201,7 +219,7 @@ export default function LocationLandingPage() {
         }} />
 
         <div className="absolute inset-0 z-0">
-          <Image src="/contact-mountains.png" alt="Mountains Background" fill className="object-cover object-bottom opacity-90" priority />
+          <Image src={locationData?.heroImage || "/contact-mountains.png"} alt="Mountains Background" fill unoptimized className="object-cover object-bottom opacity-90" priority />
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
@@ -230,22 +248,22 @@ export default function LocationLandingPage() {
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
           <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#135D66] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-            Explore <span className={`${caveat.className} text-[#E59A1D] font-normal`}>{displayTitle}</span>
+            {/* NEW: notranslate class added so Google doesn't translate the proper noun destination */}
+            Explore <span className={`notranslate ${caveat.className} text-[#E59A1D] font-normal`}>{displayTitle}</span>
           </h1>
           <p className="animate-fade-left font-medium text-gray-800 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
-            Discover our curated selection of routes and adventures designed for the ultimate {displayTitle} experience.
+            Discover our curated selection of routes and adventures designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
           </p>
         </div>
       </section>
 
       {/* ========================================== */}
-      {/* 1.5 LOCATION OVERVIEW (NEW 80% BOX)        */}
+      {/* 1.5 LOCATION OVERVIEW                      */}
       {/* ========================================== */}
       {locationData && (locationData.overviewText || locationData.bannerImage || locationData.youtubeVideoUrl) && (
         <section className="relative z-20 -mt-24 mb-16 px-4">
           <div className="w-[95%] md:w-[80%] max-w-6xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden flex flex-col lg:flex-row">
             
-            {/* Media Left Half */}
             {(locationData.bannerImage || locationData.youtubeVideoUrl) && (
               <div className="w-full lg:w-1/2 relative min-h-[300px] lg:min-h-[400px] bg-gray-100 shrink-0">
                 {locationData.youtubeVideoUrl ? (
@@ -262,16 +280,15 @@ export default function LocationLandingPage() {
               </div>
             )}
 
-            {/* Text Right Half */}
-            {/* ADDED min-w-0 here to prevent flexbox from overflowing its grid constraints */}
             <div className={`min-w-0 w-full ${(locationData.bannerImage || locationData.youtubeVideoUrl) ? 'lg:w-1/2' : 'w-full'} p-8 md:p-12 flex flex-col justify-center`}>
-              <h2 className="text-3xl font-extrabold text-[#135D66] mb-4 truncate">
+              {/* NEW: notranslate added to the dynamic location title */}
+              <h2 className="notranslate text-3xl font-extrabold text-[#135D66] mb-4 truncate">
                 {locationData.title || displayTitle}
               </h2>
               
-              {/* ADDED break-words and nested element limits ([&_img]:max-w-full) so rich text respects boundaries */}
+              {/* NEW: notranslate added to the rich text overview content */}
               <div 
-                className="text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
+                className="notranslate text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
                 dangerouslySetInnerHTML={{ 
                   __html: locationData.overviewText
                     .replace(/<ul>/g, '<ul style="list-style-type: disc; padding-left: 1.5rem;">')
@@ -341,7 +358,6 @@ export default function LocationLandingPage() {
           {/* --- RIGHT GRID: SEARCH & PACKAGE CARDS --- */}
           <div className="w-full lg:w-3/4">
             
-            {/* Search Bar */}
             <div className="mb-10">
               <div className="relative">
                 <input 
@@ -357,7 +373,6 @@ export default function LocationLandingPage() {
               </div>
             </div>
 
-            {/* Conditional Header */}
             {isFilteringOrSearching && (
               <div className="mb-6 flex justify-between items-center animate-fade-in">
                 <h2 className="text-2xl font-bold text-gray-900">Available Routes</h2>
@@ -378,10 +393,10 @@ export default function LocationLandingPage() {
               </div>
             ) : (
               <>
-                {/* Cards Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                   {currentPackages.map((pkg) => (
-                    <Link href={`/packages/${pkg.slug}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    // NEW: Updated Link to include the dynamic language prefix
+                    <Link href={`/${lang}/${pkg.slug}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       
                       <div className="relative w-full h-56 overflow-hidden bg-gray-100">
                         {pkg.bannerImage ? (
@@ -392,21 +407,26 @@ export default function LocationLandingPage() {
                           </div>
                         )}
                         <div className="absolute top-4 left-4">
-                          <span className="bg-white/90 backdrop-blur-sm text-[#135D66] text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-wider shadow-sm">
+                          {/* NEW: notranslate class added */}
+                          <span className="notranslate bg-white/90 backdrop-blur-sm text-[#135D66] text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-wider shadow-sm">
                             {pkg.category}
                           </span>
                         </div>
                       </div>
                       
                       <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#98D80D] transition-colors">{pkg.title}</h3>
+                        {/* NEW: notranslate class added */}
+                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#98D80D] transition-colors">{pkg.title}</h3>
+                        
                         {pkg.badgeText && (
-                          <p className="text-sm font-bold text-[#E59A1D] mb-3">{pkg.badgeText}</p>
+                          /* NEW: notranslate class added */
+                          <p className="notranslate text-sm font-bold text-[#E59A1D] mb-3">{pkg.badgeText}</p>
                         )}
                         
-                        <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3 break-words">
-  {stripHtml(pkg.description)}
-</p>
+                        {/* NEW: notranslate class added */}
+                        <p className="notranslate text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3 break-words">
+                          {stripHtml(pkg.description)}
+                        </p>
                         
                         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                           <span className="text-sm font-bold text-[#135D66] group-hover:text-[#98D80D] transition-colors flex items-center gap-1">
@@ -420,7 +440,6 @@ export default function LocationLandingPage() {
                   ))}
                 </div>
 
-                {/* Pagination Controls */}
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2">
                     <button 

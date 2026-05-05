@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
+import { SUPPORTED_LANGUAGES } from "../../../../lib/languages";
 
 // Dynamically import ReactQuill to prevent SSR crashes
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
@@ -107,29 +108,33 @@ function PackageEditorForm() {
 
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
+  const [snapshot, setSnapshot] = useState<string>("");
+
+  const [activeLang, setActiveLang] = useState('en');
+  
+  const [availableLocations, setAvailableLocations] = useState<any[]>([]);
 
   // --- 1. CORE STATE ---
   const [coreInfo, setCoreInfo] = useState({
-    id: "",
-    title: "", slug: "", badgeText: "", description: "", 
-    bannerImage: "", tripPlanPdf: "", location: "", category: "Climbing", isPublished: false,
+    id: "", title: "", slug: "", badgeText: "", description: "", 
+    bannerImage: "", tripPlanPdf: "", 
+    category: "", 
+    location: "", 
+    isPublished: false,
     metaTitle: "", metaDescription: "", metaKeywords: ""
   });
 
   // --- 2. QUICK FACTS STATE ---
   const [quickFacts, setQuickFacts] = useState({
-    heading: "Quick Facts", description: "", image: "",
-    items: [{ icon: "", title: "", desc: "" }]
+    heading: "Quick Facts", description: "", image: "", items: [{ icon: "", title: "", desc: "" }]
   });
 
   // --- 3. WHY CHOOSE STATE ---
   const [whyChoose, setWhyChoose] = useState({
-    heading: "Why Choose This Route", description: "", image: "",
-    items: [{ title: "", desc: "" }],
-    table: [{ feature: "", thisRoute: "", otherRoutes: "" }]
+    heading: "Why Choose This Route", description: "", image: "", items: [{ title: "", desc: "" }], table: [{ feature: "", thisRoute: "", otherRoutes: "" }]
   });
 
-  // --- 4. ITINERARY STATE (UPDATED STRUCTURE) ---
+  // --- 4. ITINERARY STATE ---
   const [itineraryMeta, setItineraryMeta] = useState({
     heading: "Itinerary", description: "", included: [""], notIncluded: [""]
   });
@@ -150,30 +155,122 @@ function PackageEditorForm() {
     });
   }, []);
 
-  // --- FETCH DATA ---
+  // --- INITIAL DATA FETCH ---
   useEffect(() => {
     if (isEditMode) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${editSlug}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${encodeURIComponent(editSlug as string)}`)
         .then(res => res.json())
         .then(data => {
           if (data.status === "success") {
             const p = data.data;
+            
+            // FIX: Safely slice off the first two segments (category/location) instead of aggressively popping
+            const slugParts = (p.slug || "").split('/');
+            const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
+
             setCoreInfo({
-                id: p.id || "",
-              title: p.title || "", slug: p.slug || "", badgeText: p.badgeText || "",
+              id: p.id || "",
+              title: p.title || "", 
+              slug: loadedSlug, 
+              badgeText: p.badgeText || "",
               description: p.description || "", bannerImage: p.bannerImage || "",
-              tripPlanPdf: p.tripPlanPdf || "", location: p.location || "",
-              category: p.category || "Climbing", isPublished: p.isPublished || false,
+              tripPlanPdf: p.tripPlanPdf || "", 
+              category: p.category || "", 
+              location: p.location || "", 
+              isPublished: p.isPublished || false,
               metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || ""
             });
             if (p.quickFacts) setQuickFacts(p.quickFacts);
             if (p.whyChoose) setWhyChoose(p.whyChoose);
             if (p.itineraryMeta) setItineraryMeta(p.itineraryMeta);
             if (p.itineraries) setItineraries(p.itineraries);
+            
+            const currentPayload = {
+              title: p.title, slug: p.slug, description: p.description, 
+              quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
+              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries
+            };
+            setSnapshot(JSON.stringify(currentPayload));
           }
         }).finally(() => setIsLoading(false));
     }
   }, [editSlug, isEditMode]);
+
+  // --- FETCH LOCATIONS DYNAMICALLY BASED ON CATEGORY ---
+  useEffect(() => {
+    if (coreInfo.category) {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/category/${encodeURIComponent(coreInfo.category)}?lang=${activeLang}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'success') {
+            setAvailableLocations(data.data);
+          } else {
+            setAvailableLocations([]);
+          }
+        })
+        .catch(err => console.error("Failed to fetch locations by category", err));
+    } else {
+      setAvailableLocations([]);
+    }
+  }, [coreInfo.category, activeLang]);
+
+  // Derive the Location Slug for the URL Prefix
+  const selectedLoc = availableLocations.find(l => l.title === coreInfo.location);
+  const selectedLocSlug = selectedLoc ? selectedLoc.slug : (coreInfo.category ? "[location-slug]" : "[category]/[location]");
+
+  // --- LANGUAGE SWITCH HANDLER ---
+  const handleLanguageSwitch = async (langCode: string) => {
+    if (langCode === activeLang) return;
+    
+    if (!isEditMode) {
+      alert("Please save the English package first before adding translations.");
+      return;
+    }
+
+    setActiveLang(langCode);
+    setIsLoading(true);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${encodeURIComponent(editSlug as string)}?lang=${langCode}`);
+      const data = await res.json();
+      
+      if (data.status === "success") {
+        const p = data.data;
+        
+        // FIX: Safely slice off the first two segments (category/location)
+        const slugParts = (p.slug || "").split('/');
+        const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
+
+        setCoreInfo({
+          id: p.id || "",
+          title: p.title || "", 
+          slug: loadedSlug, 
+          badgeText: p.badgeText || "",
+          description: p.description || "", bannerImage: p.bannerImage || "",
+          tripPlanPdf: p.tripPlanPdf || "", 
+          category: p.category || "", 
+          location: p.location || "",
+          isPublished: p.isPublished || false,
+          metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || ""
+        });
+        if (p.quickFacts) setQuickFacts(p.quickFacts);
+        if (p.whyChoose) setWhyChoose(p.whyChoose);
+        if (p.itineraryMeta) setItineraryMeta(p.itineraryMeta);
+        if (p.itineraries) setItineraries(p.itineraries);
+        
+        const currentPayload = {
+          title: p.title, slug: p.slug, description: p.description, 
+          quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
+          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries
+        };
+        setSnapshot(JSON.stringify(currentPayload));
+      }
+    } catch (err) {
+      console.error("Failed to load translation");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // --- UNIVERSAL FILE UPLOADER ---
   const uploadFileToServer = async (file: File): Promise<string | null> => {
@@ -215,7 +312,6 @@ function PackageEditorForm() {
     }
   };
 
-  // --- ITINERARY META HANDLERS ---
   const updateIncludedNotIncluded = (field: 'included' | 'notIncluded', index: number, value: string) => {
     const newArr = [...itineraryMeta[field]];
     newArr[index] = value;
@@ -228,7 +324,6 @@ function PackageEditorForm() {
     setItineraryMeta({...itineraryMeta, [field]: itineraryMeta[field].filter((_, i) => i !== index)});
   };
 
-  // --- ITINERARY TAB/DAY HANDLERS ---
   const addTab = () => setItineraries([...itineraries, { tabName: "New Variant", image: "", documentPdf: "", days: [] }]);
   const updateTabField = (index: number, field: string, value: string) => {
     const newItin = [...itineraries];
@@ -263,55 +358,41 @@ function PackageEditorForm() {
   };
 
   // --- SAVE LOGIC ---
-  // const handleSave = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setIsSaving(true);
-  //   try {
-  //       // const { id, ...coreData } = coreInfo;
-  //       const coreData = { ...coreInfo };
-  //       const updateIdentifier = coreData.id || editSlug;
-  //       if (!isEditMode) {
-  //       delete (coreData as any).id; 
-  //     } else {
-  //       // If editing, make sure we actually have an ID
-  //       if (!coreData.id) {
-  //          alert("Error: Package ID is missing! Please refresh the page and try again.");
-  //          setIsSaving(false);
-  //          return; 
-  //       }
-  //     }
-  //     const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries };
-  //     const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${updateIdentifier}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
-  //     const method = isEditMode ? "PUT" : "POST";
-      
-  //     const token = localStorage.getItem("adminToken");
-  //     const res = await fetch(url, {
-  //       method, headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-  //       body: JSON.stringify(payload)
-  //     });
-  //     const data = await res.json();
-  //     if (data.status === "success") router.push("/admin/packages");
-  //   } catch (err) {
-  //     alert("Error saving package");
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
-  // --- SAVE LOGIC ---
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!coreInfo.category) { alert("Please select a Category before saving."); return; }
+    if (!coreInfo.location) { alert("Please select a Location before saving."); return; }
+
+    let fullSlugToSave = coreInfo.slug;
+    if (selectedLocSlug && !selectedLocSlug.includes("[")) {
+      fullSlugToSave = `${selectedLocSlug}/${fullSlugToSave}`;
+    }
+    // Strictly strip ANY leading slashes
+    fullSlugToSave = fullSlugToSave.replace(/^\/+/, '');
+
     setIsSaving(true);
     
     try {
-      const coreData = { ...coreInfo };
-      
-      // 1. Strictly use the database ID
+      if (activeLang !== 'en') {
+        const currentDataToSave = {
+          title: coreInfo.title, slug: fullSlugToSave, description: coreInfo.description, 
+          quickFacts, whyChoose, itineraryMeta, itineraries
+        };
+        
+        if (JSON.stringify(currentDataToSave) === snapshot) {
+          alert("No translation changes detected. Save aborted to protect the automatic English fallback.");
+          setIsSaving(false);
+          return;
+        }
+      }
+
+      const coreData = { ...coreInfo, slug: fullSlugToSave };
       const updateIdentifier = coreData.id; 
       
       if (!isEditMode) {
         delete (coreData as any).id; 
       } else {
-        // If EDITING, strictly require the ID
         if (!updateIdentifier) {
            alert("Error: This package is corrupted and has no database ID. Please go back to the packages list, delete this package, and recreate it.");
            setIsSaving(false);
@@ -319,28 +400,33 @@ function PackageEditorForm() {
         }
       }
 
-      const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries };
+      const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries, languageCode: activeLang };
       
       const url = isEditMode 
         ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${updateIdentifier}` 
         : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
         
       const method = isEditMode ? "PUT" : "POST";
-      
       const token = localStorage.getItem("adminToken");
       const res = await fetch(url, {
         method, 
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${token}` 
-        },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(payload)
       });
       
       const data = await res.json();
       
       if (data.status === "success") {
-        router.push("/admin/packages");
+        if (activeLang === 'en') {
+          router.push("/admin/packages");
+        } else {
+          alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
+          const currentPayload = {
+            title: payload.title, slug: payload.slug, description: payload.description, 
+            quickFacts, whyChoose, itineraryMeta, itineraries
+          };
+          setSnapshot(JSON.stringify(currentPayload));
+        }
       } else {
         if (data.message && data.message.includes("Unique constraint failed on the fields: (`slug`)")) {
           alert(`The URL slug "${coreData.slug}" is already in use by another package. Please change the title or manually edit the slug to make it unique.`);
@@ -360,18 +446,13 @@ function PackageEditorForm() {
 
   return (
     <form onSubmit={handleSave} className="space-y-8 max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
-      {/* Back to Dashboard Link */}
-          <Link 
-            href="/admin" 
-            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
-          >
-            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Dashboard
-          </Link>
-      
-      {/* Header Actions */}
+      <Link href="/admin" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group">
+        <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Back to Dashboard
+      </Link>
+
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
         <div className="flex items-center gap-4">
           <Link href="/admin/packages" className="p-2.5 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 hover:shadow-sm transition-all text-gray-600">
@@ -381,17 +462,51 @@ function PackageEditorForm() {
             <h2 className="text-xl md:text-2xl font-extrabold text-[#135D66]">
               {isEditMode ? "Edit Package" : "Create New Package"}
             </h2>
-            {isEditMode && coreInfo.slug && (
-              <a href={`/packages/${coreInfo.slug}`} target="_blank" rel="noreferrer" className="text-sm font-bold text-[#E59A1D] hover:text-[#c98616] transition-colors flex items-center gap-1.5 mt-1">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                View Live Package
-              </a>
-            )}
           </div>
         </div>
-        <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold rounded-lg shadow-md transition-all">
-          {isSaving ? "Saving..." : coreInfo.isPublished ? "Update Published Package" : "Save Package"}
-        </button>
+        <div className="flex items-center gap-3">
+          {activeLang !== 'en' && isEditMode && (
+            <button 
+              type="button" 
+              onClick={async () => {
+                if (!window.confirm(`Are you sure you want to delete the ${activeLang.toUpperCase()} translation? This will revert it to the English fallback.`)) return;
+                
+                setIsLoading(true);
+                const token = localStorage.getItem("adminToken");
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${coreInfo.id}/translations/${activeLang}`, {
+                  method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                alert("Translation deleted. Reloading fallback text...");
+                handleLanguageSwitch(activeLang);
+              }}
+              className="px-4 py-3 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-lg transition-colors border border-red-100"
+            >
+              Clear Translation
+            </button>
+          )}
+          <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold rounded-lg shadow-md transition-all">
+            {isSaving ? "Saving..." : (activeLang !== 'en' ? `Save ${activeLang.toUpperCase()} Translation` : (coreInfo.isPublished ? "Update Published Package" : "Save Package"))}
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
+        {SUPPORTED_LANGUAGES.map(lang => (
+          <button
+            key={lang.code}
+            type="button"
+            onClick={() => handleLanguageSwitch(lang.code)}
+            className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 ${
+              activeLang === lang.code 
+                ? 'bg-[#135D66] text-white border-[#135D66]' 
+                : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <span className="mr-2">{lang.flag}</span> 
+            {lang.name}
+          </button>
+        ))}
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -416,7 +531,11 @@ function PackageEditorForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Banner Image Upload</label>
-                <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "bannerImage")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                {activeLang === 'en' ? (
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "bannerImage")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                ) : (
+                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                )}
                 {coreInfo.bannerImage && (
                   <div className="mt-3 relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
                      <Image src={coreInfo.bannerImage} alt="Banner Preview" fill unoptimized className="object-cover" />
@@ -425,7 +544,11 @@ function PackageEditorForm() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Trip Plan PDF Upload</label>
-                <input type="file" accept="application/pdf" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "tripPlanPdf")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                {activeLang === 'en' ? (
+                  <input type="file" accept="application/pdf" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "tripPlanPdf")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                ) : (
+                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                )}
                 {coreInfo.tripPlanPdf && (
                   <a href={coreInfo.tripPlanPdf} target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-sm font-bold text-[#135D66] hover:text-[#E59A1D] transition-colors p-3 bg-gray-50 border border-gray-200 rounded-xl">
                     <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 17h-2.5v-10h2.5v10zm-1.25-11.25c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm6.75 11.25h-2.5v-5.5c0-1.38-.56-2.5-2.25-2.5-1.423 0-2.25 1.055-2.25 2.5v5.5h-2.5v-10h4.25v1.5h.063c.594-1.125 2.037-1.875 3.563-1.875 2.375 0 4.125 1.563 4.125 4.875v5.5z"/></svg>
@@ -452,10 +575,14 @@ function PackageEditorForm() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Section Image (Optional)</label>
-                <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setQuickFacts, quickFacts, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                {activeLang === 'en' ? (
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setQuickFacts, quickFacts, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                ) : (
+                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                )}
                 {quickFacts.image && (
                   <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden border border-gray-200">
-                     <Image src={quickFacts.image} alt="Preview" fill unoptimized className="object-cover" />
+                     <Image src={quickFacts.image} alt="Preview" fill unoptimized className="object-contain" />
                   </div>
                 )}
               </div>
@@ -476,7 +603,11 @@ function PackageEditorForm() {
                    <button type="button" onClick={() => setQuickFacts({...quickFacts, items: quickFacts.items.filter((_, i) => i !== idx)})} className="absolute top-4 right-4 text-red-500 hover:text-red-700 font-bold">✕</button>
                   <div className="w-1/3 pr-2 border-r border-gray-200">
                     <label className="block text-xs font-bold text-gray-500 mb-1">Icon Upload</label>
-                    <input type="file" accept="image/*" onChange={(e) => handleNestedFileUpload(e, "quickFacts", idx)} className="w-full border p-1.5 rounded text-xs bg-white" />
+                    {activeLang === 'en' ? (
+                      <input type="file" accept="image/*" onChange={(e) => handleNestedFileUpload(e, "quickFacts", idx)} className="w-full border p-1.5 rounded text-xs bg-white" />
+                    ) : (
+                      <div className="text-[10px] font-bold text-gray-400">Edit in English Tab</div>
+                    )}
                     {item.icon && (
                       <div className="mt-3 w-12 h-12 rounded bg-white border border-gray-200 flex items-center justify-center p-1.5 shadow-sm">
                         <img src={item.icon} alt="Icon" className="w-full h-full object-contain" />
@@ -509,7 +640,11 @@ function PackageEditorForm() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Elevation Profile Image</label>
-                <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setWhyChoose, whyChoose, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                {activeLang === 'en' ? (
+                  <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setWhyChoose, whyChoose, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
+                ) : (
+                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                )}
                 {whyChoose.image && (
                   <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden">
                      <Image src={whyChoose.image} alt="Preview" fill unoptimized className="object-contain" />
@@ -558,7 +693,7 @@ function PackageEditorForm() {
             </div>
           </div>
 
-          {/* 4. Itinerary Builder (UPDATED) */}
+          {/* 4. Itinerary Builder */}
           <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-8">
             <div className="flex justify-between items-center border-b pb-2">
               <h3 className="text-lg font-bold text-[#135D66]">4. Itinerary Builder</h3>
@@ -577,7 +712,6 @@ function PackageEditorForm() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
-                {/* What's Included */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                      <label className="block text-sm font-bold text-gray-700">What's Included</label>
@@ -591,7 +725,6 @@ function PackageEditorForm() {
                   ))}
                 </div>
 
-                {/* What's Not Included */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                      <label className="block text-sm font-bold text-gray-700">What's Not Included</label>
@@ -626,7 +759,11 @@ function PackageEditorForm() {
                     {/* Variant Image Upload */}
                     <div className="space-y-1">
                        <label className="block text-xs font-bold text-gray-500">Variant Image (Optional)</label>
-                       <input type="file" accept="image/*" onChange={(e) => handleVariantFileUpload(e, tabIdx, "image")} className="w-full border p-1.5 rounded text-xs bg-white" />
+                       {activeLang === 'en' ? (
+                         <input type="file" accept="image/*" onChange={(e) => handleVariantFileUpload(e, tabIdx, "image")} className="w-full border p-1.5 rounded text-xs bg-white" />
+                       ) : (
+                         <div className="text-[10px] font-bold text-gray-400">Edit in English Tab</div>
+                       )}
                        {tab.image && (
                          <div className="mt-2 relative w-full h-20 rounded-lg overflow-hidden border border-gray-200">
                            <Image src={tab.image} alt="Variant Preview" fill unoptimized className="object-cover" />
@@ -637,7 +774,11 @@ function PackageEditorForm() {
                     {/* Variant PDF Upload */}
                     <div className="space-y-1">
                        <label className="block text-xs font-bold text-gray-500">Itinerary Document (PDF)</label>
-                       <input type="file" accept="application/pdf" onChange={(e) => handleVariantFileUpload(e, tabIdx, "documentPdf")} className="w-full border p-1.5 rounded text-xs bg-white" />
+                       {activeLang === 'en' ? (
+                         <input type="file" accept="application/pdf" onChange={(e) => handleVariantFileUpload(e, tabIdx, "documentPdf")} className="w-full border p-1.5 rounded text-xs bg-white" />
+                       ) : (
+                         <div className="text-[10px] font-bold text-gray-400">Edit in English Tab</div>
+                       )}
                        {tab.documentPdf && (
                           <a href={tab.documentPdf} target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-xs font-bold text-[#135D66] hover:text-[#E59A1D] transition-colors p-2 bg-white border border-gray-200 rounded-lg">
                             <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 17h-2.5v-10h2.5v10zm-1.25-11.25c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm6.75 11.25h-2.5v-5.5c0-1.38-.56-2.5-2.25-2.5-1.423 0-2.25 1.055-2.25 2.5v5.5h-2.5v-10h4.25v1.5h.063c.594-1.125 2.037-1.875 3.563-1.875 2.375 0 4.125 1.563 4.125 4.875v5.5z"/></svg>
@@ -684,43 +825,94 @@ function PackageEditorForm() {
           {/* Publishing Status */}
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
             <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
-              <span className="text-sm font-bold text-gray-700">Visibility</span>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" checked={coreInfo.isPublished} onChange={(e) => setCoreInfo({...coreInfo, isPublished: e.target.checked})} />
-                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#98D80D]"></div>
-                <span className={`ml-3 text-sm font-bold ${coreInfo.isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{coreInfo.isPublished ? 'Published' : 'Draft'}</span>
-              </label>
-            </div>
+            
+            <label className="flex items-center justify-center p-5 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+              {activeLang === 'en' ? (
+                <div className="flex items-center gap-4">
+                  <span className={`text-sm font-bold transition-colors duration-300 ${!coreInfo.isPublished ? 'text-gray-800' : 'text-gray-400'}`}>Draft</span>
+                  <div className="relative inline-flex items-center">
+                    <input type="checkbox" className="sr-only peer" checked={coreInfo.isPublished} onChange={(e) => setCoreInfo({...coreInfo, isPublished: e.target.checked})} />
+                    <div className="relative w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#98D80D]"></div>
+                  </div>
+                  <span className={`text-sm font-bold transition-colors duration-300 ${coreInfo.isPublished ? 'text-[#98D80D]' : 'text-gray-400'}`}>Published</span>
+                </div>
+              ) : (
+                <span className="text-sm font-bold text-[#E59A1D]">Visibility Managed in English Tab</span>
+              )}
+            </label>
           </div>
 
           {/* Categorization */}
-          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+          <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6 relative">
+            {activeLang !== 'en' && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl">
+                 <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#E59A1D] border border-orange-100 text-sm">Managed in English Tab</span>
+              </div>
+            )}
             <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Categorization</h3>
+            
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Location</label>
-              <input type="text" placeholder="e.g., Mount Kilimanjaro" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-gray-900 bg-gray-50 focus:bg-white placeholder-gray-400" value={coreInfo.location} onChange={e => setCoreInfo({...coreInfo, location: e.target.value})} />
+              <label className="block text-sm font-bold text-gray-700 mb-2">Category *</label>
+              <select 
+                className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors cursor-pointer ${
+                  !coreInfo.category ? 'text-gray-400 border-red-300 bg-red-50' : 'text-gray-900 border-gray-300 bg-white focus:border-[#135D66]'
+                }`} 
+                value={coreInfo.category} 
+                onChange={e => setCoreInfo({...coreInfo, category: e.target.value, location: ""})}
+              >
+                <option value="" disabled hidden>Select a Category</option>
+                <option value="Climbing" className="text-gray-900">Climbing</option>
+                <option value="Safari" className="text-gray-900">Safari</option>
+                <option value="Destinations" className="text-gray-900">Destinations</option>
+                <option value="Day Trips" className="text-gray-900">Day Trips</option>
+              </select>
             </div>
+            
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
-              <select className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-gray-900 bg-gray-50 focus:bg-white" value={coreInfo.category} onChange={e => setCoreInfo({...coreInfo, category: e.target.value})}>
-                <option value="Climbing">Climbing</option>
-                <option value="Safari">Safari</option>
-                <option value="Day Trips">Day Trips</option>
+              <label className="block text-sm font-bold text-gray-700 mb-2">Location *</label>
+              <select 
+                className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors cursor-pointer ${
+                  !coreInfo.location ? 'text-gray-400 border-red-300 bg-red-50' : 'text-gray-900 border-gray-300 bg-white focus:border-[#135D66]'
+                }`} 
+                value={coreInfo.location} 
+                onChange={e => setCoreInfo({...coreInfo, location: e.target.value})}
+                disabled={!coreInfo.category}
+              >
+                <option value="" disabled hidden>
+                  {!coreInfo.category ? "Select a category first" : "Select a Location"}
+                </option>
+                {coreInfo.location && !availableLocations.some(l => l.title === coreInfo.location) && (
+                  <option value={coreInfo.location} className="text-gray-900">{coreInfo.location}</option>
+                )}
+                {availableLocations.map(loc => (
+                  <option key={loc.id} value={loc.title} className="text-gray-900">{loc.title}</option>
+                ))}
               </select>
             </div>
           </div>
 
           {/* SEO Metadata */}
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-            <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Search Engine Optimization</h3>
+            <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+              <h3 className="font-bold text-[#135D66] text-lg">Search Engine Optimization</h3>
+              {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
+            </div>
+            
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">URL Slug *</label>
               <div className="flex items-stretch">
-                <span className="px-4 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-xl text-gray-500 text-sm font-medium flex items-center">/packages/</span>
-                <input type="text" required className="w-full px-4 py-3 border border-gray-300 rounded-r-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.slug} onChange={(e) => setCoreInfo({...coreInfo, slug: e.target.value})} />
+                <span className="px-4 py-3 bg-gray-100 border border-r-0 border-gray-300 rounded-l-xl text-gray-500 text-sm font-medium flex items-center whitespace-nowrap">
+                  {activeLang === 'en' ? `/${selectedLocSlug}/` : `/${activeLang}/${selectedLocSlug}/`}
+                </span>
+                <input 
+                  type="text" required 
+                  className="w-full px-4 py-3 border border-gray-300 rounded-r-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" 
+                  value={coreInfo.slug} 
+                  onChange={(e) => setCoreInfo({...coreInfo, slug: e.target.value})} 
+                />
               </div>
             </div>
+            
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-2">Meta Title</label>
               <input type="text" placeholder="Title for Search Engines..." className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.metaTitle} onChange={(e) => setCoreInfo({...coreInfo, metaTitle: e.target.value})} />

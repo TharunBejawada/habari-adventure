@@ -1,12 +1,12 @@
 // apps/web/app/page.tsx
-import Hero from "../components/Hero";
-import AboutSection from "../components/AboutSection";
-import BottomCTA from "../components/BottomCTA";
-import WhyChooseUs from "../components/WhyChooseUs";
-import SafariSection from "../components/SafariSection";
-import ClimbingSection from "../components/ClimbingSection";
-import HolidayPackages from "../components/HolidayPackages";
-import FAQSection from "../components/FAQSection";
+import Hero from "../../components/Hero";
+import AboutSection from "../../components/AboutSection";
+import BottomCTA from "../../components/BottomCTA";
+import WhyChooseUs from "../../components/WhyChooseUs";
+import SafariSection from "../../components/SafariSection";
+import ClimbingSection from "../../components/ClimbingSection";
+import HolidayPackages from "../../components/HolidayPackages";
+import FAQSection from "../../components/FAQSection";
 
 export default function HomePage() {
   // const jsonLd = {

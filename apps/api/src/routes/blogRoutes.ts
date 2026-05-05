@@ -10,7 +10,8 @@ import {
   getBlogsByCategory,
   getBlogsByTag,
   getTopCategories,
-  getTopTags
+  getTopTags,
+  deleteBlogTranslation
 } from "../controllers/blogController";
 import { requireAuth, requireAdmin } from "../middleware/authMiddleware";
 
@@ -32,6 +33,7 @@ router.get("/", getBlogs);
 router.post("/", requireAuth, requireAdmin, createBlog);
 router.put("/:id", requireAuth, requireAdmin, updateBlog);
 router.delete("/:id", requireAuth, requireAdmin, deleteBlog);
+router.delete("/:id/translations/:lang", requireAuth, requireAdmin, deleteBlogTranslation);
 
 // --- 4. DYNAMIC SLUG ROUTE (MUST BE ABSOLUTELY LAST) ---
 // If this is higher up, requests to /search will get routed here!

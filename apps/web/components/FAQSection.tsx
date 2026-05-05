@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Caveat } from "next/font/google";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -43,6 +44,7 @@ const faqs = [
 ];
 
 export default function FAQSection() {
+  const { getLocalizedUrl } = useLocalizedUrl();
   const [activeIndex, setActiveIndex] = useState<number | null>(0); // First item open by default
 
   const toggleFAQ = (index: number) => {
@@ -79,7 +81,7 @@ export default function FAQSection() {
             <div>
               <h4 className="text-[#135D66] font-bold mb-1">Still need help?</h4>
               <p className="text-gray-500 text-xs md:text-sm mb-3">Our travel experts are here 24/7.</p>
-              <a href="/contact" className="text-[#E59A1D] font-bold text-sm hover:underline flex items-center gap-1">
+              <a href={getLocalizedUrl("/contact")} className="text-[#E59A1D] font-bold text-sm hover:underline flex items-center gap-1">
                 Contact Us 
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />

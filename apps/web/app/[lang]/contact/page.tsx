@@ -1,7 +1,7 @@
 // apps/web/app/contact/page.tsx
-import ContactHero from "../../components/contact/ContactHero";
-import ContactFormSection from "../../components/contact/ContactFormSection";
-import ContactLocation from "../../components/contact/ContactLocation"; // <-- Import it here
+import ContactHero from "../../../components/contact/ContactHero";
+import ContactFormSection from "../../../components/contact/ContactFormSection";
+import ContactLocation from "../../../components/contact/ContactLocation"; // <-- Import it here
 
 export default function ContactPage() {
   return (

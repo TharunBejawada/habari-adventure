@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import {prisma} from "../prisma";
+import { prisma } from "../prisma";
 
 export const getUpcomingDates = async (req: Request, res: Response) => {
   try {
     const dates = await prisma.upcomingDate.findMany({
-      // FIX: Removed 'length' from the select statement
-      include: { package: { select: { title: true, slug: true } } },
+      // FIX: Added location: true so the frontend filter works
+      include: { package: { select: { title: true, slug: true, location: true } } },
       orderBy: { startDate: 'asc' },
     });
     res.status(200).json({ status: "success", data: dates });
@@ -17,14 +17,17 @@ export const getUpcomingDates = async (req: Request, res: Response) => {
 
 export const createUpcomingDate = async (req: Request, res: Response) => {
   try {
-    const { packageId, title, startDate, endDate, price, isFullMoon, totalSeats, availableSeats, status } = req.body;
+    // NEW: Added isChristmas and isNewYear
+    const { packageId, title, startDate, endDate, price, isFullMoon, isChristmas, isNewYear, totalSeats, availableSeats, status } = req.body;
     
     const newDate = await prisma.upcomingDate.create({
       data: {
-        packageId, title, price: Number(price), isFullMoon, 
+        packageId, title, price: Number(price), isFullMoon, isChristmas, isNewYear,
         totalSeats: Number(totalSeats), availableSeats: Number(availableSeats || totalSeats),
         status, startDate: new Date(startDate), endDate: new Date(endDate)
-      }
+      },
+      // Ensure we return the package data for the live UI update
+      include: { package: { select: { title: true, slug: true, location: true } } }
     });
     res.status(201).json({ status: "success", data: newDate });
   } catch (error: any) {
@@ -32,21 +35,20 @@ export const createUpcomingDate = async (req: Request, res: Response) => {
   }
 };
 
-// NEW: Update function for Editing
 export const updateUpcomingDate = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { packageId, title, startDate, endDate, price, isFullMoon, totalSeats, availableSeats, status } = req.body;
+    const { packageId, title, startDate, endDate, price, isFullMoon, isChristmas, isNewYear, totalSeats, availableSeats, status } = req.body;
     
     const updatedDate = await prisma.upcomingDate.update({
       where: { id: id as string },
       data: {
-        packageId, title, price: Number(price), isFullMoon, 
+        packageId, title, price: Number(price), isFullMoon, isChristmas, isNewYear,
         totalSeats: Number(totalSeats), availableSeats: Number(availableSeats),
         status, startDate: new Date(startDate), endDate: new Date(endDate)
       },
-      // Return the package data so the UI updates instantly
-      include: { package: { select: { title: true, slug: true } } }
+      // Added location: true here as well
+      include: { package: { select: { title: true, slug: true, location: true } } }
     });
     
     res.status(200).json({ status: "success", data: updatedDate });

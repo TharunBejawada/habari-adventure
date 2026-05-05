@@ -60,6 +60,8 @@ model Package {
 
   upcomingDates UpcomingDate[]
   pricing       PackagePricing?
+
+  translations    PackageTranslation[]
 }
 
 model Blog {
@@ -94,6 +96,8 @@ model Blog {
 
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  translations    BlogTranslation[]
 
   @@index([isPublished, publishedAt])
   @@index([category])
@@ -178,6 +182,8 @@ model Location {
   id              String    @id @default(uuid())
   slug            String    @unique
   title           String
+  category        String    // NEW: Category dropdown value
+  heroImage       String?   // NEW: Secondary hero image
   bannerImage     String?
   overviewText    String    // Rich text describing the location
   youtubeVideoUrl String?   // Optional YouTube embed or watch link
@@ -186,7 +192,8 @@ model Location {
   updatedAt       DateTime  @updatedAt
   
   // Optional for later: If you want to link packages directly to this model
-  // packages     Package[] 
+  // packages      Package[] 
+  translations    LocationTranslation[]
 }
 
 model UpcomingDate {
@@ -199,6 +206,8 @@ model UpcomingDate {
   endDate        DateTime
   price          Float    
   isFullMoon     Boolean  @default(false)
+  isChristmas    Boolean  @default(false) // NEW
+  isNewYear      Boolean  @default(false) // NEW
   
   totalSeats     Int      @default(12)
   availableSeats Int      @default(12)
@@ -220,4 +229,75 @@ model PackagePricing {
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+model LocationTranslation {
+  id           String   @id @default(uuid())
+  locationId   String
+  location     Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  
+  languageCode String   // "fr", "es", etc.
+  slug         String   // Localized URL (e.g., /fr/destinations/mont-kilimanjaro)
+  title        String
+  overviewText String   @db.Text
+  
+  // Ensures a location only has one translation per language
+  // Ensures the localized slug is unique within that language
+  @@unique([locationId, languageCode])
+  @@unique([languageCode, slug])
+}
+
+model PackageTranslation {
+  id              String   @id @default(uuid())
+  packageId       String
+  package         Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  languageCode    String   // "fr", "es"
+  slug            String
+  
+  title           String
+  badgeText       String?
+  description     String?  @db.Text
+  
+  // We translate the JSON structures so the UI can map them exactly the same way
+  quickFacts      Json?    
+  whyChoose       Json?    
+  itineraryMeta   Json?    
+  itineraries     Json?    
+  
+  // Localized SEO
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+
+  @@unique([packageId, languageCode])
+  @@unique([languageCode, slug])
+}
+
+model BlogTranslation {
+  id              String   @id @default(uuid())
+  blogId          String
+  blog            Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  
+  languageCode    String   // "fr", "es"
+  slug            String
+  
+  title           String
+  content         String   @db.Text
+  excerpt         String?  @db.Text
+  imageAltText    String?
+  
+  // You might want to translate tags or categories too
+  category        String?
+  tags            String[]
+
+  // Localized SEO & Data
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  metaKeywords    String?
+  faqs            Json?      
+  schemaMarkup    Json?
+
+  @@unique([blogId, languageCode])
+  @@unique([languageCode, slug])
 }

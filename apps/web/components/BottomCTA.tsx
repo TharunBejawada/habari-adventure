@@ -4,10 +4,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Caveat } from "next/font/google";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
 export default function BottomCTA() {
+  const { getLocalizedUrl } = useLocalizedUrl();
   return (
     <section className="w-full px-4 sm:px-6 py-12 md:py-20 relative z-10">
       
@@ -49,7 +51,7 @@ export default function BottomCTA() {
           </div>
 
           <Link 
-            href="/contact" 
+            href={getLocalizedUrl("/contact")} 
             className="inline-block bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-base md:text-lg py-3 md:py-4 px-6 md:px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20 text-center"
           >
             Start your Tanzania safari tours today
