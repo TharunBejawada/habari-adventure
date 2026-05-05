@@ -89,7 +89,7 @@ export const getAllLocations = async (req: Request, res: Response) => {
 
 export const getLocationBySlug = async (req: Request, res: Response) => {
   try {
-    const { slug } = req.params;
+    const slug = req.params[0] || req.params.slug;
     const lang = req.query.lang as string;
 
     const whereClause = lang && lang !== 'en'

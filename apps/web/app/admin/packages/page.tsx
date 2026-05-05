@@ -172,7 +172,7 @@ export default function PackagesAdminPage() {
                     </td>
                     <td className="p-4 text-right pr-6">
                       <div className="flex items-center justify-end gap-2">
-                        <Link href={`/packages/${pkg.slug}`} target="_blank" className="p-2 text-gray-400 hover:text-[#135D66] hover:bg-[#E9F4F5] rounded-lg transition-all" title="View on Website">
+                        <Link href={`/${pkg.slug}`} target="_blank" className="p-2 text-gray-400 hover:text-[#135D66] hover:bg-[#E9F4F5] rounded-lg transition-all" title="View on Website">
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                         </Link>
                         <Link href={`/admin/packages/editor?slug=${pkg.slug}`} className="p-2 text-gray-400 hover:text-[#E59A1D] hover:bg-orange-50 rounded-lg transition-all" title="Edit Package">
