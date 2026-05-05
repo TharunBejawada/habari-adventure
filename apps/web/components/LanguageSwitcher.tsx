@@ -14,21 +14,31 @@ export default function LanguageSwitcher() {
   const activeLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLangCode) 
                      || SUPPORTED_LANGUAGES.find(lang => lang.code === DEFAULT_LANGUAGE);
 
-  // NEW: Unified aggressive cookie handler
+  // NEW: Hierarchical aggressive cookie handler
   const applyGoogleTranslate = (langCode: string) => {
-    const domain = window.location.hostname;
+    const host = window.location.hostname;
+    const domainParts = host.split('.');
 
-    // 1. NUKE EVERYTHING: Aggressively clear existing googtrans cookies across ALL scopes
+    // 1. NUKE EVERYTHING: Iterate through all domain levels and clear the cookie
+    // This catches 'development-habari.habariadventure.com', '.habariadventure.com', etc.
+    
+    // First, clear without specifying a domain (catches strict local cookies)
     document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
 
-    // 2. APPLY NEW: If not English, set the new cookie across ALL scopes so Google can't get confused
+    // Next, crawl up the domain hierarchy and nuke everything
+    for (let i = 0; i < domainParts.length; i++) {
+      const currentDomain = domainParts.slice(i).join('.');
+      
+      // Try deleting it with the exact domain
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${currentDomain};`;
+      // Try deleting it with the wildcard leading dot (which Google uses)
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${currentDomain};`;
+    }
+
+    // 2. APPLY NEW: If not English, set the new cookie 
     if (langCode !== 'en') {
-      const gtCookie = `googtrans=/en/${langCode}; path=/;`;
-      document.cookie = gtCookie;
-      document.cookie = `${gtCookie} domain=${domain};`;
-      document.cookie = `${gtCookie} domain=.${domain};`;
+      // Just set it strictly on the current host to prevent future cross-subdomain bleeding
+      document.cookie = `googtrans=/en/${langCode}; path=/;`;
     }
   };
 
