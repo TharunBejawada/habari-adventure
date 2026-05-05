@@ -1,3 +1,4 @@
+// apps/web/app/admin/locations/editor/page.tsx
 "use client";
 
 import { useState, useEffect, Suspense, useMemo } from "react";
@@ -39,6 +40,9 @@ function LocationEditorForm() {
 
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // NEW: State to track if we should auto-fill the slug
+  const [autoSlug, setAutoSlug] = useState(!isEditMode);
 
   const [activeLang, setActiveLang] = useState('en');
   const [snapshot, setSnapshot] = useState<string>("");
@@ -47,9 +51,9 @@ function LocationEditorForm() {
     id: "",
     title: "",
     slug: "",
-    category: "", // NEW
+    category: "", // Global
     bannerImage: "",
-    heroImage: "", // NEW
+    heroImage: "", // Global
     overviewText: "",
     youtubeVideoUrl: "",
     isPublished: false
@@ -80,6 +84,21 @@ function LocationEditorForm() {
         .finally(() => setIsLoading(false));
     }
   }, [editSlug, isEditMode]);
+
+  // NEW: Auto-generate the slug based on Category and Title if we are creating a new location
+  useEffect(() => {
+    if (!isEditMode && autoSlug) {
+      const catPart = formData.category ? formData.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
+      // const titlePart = formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
+      const titlePart = formData.title ? formData.title.trim() : '';
+      
+      const generatedSlug = [catPart, titlePart].filter(Boolean).join('/');
+      
+      if (formData.slug !== generatedSlug) {
+        setFormData(prev => ({ ...prev, slug: generatedSlug }));
+      }
+    }
+  }, [formData.title, formData.category, isEditMode, autoSlug]);
 
   const handleLanguageSwitch = async (langCode: string) => {
     if (langCode === activeLang) return;
@@ -255,19 +274,19 @@ function LocationEditorForm() {
             <label className="block text-sm font-bold text-gray-700 mb-2">Category *</label>
             {activeLang === 'en' ? (
              <select 
-  required
-  className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors cursor-pointer ${
-    !formData.category ? 'text-gray-400 border-red-300 bg-red-50' : 'text-gray-900 border-gray-300 bg-white focus:border-[#135D66]'
-  }`}
-  value={formData.category} 
-  onChange={e => setFormData({...formData, category: e.target.value})}
->
-  <option value="" disabled hidden>Select an option</option>
-  <option value="Climbing" className="text-gray-900">Climbing</option>
-  <option value="Safari" className="text-gray-900">Safari</option>
-  <option value="Destinations" className="text-gray-900">Destinations</option>
-  <option value="Day Trips" className="text-gray-900">Day Trips</option>
-</select>
+                required
+                className={`w-full px-4 py-3 border rounded-xl outline-none transition-colors cursor-pointer ${
+                  !formData.category ? 'text-gray-400 border-red-300 bg-red-50' : 'text-gray-900 border-gray-300 bg-white focus:border-[#135D66]'
+                }`}
+                value={formData.category} 
+                onChange={e => setFormData({...formData, category: e.target.value})}
+              >
+                <option value="" disabled hidden>Select an option</option>
+                <option value="Climbing" className="text-gray-900">Climbing</option>
+                <option value="Safari" className="text-gray-900">Safari</option>
+                <option value="Destinations" className="text-gray-900">Destinations</option>
+                <option value="Day Trips" className="text-gray-900">Day Trips</option>
+              </select>
             ) : (
               <div className="text-sm font-bold text-gray-500 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center">
                 <span className="mr-2 text-[#E59A1D]">Managed in English Tab:</span> {formData.category}
@@ -283,7 +302,12 @@ function LocationEditorForm() {
             <input 
               type="text" required placeholder="e.g., safari/serengeti"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors" 
-              value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} 
+              value={formData.slug} 
+              // Turn off auto-filling the moment the admin types manually into this box
+              onChange={e => {
+                setAutoSlug(false);
+                setFormData({...formData, slug: e.target.value});
+              }} 
             />
             <p className="text-xs text-gray-400 mt-1.5 font-medium">Use a full path, e.g. "safari/serengeti" or "climbing/kilimanjaro"</p>
           </div>
