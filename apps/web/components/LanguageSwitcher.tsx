@@ -14,33 +14,35 @@ export default function LanguageSwitcher() {
   const activeLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLangCode) 
                      || SUPPORTED_LANGUAGES.find(lang => lang.code === DEFAULT_LANGUAGE);
 
-  // NEW: Helper function to aggressively clear cookies across all domain scopes
-  const clearGoogleTranslateCookies = () => {
+  // NEW: Unified aggressive cookie handler
+  const applyGoogleTranslate = (langCode: string) => {
     const domain = window.location.hostname;
+
+    // 1. NUKE EVERYTHING: Aggressively clear existing googtrans cookies across ALL scopes
     document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`;
+
+    // 2. APPLY NEW: If not English, set the new cookie across ALL scopes so Google can't get confused
+    if (langCode !== 'en') {
+      const gtCookie = `googtrans=/en/${langCode}; path=/;`;
+      document.cookie = gtCookie;
+      document.cookie = `${gtCookie} domain=${domain};`;
+      document.cookie = `${gtCookie} domain=.${domain};`;
+    }
   };
 
-  // Sync Google Translate when the URL changes
+  // Sync Google Translate when the URL changes (e.g., on initial load or back button)
   useEffect(() => {
     const code = activeLang?.code || 'en';
-    if (code === 'en') {
-      clearGoogleTranslateCookies();
-    } else {
-      document.cookie = `googtrans=/en/${code}; path=/;`;
-    }
+    applyGoogleTranslate(code);
   }, [activeLang]);
 
   const handleLanguageChange = (langCode: string) => {
     setIsOpen(false);
     
-    // 1. Set or aggressively clear the Google Translate cookie
-    if (langCode === 'en') {
-      clearGoogleTranslateCookies();
-    } else {
-      document.cookie = `googtrans=/en/${langCode}; path=/;`;
-    }
+    // 1. Wipe old cookies and set the new ones immediately
+    applyGoogleTranslate(langCode);
 
     // 2. Construct the new URL
     const pathSegments = pathname.split('/').filter(Boolean);
@@ -55,7 +57,7 @@ export default function LanguageSwitcher() {
       ? `/${pathSegments.join('/')}` 
       : `/${langCode}/${pathSegments.join('/')}`;
 
-    // 3. Navigate and force a reload to trigger Google's script on the new route
+    // 3. Navigate and force a reload to trigger Google's script cleanly on the new route
     window.location.href = newPath || '/';
   };
 
