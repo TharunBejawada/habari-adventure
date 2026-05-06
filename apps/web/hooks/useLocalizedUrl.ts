@@ -13,10 +13,10 @@ export function useLocalizedUrl() {
     : DEFAULT_LANGUAGE;
 
   // 2. The centralized function
-  const getLocalizedUrl = (url: string) => {
+  const getLocalizedUrl = (url: string | undefined | null): string => {
     // Ignore external links, anchor tags, emails, and phone numbers
     if (!url || url.startsWith('http') || url.startsWith('#') || url.startsWith('mailto:') || url.startsWith('tel:')) {
-      return url;
+      return url || "#";
     }
     
     const cleanUrl = url.startsWith('/') ? url : `/${url}`;

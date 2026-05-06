@@ -25,7 +25,7 @@ export default function PackagesAdminPage() {
 
   const fetchPackages = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`);
       const data = await res.json();
       if (data.status === "success") {
         setPackages(data.data);
@@ -60,7 +60,7 @@ export default function PackagesAdminPage() {
     setIsDeleting(id);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${id}`, {
         method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();

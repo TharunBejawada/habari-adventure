@@ -30,7 +30,7 @@ export default function UpcomingDates() {
   useEffect(() => {
     if (!fullDbSlug || fullDbSlug === "//") return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`)
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {

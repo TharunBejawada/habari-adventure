@@ -39,7 +39,7 @@ export default function Footer() {
 
   useEffect(() => {
     if (pathname && !pathname.startsWith("/admin")) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`)
         .then(res => res.json())
         .then(data => {
           if (data?.data) {

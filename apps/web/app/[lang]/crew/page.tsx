@@ -14,7 +14,7 @@ export default function OurCrewPage() {
 
   // --- 1. FETCH DATA ---
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {

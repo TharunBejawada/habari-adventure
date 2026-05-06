@@ -28,8 +28,8 @@ export default function LocationsAdminPage() {
     setIsLoading(true);
     try {
       const endpoint = categoryFilter === "All" 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/category/${encodeURIComponent(categoryFilter)}`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/locations`
+        : `${process.env.NEXT_PUBLIC_API_URL}/locations/category/${encodeURIComponent(categoryFilter)}`;
         
       const res = await fetch(endpoint);
       const data = await res.json();
@@ -51,7 +51,7 @@ export default function LocationsAdminPage() {
     setIsDeleting(id);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${id}`, {
         method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
       });
       const data = await res.json();

@@ -35,7 +35,7 @@ function CustomRTE({ value, onChange, placeholder, minHeight = "200px" }: { valu
         formData.append("asset", file);
         try {
           const token = localStorage.getItem("adminToken");
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
             method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
           });
           const data = await res.json();
@@ -158,7 +158,7 @@ function PackageEditorForm() {
   // --- INITIAL DATA FETCH ---
   useEffect(() => {
     if (isEditMode) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${encodeURIComponent(editSlug as string)}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(editSlug as string)}`)
         .then(res => res.json())
         .then(data => {
           if (data.status === "success") {
@@ -199,7 +199,7 @@ function PackageEditorForm() {
   // --- FETCH LOCATIONS DYNAMICALLY BASED ON CATEGORY ---
   useEffect(() => {
     if (coreInfo.category) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/category/${encodeURIComponent(coreInfo.category)}?lang=${activeLang}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/category/${encodeURIComponent(coreInfo.category)}?lang=${activeLang}`)
         .then(res => res.json())
         .then(data => {
           if (data.status === 'success') {
@@ -231,7 +231,7 @@ function PackageEditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${encodeURIComponent(editSlug as string)}?lang=${langCode}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(editSlug as string)}?lang=${langCode}`);
       const data = await res.json();
       
       if (data.status === "success") {
@@ -279,7 +279,7 @@ function PackageEditorForm() {
     formData.append("asset", file);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
         method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
       });
       const data = await res.json();
@@ -403,8 +403,8 @@ function PackageEditorForm() {
       const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries, languageCode: activeLang };
       
       const url = isEditMode 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${updateIdentifier}` 
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/packages/${updateIdentifier}` 
+        : `${process.env.NEXT_PUBLIC_API_URL}/packages`;
         
       const method = isEditMode ? "PUT" : "POST";
       const token = localStorage.getItem("adminToken");
@@ -473,7 +473,7 @@ function PackageEditorForm() {
                 
                 setIsLoading(true);
                 const token = localStorage.getItem("adminToken");
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${coreInfo.id}/translations/${activeLang}`, {
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${coreInfo.id}/translations/${activeLang}`, {
                   method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
                 });
                 

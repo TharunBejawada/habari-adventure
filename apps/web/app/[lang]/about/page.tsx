@@ -66,7 +66,7 @@ export default function AboutUsPage() {
 
   // Fetch the first 4 members of the first team for the featured section
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success" && data.data.teams?.length > 0) {

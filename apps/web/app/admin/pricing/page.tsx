@@ -29,9 +29,9 @@ export default function PricingAdminPage() {
     const fetchData = async () => {
       try {
         const [locRes, pkgRes, priceRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pricing`)
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`)
         ]);
         
         const locData = await locRes.json();
@@ -79,7 +79,7 @@ export default function PricingAdminPage() {
     setIsSaving(true);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pricing`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`, {
         method: "POST", // The backend handles this as an UPSERT
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify(formData)
@@ -111,7 +111,7 @@ export default function PricingAdminPage() {
     if (!window.confirm("Delete this pricing matrix?")) return;
     try {
       const token = localStorage.getItem("adminToken");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pricing/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing/${id}`, {
         method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
       });
       setPricingList(pricingList.filter(p => p.id !== id));

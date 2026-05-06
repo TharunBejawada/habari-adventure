@@ -27,7 +27,7 @@ export default function AdminCrewDashboard() {
   // --- 1. FETCH DATA ---
   const fetchCrewData = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew`);
       const data = await res.json();
       if (data.status === "success") {
         setSettings(data.data.settings || { heroBannerImage: "", porterBannerImage: "", porterDescription: "" });
@@ -58,7 +58,7 @@ export default function AdminCrewDashboard() {
 
     try {
       // Assuming you have a generic upload endpoint
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` },
         body: formData,
@@ -81,7 +81,7 @@ export default function AdminCrewDashboard() {
   // --- 3. SAVE HANDLERS ---
   const handleSettingsSave = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew/settings`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/settings`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -98,7 +98,7 @@ export default function AdminCrewDashboard() {
   const handleTeamSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew/team`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/team`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export default function AdminCrewDashboard() {
   const handleMemberSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew/member`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/member`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -134,7 +134,7 @@ export default function AdminCrewDashboard() {
   const handleDelete = async (type: "team" | "member", id: string) => {
     if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/crew/${type}/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/${type}/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` },
       });
