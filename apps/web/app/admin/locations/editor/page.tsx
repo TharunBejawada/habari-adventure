@@ -61,7 +61,7 @@ function LocationEditorForm() {
 
   useEffect(() => {
     if (isEditMode) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${encodeURIComponent(editSlug)}`)
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(editSlug)}`)
         .then(res => res.json())
         .then(data => {
           if (data.status === "success" && data.data) {
@@ -112,7 +112,7 @@ function LocationEditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${encodeURIComponent(editSlug)}?lang=${langCode}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(editSlug)}?lang=${langCode}`);
       const data = await res.json();
       
       if (data.status === "success" && data.data) {
@@ -146,7 +146,7 @@ function LocationEditorForm() {
     form.append("asset", file);
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
         method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: form
       });
       const data = await res.json();
@@ -178,8 +178,8 @@ function LocationEditorForm() {
       }
 
       const url = isEditMode 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${updateIdentifier}` 
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/locations/${updateIdentifier}` 
+        : `${process.env.NEXT_PUBLIC_API_URL}/locations`;
         
       const token = localStorage.getItem("adminToken");
       const res = await fetch(url, {
@@ -227,7 +227,7 @@ function LocationEditorForm() {
                 if (!window.confirm(`Are you sure you want to delete the ${activeLang.toUpperCase()} translation?`)) return;
                 setIsLoading(true);
                 const token = localStorage.getItem("adminToken");
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${formData.id}/translations/${activeLang}`, {
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${formData.id}/translations/${activeLang}`, {
                   method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
                 });
                 alert("Translation deleted. Reloading fallback text...");

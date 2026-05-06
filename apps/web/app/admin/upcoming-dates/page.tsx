@@ -44,9 +44,9 @@ export default function UpcomingDatesAdminPage() {
     const fetchData = async () => {
       try {
         const [locRes, pkgRes, datesRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates`)
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`)
         ]);
         const locData = await locRes.json();
         const pkgData = await pkgRes.json();
@@ -84,8 +84,8 @@ export default function UpcomingDatesAdminPage() {
     try {
       const token = localStorage.getItem("adminToken");
       const url = editingId 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates/${editingId}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates`;
+        ? `${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates/${editingId}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`;
         
       const res = await fetch(url, {
         method: editingId ? "PUT" : "POST",
@@ -136,7 +136,7 @@ export default function UpcomingDatesAdminPage() {
     if (!window.confirm("Delete this departure date?")) return;
     try {
       const token = localStorage.getItem("adminToken");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upcoming-dates/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates/${id}`, {
         method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
       });
       setDates(dates.filter(d => d.id !== id));

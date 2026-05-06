@@ -46,10 +46,10 @@
 //     const fetchAllData = async () => {
 //       try {
 //         const [blogRes, recentRes, categoriesRes, tagsRes] = await Promise.all([
-//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${slug}`),
-//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs?publishedOnly=true`),
-//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/stats/top-categories`),
-//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/stats/top-tags`),
+//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${slug}`),
+//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs?publishedOnly=true`),
+//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-categories`),
+//           fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-tags`),
 //         ]);
 
 //         const blogData = await blogRes.json();
@@ -457,10 +457,10 @@ export default function BlogPostPage() {
       try {
         // Appended ?lang=${lang} to all fetches
         const [blogRes, recentRes, categoriesRes, tagsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${slug}?lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs?publishedOnly=true&lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/stats/top-categories?lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/stats/top-tags?lang=${lang}`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${slug}?lang=${lang}`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs?publishedOnly=true&lang=${lang}`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-categories?lang=${lang}`),
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-tags?lang=${lang}`),
         ]);
 
         const blogData = await blogRes.json();

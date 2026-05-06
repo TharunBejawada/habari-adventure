@@ -45,8 +45,8 @@ export default function PackageLandingPage() {
     if (!packageParam) return;
     
     Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/${encodeURIComponent(fullDbSlug)}?lang=${lang}`).then(res => res.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/pricing`).then(res => res.json())
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(fullDbSlug)}?lang=${lang}`).then(res => res.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`).then(res => res.json())
     ])
       .then(([pkgData, pricingData]) => {
         if (pkgData.status === "success" && pkgData.data?.isPublished) {

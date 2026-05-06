@@ -82,7 +82,7 @@
 //     if (isEditMode) {
 //       const fetchBlog = async () => {
 //         try {
-//           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}`);
+//           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}`);
 //           const data = await res.json();
 //           if (data.status === "success") {
 //             const b = data.data;
@@ -127,7 +127,7 @@
 
 //     try {
 //       const token = localStorage.getItem("adminToken");
-//       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload?folder=blogs`, {
+//       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload?folder=blogs`, {
 //         method: "POST",
 //         headers: { "Authorization": `Bearer ${token}` },
 //         body: formData
@@ -262,7 +262,7 @@
 //         publishedAt: publishedAt ? new Date(publishedAt).toISOString() : (isPublished ? new Date().toISOString() : null)
 //       };
 
-//       const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs`;
+//       const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/blogs`;
 //       const method = isEditMode ? "PUT" : "POST";
 
 //       const res = await fetch(url, {
@@ -752,7 +752,7 @@ function EditorForm() {
     if (isEditMode) {
       const fetchBlog = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}`);
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}`);
           const data = await res.json();
           if (data.status === "success") {
             const b = data.data;
@@ -810,7 +810,7 @@ function EditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}?lang=${langCode}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}?lang=${langCode}`);
       const data = await res.json();
       
       if (data.status === "success" && data.data) {
@@ -853,7 +853,7 @@ function EditorForm() {
 
     try {
       const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/upload?folder=blogs`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload?folder=blogs`, {
         method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
       });
       const data = await res.json();
@@ -974,7 +974,7 @@ function EditorForm() {
         languageCode: activeLang
       };
 
-      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs`;
+      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/blogs`;
       const method = isEditMode ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -1027,7 +1027,7 @@ function EditorForm() {
                 if (!window.confirm(`Are you sure you want to delete the ${activeLang.toUpperCase()} translation?`)) return;
                 setIsLoading(true);
                 const token = localStorage.getItem("adminToken");
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/blogs/${editId}/translations/${activeLang}`, {
+                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}/translations/${activeLang}`, {
                   method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
                 });
                 alert("Translation deleted. Reloading fallback text...");

@@ -12,6 +12,7 @@ import pricingRoutes from "./pricingRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
+import { getNavigation } from "../controllers/navigationController";
 import { requireAuth, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -47,6 +48,9 @@ router.get("/settings", getSettings);
 
 // Protected route so only Admins can update the header/footer
 router.put("/settings", requireAuth, requireAdmin, updateSettings);
+
+// Public route: returns published locations grouped by category for the nav builder
+router.get("/navigation", getNavigation);
 
 // --- 2. Package & Location Routes ---
 // router.use("/packages", (req: Request, res: Response) => {

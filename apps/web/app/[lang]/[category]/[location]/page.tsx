@@ -69,14 +69,14 @@ export default function LocationLandingPage() {
     setIsLoading(true);
     
     // STEP 1: Fetch Location exactly by its database slug
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/locations/${encodeURIComponent(fullDbSlug)}?lang=${lang}`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(fullDbSlug)}?lang=${lang}`)
       .then(res => res.json())
       .then(locData => {
         if (locData.status === "success" && locData.data) {
           setLocationData(locData.data);
           
           // STEP 2: Use the exact database title to fetch the associated packages
-          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/packages/location/${encodeURIComponent(locData.data.title)}?lang=${lang}`);
+          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/location/${encodeURIComponent(locData.data.title)}?lang=${lang}`);
         }
         throw new Error("Location not found");
       })
