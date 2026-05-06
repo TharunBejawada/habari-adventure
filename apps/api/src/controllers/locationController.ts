@@ -1,57 +1,3 @@
-// import { Request, Response } from "express";
-// import { prisma } from "../prisma";
-
-// export const getAllLocations = async (req: Request, res: Response) => {
-//   try {
-//     const locations = await prisma.location.findMany({ orderBy: { createdAt: 'desc' } });
-//     res.status(200).json({ status: "success", data: locations });
-//   } catch (error: any) {
-//     res.status(500).json({ status: "error", message: error.message });
-//   }
-// };
-
-// export const getLocationBySlug = async (req: Request, res: Response) => {
-//   try {
-//     const { slug } = req.params;
-//     const location = await prisma.location.findUnique({ where: { slug: slug as string } });
-//     if (!location) return res.status(404).json({ status: "error", message: "Location not found" });
-//     res.status(200).json({ status: "success", data: location });
-//   } catch (error: any) {
-//     res.status(500).json({ status: "error", message: error.message });
-//   }
-// };
-
-// export const createLocation = async (req: Request, res: Response) => {
-//   try {
-//     const newLocation = await prisma.location.create({ data: req.body });
-//     res.status(201).json({ status: "success", data: newLocation });
-//   } catch (error: any) {
-//     res.status(400).json({ status: "error", message: error.message });
-//   }
-// };
-
-// export const updateLocation = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params;
-//     const updatedLocation = await prisma.location.update({
-//       where: { id: id as string },
-//       data: req.body
-//     });
-//     res.status(200).json({ status: "success", data: updatedLocation });
-//   } catch (error: any) {
-//     res.status(400).json({ status: "error", message: error.message });
-//   }
-// };
-
-// export const deleteLocation = async (req: Request, res: Response) => {
-//   try {
-//     const { id } = req.params;
-//     await prisma.location.delete({ where: { id: id as string } });
-//     res.status(200).json({ status: "success", message: "Location deleted successfully" });
-//   } catch (error: any) {
-//     res.status(400).json({ status: "error", message: error.message });
-//   }
-// };
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
@@ -89,12 +35,22 @@ export const getAllLocations = async (req: Request, res: Response) => {
 
 export const getLocationBySlug = async (req: Request, res: Response) => {
   try {
-    const slug = req.params[0] || req.params.slug;
+    // 1. Extract the raw slug (handles both wildcard routes [0] and standard routes)
+    const rawSlug = req.params[0] || req.params.slug;
     const lang = req.query.lang as string;
 
+    // Failsafe in case no slug is provided
+    if (!rawSlug) {
+      return res.status(400).json({ status: "error", message: "Location slug is required" });
+    }
+
+    // 2. Decode the slug to fix the Next.js double-encoding issue (e.g., %2520 -> " ")
+    const safeSlug = decodeURIComponent(rawSlug as string);
+
+    // 3. Use the fully decoded safeSlug in the Prisma query
     const whereClause = lang && lang !== 'en'
-      ? { OR: [{ slug: slug as string }, { translations: { some: { slug: slug as string, languageCode: lang } } }] }
-      : { slug: slug as string };
+      ? { OR: [{ slug: safeSlug }, { translations: { some: { slug: safeSlug, languageCode: lang } } }] }
+      : { slug: safeSlug };
 
     let location = await prisma.location.findFirst({ 
       where: whereClause,
@@ -103,9 +59,13 @@ export const getLocationBySlug = async (req: Request, res: Response) => {
       } : undefined
     });
 
-    if (!location) return res.status(404).json({ status: "error", message: "Location not found" });
+    if (!location) {
+        return res.status(404).json({ status: "error", message: "Location not found" });
+    }
 
+    // Apply your translation mapping utility
     location = applyTranslationLocation(location);
+    
     res.status(200).json({ status: "success", data: location });
   } catch (error: any) {
     res.status(500).json({ status: "error", message: error.message });

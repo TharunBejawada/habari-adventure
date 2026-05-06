@@ -220,6 +220,7 @@ export default function LocationLandingPage() {
 
         <div className="absolute inset-0 z-0">
           <Image src={locationData?.heroImage || "/contact-mountains.png"} alt="Mountains Background" fill unoptimized className="object-cover object-bottom opacity-90" priority />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
