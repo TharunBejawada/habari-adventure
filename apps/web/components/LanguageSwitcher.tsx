@@ -78,7 +78,23 @@ export default function LanguageSwitcher() {
       }
     }
 
-    // 4. Package detail pages: 3+ segments not starting with 'blogs'
+    // 4. Location pages: exactly 2 segments, not starting with 'blogs'
+    //    Pattern: [category, locationSlug] e.g. ["destinations", "gorilla-hike"]
+    //    The location page sets __localeEntity.canonicalSlug to the full English path
+    //    so the target page can always resolve via the English canonical slug.
+    const isLocationPage = pathSegments.length === 2 && pathSegments[0] !== 'blogs';
+    if (isLocationPage) {
+      const entity = (window as any).__localeEntity as { canonicalSlug?: string } | undefined;
+      if (entity?.canonicalSlug) {
+        const newPath = langCode === DEFAULT_LANGUAGE
+          ? `/${entity.canonicalSlug}`
+          : `/${langCode}/${entity.canonicalSlug}`;
+        window.location.href = newPath;
+        return;
+      }
+    }
+
+    // 5. Package detail pages: 3+ segments not starting with 'blogs'
     //    Pattern: [category, location, ...packageSlug]
     //    Use canonical English slug so the target page can resolve via API.
     const isPackageDetail = pathSegments.length >= 3 && pathSegments[0] !== 'blogs';
@@ -93,9 +109,8 @@ export default function LanguageSwitcher() {
       }
     }
 
-    // 5. Default: swap language prefix, keep the rest of the path unchanged.
-    //    Correct for locations (/[lang]/[category]/[location]) and packages,
-    //    which always use canonical English slugs in their URL segments.
+    // 6. Default: swap language prefix, keep the rest of the path unchanged.
+    //    Correct for category pages (/[lang]/[category]) and any other static segments.
     const newPath = langCode === DEFAULT_LANGUAGE
       ? `/${pathSegments.join('/')}`
       : `/${langCode}/${pathSegments.join('/')}`;
