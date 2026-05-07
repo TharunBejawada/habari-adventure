@@ -66,6 +66,15 @@ export default function LocationLandingPage() {
   const itemsPerPage = 6;
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
 
+  // Clear __localeEntity when navigating away from a location page
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        (window as any).__localeEntity = null;
+      }
+    };
+  }, []);
+
   // --- 1. FETCH DATA (CHAINED) ---
   useEffect(() => {
     setIsLoading(true);
@@ -74,6 +83,29 @@ export default function LocationLandingPage() {
       const locResult = await apiFetch(`/locations/${encodedSlug}?lang=${lang}`);
       if (locResult.ok && locResult.data) {
         setLocationData(locResult.data);
+
+        // Expose canonical slug for LanguageSwitcher cross-language navigation.
+        // locResult.data.canonicalSlug is the English Location slug (set by applyTranslationLocation
+        // before translation overwrites it). It may be the full path ("destinations/gorilla-hike")
+        // or just the terminal segment ("gorilla-hike"). We always reconstruct the full path so the
+        // switcher can navigate to the correct nested URL without collapsing the category segment.
+        if (typeof window !== 'undefined') {
+          const rawCanonical = locResult.data.canonicalSlug || locationParam;
+          const fullCanonicalSlug = rawCanonical.includes('/')
+            ? rawCanonical
+            : `${categoryParam}/${rawCanonical}`;
+          (window as any).__localeEntity = { canonicalSlug: fullCanonicalSlug };
+
+          // Normalize URL: if the API returned a localized slug that differs from what
+          // the URL currently shows, update the address bar silently.
+          const rawLocalized = locResult.data.slug || locationParam;
+          const fullLocalizedSlug = rawLocalized.includes('/')
+            ? rawLocalized
+            : `${categoryParam}/${rawLocalized}`;
+          if (fullLocalizedSlug !== fullDbSlug) {
+            window.history.replaceState({}, '', `/${lang}/${fullLocalizedSlug}`);
+          }
+        }
 
         // Use the canonical (English) title for the location-to-package query.
         // locResult.data.canonicalTitle is the original English title preserved by the API
