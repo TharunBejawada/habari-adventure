@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 interface Booking {
   id: string;
@@ -26,15 +27,13 @@ export default function BookingsAdminPage() {
 
   const fetchBookings = async () => {
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
-        headers: { "Authorization": `Bearer ${token}` }
+      const { ok, data } = await apiFetch("/bookings", {
+        token: getAdminToken()
       });
-      const data = await res.json();
-      
-      if (data.status === "success") {
-        setBookings(data.data);
-        setFilteredBookings(data.data);
+
+      if (ok && data) {
+        setBookings(data);
+        setFilteredBookings(data);
       }
     } catch (error) {
       console.error("Failed to fetch bookings", error);

@@ -243,12 +243,100 @@
 //   }
 // };
 import { Request, Response } from "express";
+import { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
+
+// ==========================================
+// SLUG NORMALIZATION
+// ==========================================
+
+/**
+ * Translate a Prisma error into a clean, frontend-safe message.
+ */
+function prismaErrorMessage(error: any): { status: number; message: string } {
+  console.error("[blogController] Prisma error:", {
+    code: error?.code,
+    meta: error?.meta,
+    message: error?.message?.slice(0, 500),
+  });
+
+  if (error instanceof Prisma.PrismaClientValidationError) {
+    const first = (error.message || "").split("\n").find((l: string) => l.trim().length > 0) || "Validation error";
+    return { status: 400, message: `Invalid blog data: ${first.trim()}` };
+  }
+
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    switch (error.code) {
+      case "P2002": {
+        const fields = (error.meta?.target as string[] | undefined)?.join("`, `") ?? "slug";
+        return { status: 400, message: `A blog with this slug already exists in this language (\`${fields}\`)` };
+      }
+      case "P2025":
+        return { status: 404, message: "Blog post not found" };
+      case "P2003":
+        return { status: 400, message: "Related record not found (foreign key constraint)" };
+      default:
+        return { status: 400, message: `Database error (${error.code})` };
+    }
+  }
+
+  return { status: 500, message: error?.message ?? "An unexpected error occurred" };
+}
+
+/**
+ * Strips fields that are NOT part of the Blog schema before sending to Prisma.
+ * Prevents PrismaClientValidationError from unknown argument fields.
+ *
+ * Blog schema fields (allowed): title, slug, content, excerpt, featuredImage,
+ * imageAltText, authorName, category, tags, isPublished, publishedAt,
+ * readingTime, metaTitle, metaDescription, metaKeywords, faqs, schemaMarkup,
+ * createdBy, modifiedBy.
+ *
+ * Stripped: languageCode (routing metadata), id (auto-generated).
+ */
+const BLOG_SCHEMA_FIELDS = new Set([
+  "title", "slug", "content", "excerpt", "featuredImage", "imageAltText",
+  "authorName", "category", "tags", "isPublished", "publishedAt", "readingTime",
+  "metaTitle", "metaDescription", "metaKeywords", "faqs", "schemaMarkup",
+  "createdBy", "modifiedBy",
+]);
+
+function sanitizeBlogData(data: Record<string, any>): Record<string, any> {
+  const sanitized: Record<string, any> = {};
+  for (const key of Object.keys(data)) {
+    if (BLOG_SCHEMA_FIELDS.has(key)) {
+      sanitized[key] = data[key];
+    }
+  }
+  // Coerce schemaMarkup: if a string arrived, parse or null it
+  if (typeof sanitized.schemaMarkup === "string") {
+    try {
+      sanitized.schemaMarkup = sanitized.schemaMarkup ? JSON.parse(sanitized.schemaMarkup) : null;
+    } catch {
+      sanitized.schemaMarkup = null;
+    }
+  }
+  return sanitized;
+}
+
+/** Normalizes a blog slug: lowercase, alphanumeric + hyphens, no spaces. */
+function normalizeSlug(slug: string): string {
+  if (!slug) return "";
+  return slug
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
 // ==========================================
 // TRANSLATION HELPER
 // ==========================================
 const applyTranslationBlog = (record: any) => {
+  // Preserve canonical (English) values before any translation overwrites them.
+  record.canonicalTitle = record.title;
+  record.canonicalSlug  = record.slug;
+
   if (record.translations && record.translations.length > 0) {
     const t = record.translations[0];
     if (t.title) record.title = t.title;
@@ -293,21 +381,37 @@ export const getBlogs = async (req: Request, res: Response): Promise<void> => {
     blogs = blogs.map(applyTranslationBlog);
 
     res.status(200).json({ status: "success", data: blogs });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("[getBlogs] Error:", error?.message);
     res.status(500).json({ status: "error", message: "Failed to fetch blogs" });
   }
 };
 
 export const createBlog = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { title, slug, content, authorName, ...rest } = req.body;
-    
+    // Strip non-schema fields before any Prisma call:
+    //   languageCode — routing metadata, not a Blog column
+    //   id           — auto-generated; must not be passed on create
+    //   slug (raw)   — we normalize it separately below
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { languageCode, id: _id, title, slug: _rawSlug, content, authorName, ...rest } = req.body;
+    const slug = normalizeSlug(_rawSlug || "");
+
     const adminUser = (req as any).user;
     const adminIdentifier = adminUser?.id || adminUser?.email || "Unknown Admin";
 
     if (!title || !slug || !content || !authorName) {
       res.status(400).json({ status: "error", message: "Title, slug, content, and author are required" });
       return;
+    }
+
+    // Coerce schemaMarkup: if a string arrived, parse or null it out
+    if (typeof rest.schemaMarkup === "string") {
+      try {
+        rest.schemaMarkup = rest.schemaMarkup ? JSON.parse(rest.schemaMarkup) : null;
+      } catch {
+        rest.schemaMarkup = null;
+      }
     }
 
     const existing = await prisma.blog.findUnique({ where: { slug } });
@@ -317,8 +421,8 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
     }
 
     const newBlog = await prisma.blog.create({
-      data: { 
-        title, slug, content, authorName, 
+      data: {
+        title, slug, content, authorName,
         ...rest,
         createdBy: adminIdentifier,
         modifiedBy: adminIdentifier
@@ -326,68 +430,114 @@ export const createBlog = async (req: Request, res: Response): Promise<void> => 
     });
 
     res.status(201).json({ status: "success", data: newBlog });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: "Failed to create blog post" });
+  } catch (error: any) {
+    console.error("[createBlog] error:", error?.message);
+    if (error?.code === "P2002") {
+      res.status(400).json({ status: "error", message: "SEO Slug must be unique" });
+    } else if (error?.name === "PrismaClientValidationError") {
+      const first = (error.message || "").split("\n").find((l: string) => l.trim().length > 0) || "Validation error";
+      res.status(400).json({ status: "error", message: `Invalid blog data: ${first.trim()}` });
+    } else {
+      res.status(500).json({ status: "error", message: error?.message || "Failed to create blog post" });
+    }
   }
 };
 
 export const updateBlog = async (req: Request, res: Response): Promise<void> => {
   try {
     const id = req.params.id as string;
-    const { languageCode, ...updateData } = req.body; // NEW
-    
+    const { languageCode, ...rawUpdate } = req.body;
+
     const adminUser = (req as any).user;
     const adminIdentifier = adminUser?.id || adminUser?.email || "Unknown Admin";
 
     if (!languageCode || languageCode === 'en') {
-      // STANDARD ENGLISH UPDATE
+      // ENGLISH UPDATE — strip non-schema fields, normalize slug
+      const updateData = sanitizeBlogData(rawUpdate);
+
       if (updateData.slug) {
+        updateData.slug = normalizeSlug(updateData.slug);
+        // Verify slug uniqueness (exclude self)
         const existing = await prisma.blog.findFirst({
           where: { slug: updateData.slug, NOT: { id } }
         });
         if (existing) {
-          res.status(400).json({ status: "error", message: "SEO Slug is already used" });
+          res.status(400).json({ status: "error", message: "SEO Slug is already used by another post" });
           return;
         }
       }
 
       const updatedBlog = await prisma.blog.update({
         where: { id },
-        data: {
-          ...updateData,
-          modifiedBy: adminIdentifier
-        },
+        data: { ...updateData, modifiedBy: adminIdentifier },
       });
       res.status(200).json({ status: "success", data: updatedBlog });
       return;
-    
+
     } else {
-      // TRANSLATION UPSERT
+      // TRANSLATION UPSERT — normalize slug, only update translation-specific fields
+      let translationSlug = rawUpdate.slug ? normalizeSlug(rawUpdate.slug) : "";
+
+      if (!translationSlug) {
+        // If admin sent an empty slug, fall back to the parent blog's canonical English slug
+        const parentBlog = await prisma.blog.findUnique({ where: { id }, select: { slug: true } });
+        translationSlug = parentBlog?.slug || "";
+      }
+
+      if (!translationSlug) {
+        res.status(400).json({ status: "error", message: "A URL slug is required for the translation" });
+        return;
+      }
+
+      // Check localized slug uniqueness (must be unique per language across all blogs)
+      const existingTranslation = await prisma.blogTranslation.findFirst({
+        where: {
+          languageCode,
+          slug: translationSlug,
+          NOT: { blogId: id },
+        },
+      });
+      if (existingTranslation) {
+        res.status(400).json({ status: "error", message: `Slug "${translationSlug}" is already used by another ${languageCode.toUpperCase()} translation` });
+        return;
+      }
+
+      // Coerce schemaMarkup if it arrived as a string
+      let schemaMarkup = rawUpdate.schemaMarkup;
+      if (typeof schemaMarkup === "string") {
+        try { schemaMarkup = schemaMarkup ? JSON.parse(schemaMarkup) : null; } catch { schemaMarkup = null; }
+      }
+
+      const translationFields = {
+        title: rawUpdate.title,
+        slug: translationSlug,
+        content: rawUpdate.content,
+        excerpt: rawUpdate.excerpt,
+        imageAltText: rawUpdate.imageAltText,
+        category: rawUpdate.category,
+        tags: rawUpdate.tags,
+        metaTitle: rawUpdate.metaTitle,
+        metaDescription: rawUpdate.metaDescription,
+        metaKeywords: rawUpdate.metaKeywords,
+        faqs: rawUpdate.faqs,
+        schemaMarkup,
+      };
+
       const upsertedTranslation = await prisma.blogTranslation.upsert({
         where: { blogId_languageCode: { blogId: id, languageCode } },
-        update: {
-          title: updateData.title, slug: updateData.slug, content: updateData.content, excerpt: updateData.excerpt,
-          imageAltText: updateData.imageAltText, category: updateData.category, tags: updateData.tags,
-          metaTitle: updateData.metaTitle, metaDescription: updateData.metaDescription, metaKeywords: updateData.metaKeywords,
-          faqs: updateData.faqs, schemaMarkup: updateData.schemaMarkup
-        },
-        create: {
-          blogId: id, languageCode,
-          title: updateData.title, slug: updateData.slug, content: updateData.content, excerpt: updateData.excerpt,
-          imageAltText: updateData.imageAltText, category: updateData.category, tags: updateData.tags,
-          metaTitle: updateData.metaTitle, metaDescription: updateData.metaDescription, metaKeywords: updateData.metaKeywords,
-          faqs: updateData.faqs, schemaMarkup: updateData.schemaMarkup
-        }
+        update: translationFields,
+        create: { blogId: id, languageCode, ...translationFields },
       });
-      
-      // Update the modifiedBy tag on the main blog so we know someone edited a translation
+
+      // Track who edited the translation on the parent blog
       await prisma.blog.update({ where: { id }, data: { modifiedBy: adminIdentifier } });
 
       res.status(200).json({ status: "success", data: upsertedTranslation });
       return;
     }
-  } catch (error) {
-    res.status(500).json({ status: "error", message: "Failed to update blog post" });
+  } catch (error: any) {
+    const { status, message } = prismaErrorMessage(error);
+    res.status(status).json({ status: "error", message });
   }
 };
 
@@ -396,8 +546,9 @@ export const deleteBlog = async (req: Request, res: Response): Promise<void> => 
     const id = req.params.id as string;
     await prisma.blog.delete({ where: { id } });
     res.status(200).json({ status: "success", message: "Blog deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ status: "error", message: "Failed to delete blog post" });
+  } catch (error: any) {
+    const { status, message } = prismaErrorMessage(error);
+    res.status(status).json({ status: "error", message });
   }
 };
 
@@ -539,12 +690,17 @@ export const getTopTags = async (req: Request, res: Response): Promise<void> => 
 
 export const getBlogByIdOrSlug = async (req: Request, res: Response): Promise<void> => {
   try {
-    const idOrSlug = req.params.idOrSlug as string;
-    const lang = req.query.lang as string; // NEW
+    const rawSlug = req.params.idOrSlug as string;
+    const slug = normalizeSlug(rawSlug);
+    const lang = req.query.lang as string;
+
+    // Try both normalized and raw slug for backward compatibility with old records
+    const slugOr: { slug: string }[] = [{ slug }];
+    if (rawSlug !== slug) slugOr.push({ slug: rawSlug });
 
     const whereClause = lang && lang !== 'en'
-      ? { OR: [ { id: idOrSlug }, { slug: idOrSlug }, { translations: { some: { slug: idOrSlug, languageCode: lang } } } ] }
-      : { OR: [ { id: idOrSlug }, { slug: idOrSlug } ] };
+      ? { OR: [ { id: rawSlug }, ...slugOr, { translations: { some: { slug, languageCode: lang } } }, ...(rawSlug !== slug ? [{ translations: { some: { slug: rawSlug, languageCode: lang } } }] : []) ] }
+      : { OR: [ { id: rawSlug }, ...slugOr ] };
 
     let blog = await prisma.blog.findFirst({
       where: whereClause,
@@ -570,7 +726,13 @@ export const deleteBlogTranslation = async (req: Request, res: Response): Promis
       where: { blogId_languageCode: { blogId: id as string, languageCode: lang as string } }
     });
     res.status(200).json({ status: "success", message: "Translation deleted successfully" });
-  } catch (error) {
-    res.status(200).json({ status: "success", message: "Translation was already empty" });
+  } catch (error: any) {
+    // P2025 = record not found — treat as success (idempotent delete)
+    if (error?.code === "P2025") {
+      res.status(200).json({ status: "success", message: "Translation was already empty" });
+      return;
+    }
+    const { status, message } = prismaErrorMessage(error);
+    res.status(status).json({ status: "error", message });
   }
 };

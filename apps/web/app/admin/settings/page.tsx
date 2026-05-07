@@ -503,10 +503,15 @@ export default function SettingsPage() {
 
   // ── Load settings + navigation in parallel ─────────────────────────────────
   useEffect(() => {
-    const base = process.env.NEXT_PUBLIC_API_URL as string;
+    const base = process.env.NEXT_PUBLIC_API_URL;
+    if (!base) { setIsLoading(false); return; }
+    const safeJson = async (r: Response) => {
+      if (!r.ok) return null;
+      try { const t = await r.text(); return t ? JSON.parse(t) : null; } catch { return null; }
+    };
     Promise.all([
-      fetch(`${base}/settings`).then(r => r.json()),
-      fetch(`${base}/navigation`).then(r => r.json()),
+      fetch(`${base}/settings`).then(safeJson),
+      fetch(`${base}/navigation`).then(safeJson),
     ])
       .then(([settingsRes, navRes]) => {
         if (settingsRes?.status === "success" && settingsRes.data) {

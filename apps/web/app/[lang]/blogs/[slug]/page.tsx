@@ -415,10 +415,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaSearch, FaFacebookF, FaTwitter, FaLinkedinIn, FaLink } from "react-icons/fa";
 import ContactHero from "../../../../components/blogs/ContactHero";
+import { apiFetch } from "../../../../lib/apiClient";
+import { toSlug } from "../../../../lib/slugify";
+
+interface BlogFaq {
+  question: string;
+  answer: string;
+}
 
 interface Blog {
   id: string;
   slug: string;
+  canonicalSlug?: string;  // Original English slug preserved by API before translation overwrite
   title: string;
   content: string;
   excerpt: string;
@@ -428,15 +436,16 @@ interface Blog {
   tags: string[];
   publishedAt: string;
   readingTime: number;
+  faqs?: BlogFaq[] | null;
 }
 
 export default function BlogPostPage() {
   const params = useParams();
   const router = useRouter();
   
-  // Extract lang from URL
+  // Extract lang from URL; normalize slug to strip any residual encoding or spaces
   const lang = (params.lang as string) || "en";
-  const slug = params.slug as string;
+  const slug = toSlug((params.slug as string) || "");
 
   const [blog, setBlog] = useState<Blog | null>(null);
   const [recentPosts, setRecentPosts] = useState<Blog[]>([]);
@@ -445,9 +454,11 @@ export default function BlogPostPage() {
   
   const [prevPost, setPrevPost] = useState<Blog | null>(null);
   const [nextPost, setNextPost] = useState<Blog | null>(null);
-  
+
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  // FAQ accordion — null = all collapsed; 0 = first item open by default
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // --- FETCH DATA ON MOUNT ---
   useEffect(() => {
@@ -455,41 +466,51 @@ export default function BlogPostPage() {
 
     const fetchAllData = async () => {
       try {
-        // Appended ?lang=${lang} to all fetches
-        const [blogRes, recentRes, categoriesRes, tagsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${slug}?lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs?publishedOnly=true&lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-categories?lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-tags?lang=${lang}`),
+        const [blogResult, recentResult, catsResult, tagsResult] = await Promise.all([
+          apiFetch(`/blogs/${slug}?lang=${lang}`),
+          apiFetch(`/blogs?publishedOnly=true&lang=${lang}`),
+          apiFetch(`/blogs/stats/top-categories?lang=${lang}`),
+          apiFetch(`/blogs/stats/top-tags?lang=${lang}`),
         ]);
 
-        const blogData = await blogRes.json();
-        const recentData = await recentRes.json();
-        const catsData = await categoriesRes.json();
-        const tagsData = await tagsRes.json();
+        if (blogResult.ok && blogResult.data) {
+          const fetchedBlog: Blog = blogResult.data;
+          setBlog(fetchedBlog);
 
-        if (blogData.status === "success") {
-          setBlog(blogData.data);
+          // Expose canonical English slug globally so the LanguageSwitcher can build
+          // the correct URL for any target language (instead of keeping the localized slug).
+          if (typeof window !== 'undefined') {
+            (window as any).__localeEntity = {
+              canonicalSlug: fetchedBlog.canonicalSlug || fetchedBlog.slug,
+            };
+
+            // URL normalization: if the browser landed here via the canonical English slug
+            // (e.g. after a language switch) but a localized slug exists for this language,
+            // update the URL bar silently so the correct localized URL is shown/shared.
+            // Uses replaceState — does NOT trigger a re-render or a new API fetch.
+            if (fetchedBlog.slug && fetchedBlog.slug !== slug) {
+              window.history.replaceState({}, '', `/${lang}/blogs/${fetchedBlog.slug}`);
+            }
+          }
         } else {
           router.push(`/${lang}/blogs`);
           return;
         }
-        
-        if (recentData.status === "success") {
-          const allPublished = recentData.data;
-          
-          const filteredRecent = allPublished.filter((b: Blog) => b.slug !== slug).slice(0, 4);
-          setRecentPosts(filteredRecent);
 
-          const currentIndex = allPublished.findIndex((b: Blog) => b.slug === slug);
+        if (recentResult.ok && Array.isArray(recentResult.data)) {
+          const allPublished = recentResult.data;
+          // Match by localized slug OR canonical English slug — handles both URL forms
+          const isCurrent = (b: Blog) => b.slug === slug || b.canonicalSlug === slug;
+          setRecentPosts(allPublished.filter((b: Blog) => !isCurrent(b)).slice(0, 4));
+          const currentIndex = allPublished.findIndex(isCurrent);
           if (currentIndex !== -1) {
             setNextPost(currentIndex > 0 ? allPublished[currentIndex - 1] : null);
             setPrevPost(currentIndex < allPublished.length - 1 ? allPublished[currentIndex + 1] : null);
           }
         }
 
-        if (catsData.status === "success") setTopCategories(catsData.data);
-        if (tagsData.status === "success") setTopTags(tagsData.data);
+        if (catsResult.ok) setTopCategories(catsResult.data ?? []);
+        if (tagsResult.ok) setTopTags(tagsResult.data ?? []);
 
       } catch (error) {
         console.error("Failed to fetch blog data", error);
@@ -500,6 +521,16 @@ export default function BlogPostPage() {
 
     fetchAllData();
   }, [slug, router, lang]);
+
+  // Clear the entity reference when navigating away so the language switcher
+  // does not mistakenly use a stale canonical slug on non-blog pages.
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        (window as any).__localeEntity = null;
+      }
+    };
+  }, []);
 
   // --- SEARCH HANDLER ---
   const handleSearch = (e: React.FormEvent) => {
@@ -606,11 +637,46 @@ export default function BlogPostPage() {
           </h1>
 
           {/* Added notranslate */}
-          <div 
-            className="notranslate blog-content animate-fade-up" 
+          <div
+            className="notranslate blog-content animate-fade-up"
             style={{ animationDelay: '0.3s' }}
-            dangerouslySetInnerHTML={{ __html: blog.content }} 
+            dangerouslySetInnerHTML={{ __html: blog.content }}
           />
+
+          {/* FAQ Section — renders only when the blog has FAQ data */}
+          {blog.faqs && Array.isArray(blog.faqs) && blog.faqs.length > 0 && (
+            <div className="mt-12 mb-4 animate-fade-up notranslate" style={{ animationDelay: '0.35s' }}>
+              <h2 className="text-2xl font-extrabold text-[#135D66] mb-6">Frequently Asked Questions</h2>
+              <div className="space-y-3">
+                {(blog.faqs as BlogFaq[]).map((faq, idx) => {
+                  if (!faq?.question) return null;
+                  const isOpen = openFaq === idx;
+                  return (
+                    <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                      <button
+                        type="button"
+                        onClick={() => setOpenFaq(isOpen ? null : idx)}
+                        className="w-full flex justify-between items-center p-5 bg-gray-50 hover:bg-[#E9F4F5] text-left transition-colors"
+                      >
+                        <span className="font-bold text-[#135D66] pr-4 text-base leading-snug">{faq.question}</span>
+                        <svg
+                          className={`w-5 h-5 text-[#135D66] flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                          fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                      {isOpen && (
+                        <div className="p-5 bg-white text-gray-600 leading-relaxed border-t border-gray-100">
+                          {faq.answer || ""}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="mt-16 pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 animate-fade-up" style={{ animationDelay: '0.4s' }}>
             
@@ -651,7 +717,7 @@ export default function BlogPostPage() {
             
             {prevPost ? (
               // Updated link with dynamic lang
-              <Link href={`/${lang}/blogs/${prevPost.slug}`} className="group flex flex-col items-start max-w-[45%] text-left">
+              <Link href={`/${lang}/blogs/${toSlug(prevPost.slug || prevPost.canonicalSlug || "")}`} className="group flex flex-col items-start max-w-[45%] text-left">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
                   <span>←</span> Previous Post
                 </span>
@@ -664,7 +730,7 @@ export default function BlogPostPage() {
 
             {nextPost ? (
               // Updated link with dynamic lang
-              <Link href={`/${lang}/blogs/${nextPost.slug}`} className="group flex flex-col items-end max-w-[45%] text-right">
+              <Link href={`/${lang}/blogs/${toSlug(nextPost.slug || nextPost.canonicalSlug || "")}`} className="group flex flex-col items-end max-w-[45%] text-right">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
                   Next Post <span>→</span>
                 </span>
@@ -707,7 +773,7 @@ export default function BlogPostPage() {
                 return (
                   <div key={post.id} className="relative">
                     {/* Updated link with dynamic lang */}
-                    <Link href={`/${lang}/blogs/${post.slug}`} className="flex gap-4 items-center group py-5">
+                    <Link href={`/${lang}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
                       <div className="bg-[#135D66] text-white rounded-xl p-2 min-w-[55px] h-[55px] flex flex-col items-center justify-center shadow-md group-hover:-translate-y-1 transition-transform">
                         <span className="font-extrabold text-lg leading-none">{day}</span>
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>

@@ -2,6 +2,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { apiFetch } from "../../../../lib/apiClient";
+import { normalizeSlugPath } from "../../../../lib/slugify";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -67,30 +69,29 @@ export default function LocationLandingPage() {
   // --- 1. FETCH DATA (CHAINED) ---
   useEffect(() => {
     setIsLoading(true);
-    
-    // STEP 1: Fetch Location exactly by its database slug
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(fullDbSlug)}?lang=${lang}`)
-      .then(res => res.json())
-      .then(locData => {
-        if (locData.status === "success" && locData.data) {
-          setLocationData(locData.data);
-          
-          // STEP 2: Use the exact database title to fetch the associated packages
-          return fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/location/${encodeURIComponent(locData.data.title)}?lang=${lang}`);
+    const encodedSlug = fullDbSlug.split("/").map(encodeURIComponent).join("/");
+    const load = async () => {
+      const locResult = await apiFetch(`/locations/${encodedSlug}?lang=${lang}`);
+      if (locResult.ok && locResult.data) {
+        setLocationData(locResult.data);
+
+        // Use the canonical (English) title for the location-to-package query.
+        // locResult.data.canonicalTitle is the original English title preserved by the API
+        // before any translation is applied. This prevents French/Spanish translated titles
+        // (e.g. "Kilimandjaro") from failing to match the English-only Package.location field.
+        // We ALSO pass the canonical location slug as a fallback so that packages are found
+        // even if the title matching fails for any reason.
+        const canonicalTitle = locResult.data.canonicalTitle || locResult.data.title;
+        const packResult = await apiFetch(
+          `/packages/location/${encodeURIComponent(canonicalTitle)}?locationSlug=${encodeURIComponent(fullDbSlug)}&lang=${lang}`
+        );
+        if (packResult.ok && Array.isArray(packResult.data)) {
+          setPackages(packResult.data);
         }
-        throw new Error("Location not found");
-      })
-      .then(res => {
-        if (!res) return null;
-        return res.json();
-      })
-      .then(packData => {
-        if (packData && packData.status === "success") {
-          setPackages(packData.data);
-        }
-      })
-      .catch(err => console.error("Failed to fetch data", err))
-      .finally(() => setIsLoading(false));
+      }
+      setIsLoading(false);
+    };
+    load().catch(() => setIsLoading(false));
   }, [fullDbSlug, lang]);
 
   // --- 2. SMART PARSING FOR RANGES ---
@@ -219,29 +220,29 @@ export default function LocationLandingPage() {
         }} />
 
         <div className="absolute inset-0 z-0">
-          <Image src={locationData?.heroImage || "/contact-mountains.png"} alt="Mountains Background" fill unoptimized className="object-cover object-bottom opacity-90" priority />
+          <Image src={locationData?.heroImage || "/contact-mountains.png"} alt="Mountains Background" fill sizes="100vw" unoptimized className="object-cover object-bottom opacity-90" priority />
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
         <div className="absolute top-[25%] lg:top-[30%] w-full z-10 pointer-events-none">
           <div className="inline-block animate-cloud-horizontal">
-            <Image src="/Cloud3.png" alt="Cloud" width={350} height={200} className="w-[180px] md:w-[320px] opacity-80" />
+            <Image src="/Cloud3.png" alt="Cloud" width={320} height={183} sizes="(max-width: 768px) 180px, 320px" className="w-[180px] md:w-[320px] opacity-80" />
           </div>
         </div>
 
         <div className="absolute top-[10%] lg:top-[15%] w-full z-10 pointer-events-none">
           <div className="inline-block animate-plane-diagonal">
-            <Image src="/plane.png" alt="Airplane" width={300} height={150} className="w-[180px] md:w-[300px] drop-shadow-xl" />
+            <Image src="/plane.png" alt="Airplane" width={300} height={150} sizes="(max-width: 768px) 180px, 300px" className="w-[180px] md:w-[300px] drop-shadow-xl" />
           </div>
         </div>
 
         <div className="absolute top-[10%] right-0 lg:right-5 z-10 pointer-events-none hidden md:block">
           <div className="relative w-[200px] h-[350px]">
             <div className="absolute top-0 right-14 animate-balloon-1">
-              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={140} height={190} className="w-[100px] lg:w-[130px] drop-shadow-xl" />
+              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={130} height={176} sizes="(max-width: 1024px) 100px, 130px" className="w-[100px] lg:w-[130px] drop-shadow-xl" />
             </div>
             <div className="absolute top-32 right-[-10px] animate-balloon-2">
-              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} className="w-[70px] lg:w-[90px] drop-shadow-lg" />
+              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} sizes="(max-width: 1024px) 70px, 90px" className="w-[70px] lg:w-[90px] drop-shadow-lg" />
             </div>
           </div>
         </div>
@@ -275,7 +276,7 @@ export default function LocationLandingPage() {
                     allowFullScreen
                   ></iframe>
                 ) : (
-                  <Image src={locationData.bannerImage} alt={locationData.title || displayTitle} fill className="object-cover" unoptimized />
+                  <Image src={locationData.bannerImage} alt={locationData.title || displayTitle} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" unoptimized />
                 )}
               </div>
             )}
@@ -396,11 +397,11 @@ export default function LocationLandingPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                   {currentPackages.map((pkg) => (
                     // NEW: Updated Link to include the dynamic language prefix
-                    <Link href={`/${lang}/${pkg.slug}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <Link href={`/${lang}/${normalizeSlugPath(pkg.canonicalSlug || pkg.slug)}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       
                       <div className="relative w-full h-56 overflow-hidden bg-gray-100">
                         {pkg.bannerImage ? (
-                          <Image src={pkg.bannerImage} alt={pkg.title} fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                          <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized className="object-cover group-hover:scale-105 transition-transform duration-700" />
                         ) : (
                           <div className="absolute inset-0 bg-[#135D66]/10 flex items-center justify-center">
                             <span className="text-[#135D66] font-bold">Habari Adventure</span>

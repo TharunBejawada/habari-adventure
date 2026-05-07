@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Caveat } from "next/font/google";
+import { apiFetch } from "../../../lib/apiClient";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -13,12 +14,15 @@ export default function DeparturesPage() {
 
   // --- 1. FETCH DATA ---
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          // Filter out past dates so users only see future trips
-          const futureDates = data.data.filter((d: any) => new Date(d.startDate) >= new Date(new Date().setHours(0,0,0,0)));
+    apiFetch("/upcoming-dates")
+      .then(result => {
+        if (result.ok && Array.isArray(result.data)) {
+          const today = new Date(new Date().setHours(0, 0, 0, 0));
+          const futureDates = result.data.filter((d: any) => {
+            if (!d?.startDate) return false;
+            const dt = new Date(d.startDate);
+            return !isNaN(dt.getTime()) && dt >= today;
+          });
           setDates(futureDates);
         }
       })
@@ -79,29 +83,29 @@ export default function DeparturesPage() {
         }} />
 
         <div className="absolute inset-0 z-0">
-          <Image src="/contact-mountains.png" alt="Mountains Background" fill className="object-cover object-bottom opacity-50 mix-blend-overlay" priority />
+          <Image src="/contact-mountains.png" alt="Mountains Background" fill sizes="100vw" className="object-cover object-bottom opacity-50 mix-blend-overlay" priority />
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
         <div className="absolute top-[25%] lg:top-[30%] w-full z-10 pointer-events-none">
           <div className="inline-block animate-cloud-horizontal">
-            <Image src="/Cloud3.png" alt="Cloud" width={350} height={200} className="w-[180px] md:w-[320px] opacity-80" />
+            <Image src="/Cloud3.png" alt="Cloud" width={320} height={183} sizes="(max-width: 768px) 180px, 320px" className="w-[180px] md:w-[320px] opacity-80" />
           </div>
         </div>
 
         <div className="absolute top-[10%] lg:top-[15%] w-full z-10 pointer-events-none">
           <div className="inline-block animate-plane-diagonal">
-            <Image src="/plane.png" alt="Airplane" width={300} height={150} className="w-[180px] md:w-[300px] drop-shadow-xl" />
+            <Image src="/plane.png" alt="Airplane" width={300} height={150} sizes="(max-width: 768px) 180px, 300px" className="w-[180px] md:w-[300px] drop-shadow-xl" />
           </div>
         </div>
 
         <div className="absolute top-[10%] right-0 lg:right-5 z-10 pointer-events-none hidden md:block">
           <div className="relative w-[200px] h-[350px]">
             <div className="absolute top-0 right-14 animate-balloon-1">
-              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={140} height={190} className="w-[100px] lg:w-[130px] drop-shadow-xl" />
+              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={130} height={176} sizes="(max-width: 1024px) 100px, 130px" className="w-[100px] lg:w-[130px] drop-shadow-xl" />
             </div>
             <div className="absolute top-32 right-[-10px] animate-balloon-2">
-              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} className="w-[70px] lg:w-[90px] drop-shadow-lg" />
+              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} sizes="(max-width: 1024px) 70px, 90px" className="w-[70px] lg:w-[90px] drop-shadow-lg" />
             </div>
           </div>
         </div>

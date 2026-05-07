@@ -2,6 +2,18 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 
+/** Normalizes a slug path so every segment is lowercase and alphanumeric-only. */
+function normalizeSlug(slug: string): string {
+  if (!slug) return "";
+  return slug
+    .split("/")
+    .map((seg) =>
+      seg.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
+    )
+    .filter(Boolean)
+    .join("/");
+}
+
 export interface NavItem     { title: string; slug: string; }
 export interface NavCategory { category: string; slug: string; items: NavItem[]; }
 
@@ -35,13 +47,16 @@ export const getNavigation = async (req: Request, res: Response): Promise<void> 
       },
     });
 
-    // Apply translations
+    // Apply translations — translated title for display, canonical slug for URLs.
+    // Slugs MUST stay canonical (English) so that:
+    //   1. Language switching keeps the same URL path (only the lang prefix changes)
+    //   2. getLocationBySlug can always resolve by canonical slug without translation lookup
     const resolved: { title: string; slug: string; category: string }[] =
       (locations as any[]).map(loc => {
         const t = loc.translations?.[0];
         return {
-          title:    t?.title    || loc.title,
-          slug:     t?.slug     || loc.slug,
+          title:    t?.title || loc.title,  // Translated for display in nav menus
+          slug:     loc.slug,               // Always canonical English slug for URL routing
           category: loc.category,
         };
       });
@@ -55,7 +70,7 @@ export const getNavigation = async (req: Request, res: Response): Promise<void> 
         grouped[loc.category] = [];
         categoryOrder.push(loc.category);
       }
-      grouped[loc.category].push({ title: loc.title, slug: loc.slug });
+      grouped[loc.category].push({ title: loc.title, slug: normalizeSlug(loc.slug) });
     }
 
     const navData: NavCategory[] = categoryOrder.map(cat => ({

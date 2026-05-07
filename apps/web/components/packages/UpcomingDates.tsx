@@ -4,6 +4,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { apiFetch } from "../../lib/apiClient";
+import { normalizeSlugPath } from "../../lib/slugify";
 
 export default function UpcomingDates() {
   const params = useParams();
@@ -11,18 +13,20 @@ export default function UpcomingDates() {
   // Extract lang for links
   const lang = (params.lang as string) || "en";
 
-  // FIX: Safely decode parameters just like the main page to get the correct database slug
-  const categoryParam = params.category ? decodeURIComponent(params.category as string) : "";
-  const locationParam = params.location ? decodeURIComponent(params.location as string) : "";
-  
+  // Decode and normalize each param segment to produce a clean, canonical slug
+  const categoryParam = normalizeSlugPath(params.category ? decodeURIComponent(params.category as string) : "");
+  const locationParam = normalizeSlugPath(params.location ? decodeURIComponent(params.location as string) : "");
+
   // Handle catch-all arrays or single strings for the package slug
   const packageParamRaw = params.packageSlug;
-  const packageParam = Array.isArray(packageParamRaw) 
-    ? packageParamRaw.map(p => decodeURIComponent(p)).join('/') 
-    : (packageParamRaw ? decodeURIComponent(packageParamRaw as string) : "");
+  const packageParam = normalizeSlugPath(
+    Array.isArray(packageParamRaw)
+      ? packageParamRaw.map(p => decodeURIComponent(p)).join("/")
+      : (packageParamRaw ? decodeURIComponent(packageParamRaw as string) : "")
+  );
 
-  // Reconstruct the full database slug and strip any accidental leading slashes
-  const fullDbSlug = `${categoryParam}/${locationParam}/${packageParam}`.replace(/^\/+/, '');
+  // Reconstruct the full canonical slug and strip any accidental leading slashes
+  const fullDbSlug = `${categoryParam}/${locationParam}/${packageParam}`.replace(/^\/+/, "");
 
   const [dates, setDates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,15 +34,17 @@ export default function UpcomingDates() {
   useEffect(() => {
     if (!fullDbSlug || fullDbSlug === "//") return;
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          // Filter out past dates AND ensure they belong to THIS specific package
-          const packageDates = data.data.filter((d: any) => 
-            d.package?.slug === fullDbSlug && 
-            new Date(d.startDate) >= new Date(new Date().setHours(0,0,0,0))
-          );
+    apiFetch("/upcoming-dates")
+      .then(result => {
+        if (result.ok && Array.isArray(result.data)) {
+          const today = new Date(new Date().setHours(0, 0, 0, 0));
+          const packageDates = result.data.filter((d: any) => {
+            if (!d?.startDate) return false;
+            const dt = new Date(d.startDate);
+            // Compare normalized slugs so old DB records with spaces still match
+            const dbSlug = normalizeSlugPath(d.package?.slug || "");
+            return (dbSlug === fullDbSlug || d.package?.slug === fullDbSlug) && !isNaN(dt.getTime()) && dt >= today;
+          });
           setDates(packageDates);
         }
       })

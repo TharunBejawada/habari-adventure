@@ -1,11 +1,11 @@
 // apps/web/components/Footer.tsx
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
+import { useSettings } from "../context/SettingsContext";
 
 interface LinkItem { name: string; url: string; }
 interface FooterColumn { title: string; links: LinkItem[]; }
@@ -35,24 +35,7 @@ const getSocialIcon = (name: string) => {
 export default function Footer() {
   const pathname = usePathname();
   const { getLocalizedUrl } = useLocalizedUrl();
-  const [settings, setSettings] = useState<any>(null);
-
-  useEffect(() => {
-    if (pathname && !pathname.startsWith("/admin")) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`)
-        .then(res => res.json())
-        .then(data => {
-          if (data?.data) {
-            setSettings({
-              ...data.data,
-              socialLinks: typeof data.data.socialLinks === 'string' ? JSON.parse(data.data.socialLinks) : data.data.socialLinks,
-              footerColumns: typeof data.data.footerColumns === 'string' ? JSON.parse(data.data.footerColumns) : data.data.footerColumns,
-            });
-          }
-        })
-        .catch(err => console.error("Failed to fetch footer settings", err));
-    }
-  }, [pathname]);
+  const { settings } = useSettings();
 
   if (pathname && pathname.startsWith("/admin")) return null;
   if (!settings) return null;

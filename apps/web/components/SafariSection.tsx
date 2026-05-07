@@ -18,10 +18,11 @@ export default function SafariSection() {
         <div className="w-full lg:w-[35%] relative h-[500px] lg:h-auto lg:min-h-[800px] flex justify-center items-end order-2 lg:order-1 mt-12 lg:mt-0">
           <div className="relative w-full h-full max-w-[400px] lg:max-w-none lg:absolute lg:bottom-[-160px] lg:left-0 z-30">
             {/* Note: Save your cutout traveler image as 'safari-traveler.png' */}
-            <Image 
-              src="/safari-traveler.png" 
-              alt="Happy Safari Traveler" 
+            <Image
+              src="/safari-traveler.png"
+              alt="Happy Safari Traveler"
               fill
+              sizes="(max-width: 1024px) 400px, 500px"
               className="object-contain object-bottom drop-shadow-2xl"
               priority={false}
             />

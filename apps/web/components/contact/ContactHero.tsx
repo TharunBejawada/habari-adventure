@@ -75,14 +75,14 @@ export default function ContactHero() {
       {/* 1. Cloud (Increased Size) */}
       <div className="absolute top-[25%] lg:top-[30%] w-full z-10 pointer-events-none">
         <div className="inline-block animate-cloud-horizontal">
-          <Image src="/Cloud3.png" alt="Cloud" width={350} height={200} className="w-[180px] md:w-[320px] opacity-80" />
+          <Image src="/Cloud3.png" alt="Cloud" width={320} height={183} sizes="(max-width: 768px) 180px, 320px" className="w-[180px] md:w-[320px] opacity-80" />
         </div>
       </div>
 
       {/* 2. Plane */}
       <div className="absolute top-[10%] lg:top-[15%] w-full z-10 pointer-events-none">
         <div className="inline-block animate-plane-diagonal">
-          <Image src="/plane.png" alt="Airplane" width={300} height={150} className="w-[180px] md:w-[300px] drop-shadow-xl" />
+          <Image src="/plane.png" alt="Airplane" width={300} height={150} sizes="(max-width: 768px) 180px, 300px" className="w-[180px] md:w-[300px] drop-shadow-xl" />
         </div>
       </div>
 
@@ -91,11 +91,11 @@ export default function ContactHero() {
         <div className="relative w-[200px] h-[350px]">
           {/* Blue Balloon - Increased Size */}
           <div className="absolute top-0 right-14 animate-balloon-1">
-            <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={140} height={190} className="w-[100px] lg:w-[130px] drop-shadow-xl" />
+            <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={130} height={176} sizes="(max-width: 1024px) 100px, 130px" className="w-[100px] lg:w-[130px] drop-shadow-xl" />
           </div>
           {/* Red Balloon - Slightly increased to match proportion */}
           <div className="absolute top-32 right-[-10px] animate-balloon-2">
-            <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} className="w-[70px] lg:w-[90px] drop-shadow-lg" />
+            <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} sizes="(max-width: 1024px) 70px, 90px" className="w-[70px] lg:w-[90px] drop-shadow-lg" />
           </div>
         </div>
       </div>

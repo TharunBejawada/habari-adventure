@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { apiFetch } from "../../../lib/apiClient";
 
 const BACKGROUND_IMAGES = [
   "https://images.unsplash.com/photo-1522163182402-834f871fd851?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80", 
@@ -39,20 +40,17 @@ export default function AdminLogin() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const { ok, data, error } = await apiFetch("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-
-      if (data.status === "success") {
-        localStorage.setItem("adminToken", data.data.token);
-        localStorage.setItem("adminUser", JSON.stringify(data.data.user));
+      if (ok && data) {
+        localStorage.setItem("adminToken", data.token);
+        localStorage.setItem("adminUser", JSON.stringify(data.user));
         router.push("/admin");
       } else {
-        setError(data.message || "Invalid credentials");
+        setError(error || "Invalid credentials");
       }
     } catch (err) {
       setError("Network error. Is the API running?");

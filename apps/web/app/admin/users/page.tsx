@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 interface User {
   id: string;
@@ -40,16 +41,14 @@ export default function UserManagementPage() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        headers: { "Authorization": `Bearer ${token}` }
+      const { ok, data, error } = await apiFetch("/users", {
+        token: getAdminToken()
       });
-      const data = await res.json();
-      
-      if (data.status === "success") {
-        setUsers(data.data);
+
+      if (ok && data) {
+        setUsers(data);
       } else {
-        setError(data.message || "Failed to load users");
+        setError(error || "Failed to load users");
       }
     } catch (err) {
       setError("Network error. Ensure API is running.");
@@ -91,8 +90,7 @@ export default function UserManagementPage() {
     setError("");
 
     try {
-      const token = localStorage.getItem("adminToken");
-      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/users/${editingUserId}` : `${process.env.NEXT_PUBLIC_API_URL}/users`;
+      const path = isEditMode ? `/users/${editingUserId}` : `/users`;
       const method = isEditMode ? "PUT" : "POST";
 
       // If editing and password field is left blank, remove it from payload so we don't overwrite with empty string
@@ -101,22 +99,17 @@ export default function UserManagementPage() {
         delete payload.password;
       }
 
-      const res = await fetch(url, {
+      const { ok, error } = await apiFetch(path, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
+        token: getAdminToken(),
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-
-      if (data.status === "success") {
+      if (ok) {
         setIsModalOpen(false);
         fetchUsers(); // Refresh table instantly
       } else {
-        setError(data.message || `Failed to ${isEditMode ? 'update' : 'create'} user`);
+        setError(error || `Failed to ${isEditMode ? 'update' : 'create'} user`);
       }
     } catch (err) {
       setError(`Network error while ${isEditMode ? 'updating' : 'creating'} user.`);
@@ -129,17 +122,15 @@ export default function UserManagementPage() {
     if (!window.confirm(`Are you sure you want to permanently delete ${name}?`)) return;
 
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/${id}`, {
+      const { ok, error } = await apiFetch(`/users/${id}`, {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
+        token: getAdminToken()
       });
 
-      const data = await res.json();
-      if (data.status === "success") {
+      if (ok) {
         setUsers(users.filter(user => user.id !== id));
       } else {
-        alert(data.message || "Failed to delete user");
+        alert(error || "Failed to delete user");
       }
     } catch (err) {
       alert("Network error while deleting user.");

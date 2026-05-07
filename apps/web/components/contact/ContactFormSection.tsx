@@ -5,6 +5,7 @@ import { useState, useRef, useEffect, FormEvent } from "react";
 import { Caveat } from "next/font/google";
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaWhatsapp } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
+import { apiFetch } from "../../lib/apiClient";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -70,17 +71,12 @@ export default function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, {
+      const { ok } = await apiFetch("/bookings", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
-
-      if (data.status === "success") {
+      if (ok) {
         alert("Quote request sent successfully! We will get back to you shortly.");
         // Clear the form on success
         setFormData({

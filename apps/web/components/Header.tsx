@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
+import { useSettings } from "../context/SettingsContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -113,34 +114,14 @@ function buildMenuItems(
 export default function Header() {
   const pathname            = usePathname();
   const { getLocalizedUrl } = useLocalizedUrl();
+  const { settings, navCategories } = useSettings();
 
-  const [rawConfig,  setRawConfig]  = useState<NavConfigItem[]>([]);
-  const [navCats,    setNavCats]    = useState<NavCategory[]>([]);
+  const rawConfig: NavConfigItem[] = (settings?.headerMenu as NavConfigItem[]) ?? [];
+  const navCats: NavCategory[]     = navCategories;
+
   const [isMobileMenuOpen,   setIsMobileMenuOpen]   = useState(false);
   const [expandedMobileItem, setExpandedMobileItem] = useState<number | null>(null);
   const [isScrolled,         setIsScrolled]         = useState(false);
-
-  // Fetch settings + navigation once (not on every pathname change)
-  useEffect(() => {
-    if (pathname?.startsWith("/admin")) return;
-
-    const base = process.env.NEXT_PUBLIC_API_URL as string;
-    Promise.all([
-      fetch(`${base}/settings`).then(r => r.json()),
-      fetch(`${base}/navigation`).then(r => r.json()),
-    ])
-      .then(([settingsRes, navRes]) => {
-        if (settingsRes?.data?.headerMenu) {
-          const raw = settingsRes.data.headerMenu;
-          setRawConfig(typeof raw === "string" ? JSON.parse(raw) : raw);
-        }
-        if (Array.isArray(navRes?.data)) {
-          setNavCats(navRes.data);
-        }
-      })
-      .catch(err => console.error("[Header] fetch error:", err));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentionally once on mount
 
   // Derive rendered menu from config + live nav data
   const menuItems: HeaderItem[] = useMemo(

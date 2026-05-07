@@ -50,24 +50,55 @@ export default function LanguageSwitcher() {
 
   const handleLanguageChange = (langCode: string) => {
     setIsOpen(false);
-    
+
     // 1. Wipe old cookies and set the new ones immediately
     applyGoogleTranslate(langCode);
 
-    // 2. Construct the new URL
+    // 2. Strip the language prefix to get bare path segments
     const pathSegments = pathname.split('/').filter(Boolean);
-    
-    // If the first segment is an existing language code, remove it
     if (SUPPORTED_LANGUAGES.some(l => l.code === pathSegments[0])) {
       pathSegments.shift();
     }
-    
-    // Build the new path
-    const newPath = langCode === DEFAULT_LANGUAGE 
-      ? `/${pathSegments.join('/')}` 
-      : `/${langCode}/${pathSegments.join('/')}`;
 
-    // 3. Navigate and force a reload to trigger Google's script cleanly on the new route
+    // 3. Blog detail pages use localized slugs (e.g. /fr/blogs/french-slug).
+    //    A localized slug doesn't resolve in other languages — the canonical English
+    //    slug must be used instead. The blog detail page then normalizes the URL to
+    //    the target language's slug via window.history.replaceState after loading.
+    //
+    //    Pattern: ["blogs", "<slug>"] — exactly 2 segments starting with "blogs".
+    const isBlogDetail = pathSegments[0] === 'blogs' && pathSegments.length === 2;
+    if (isBlogDetail) {
+      const entity = (window as any).__localeEntity as { canonicalSlug?: string } | undefined;
+      if (entity?.canonicalSlug) {
+        const newPath = langCode === DEFAULT_LANGUAGE
+          ? `/blogs/${entity.canonicalSlug}`
+          : `/${langCode}/blogs/${entity.canonicalSlug}`;
+        window.location.href = newPath;
+        return;
+      }
+    }
+
+    // 4. Package detail pages: 3+ segments not starting with 'blogs'
+    //    Pattern: [category, location, ...packageSlug]
+    //    Use canonical English slug so the target page can resolve via API.
+    const isPackageDetail = pathSegments.length >= 3 && pathSegments[0] !== 'blogs';
+    if (isPackageDetail) {
+      const entity = (window as any).__localeEntity as { canonicalSlug?: string } | undefined;
+      if (entity?.canonicalSlug) {
+        const newPath = langCode === DEFAULT_LANGUAGE
+          ? `/${entity.canonicalSlug}`
+          : `/${langCode}/${entity.canonicalSlug}`;
+        window.location.href = newPath;
+        return;
+      }
+    }
+
+    // 5. Default: swap language prefix, keep the rest of the path unchanged.
+    //    Correct for locations (/[lang]/[category]/[location]) and packages,
+    //    which always use canonical English slugs in their URL segments.
+    const newPath = langCode === DEFAULT_LANGUAGE
+      ? `/${pathSegments.join('/')}`
+      : `/${langCode}/${pathSegments.join('/')}`;
     window.location.href = newPath || '/';
   };
 
