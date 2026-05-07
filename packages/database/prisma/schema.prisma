@@ -266,6 +266,11 @@ model LocationTranslation {
   slug         String   // Localized URL (e.g., /fr/destinations/mont-kilimanjaro)
   title        String
   overviewText String   @db.Text
+
+  // Localized SEO Fields
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  metaKeywords    String?
   
   // Ensures a location only has one translation per language
   // Ensures the localized slug is unique within that language
