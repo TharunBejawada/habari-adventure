@@ -228,7 +228,8 @@ export default function PackageLandingPage() {
             
             <div className="w-full lg:w-3/5 reveal-on-scroll">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                Quick <span className="text-[#98D80D]">Facts</span>
+                {/* Quick <span className="text-[#98D80D]">Facts</span> */}
+                {pkg.quickFacts.heading}
               </h2>
               <div 
                 className="notranslate text-gray-600 text-lg mb-10 rte-content" 
@@ -274,7 +275,8 @@ export default function PackageLandingPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal-on-scroll">
               <div>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                  Why Choose <span className="notranslate text-[#98D80D]">{pkg.title.split(" ")[0]}</span>
+                  {/* Why Choose <span className="notranslate text-[#98D80D]">{pkg.title.split(" ")[0]}</span> */}
+                  {pkg.whyChoose.heading}
                 </h2>
                 <div className="notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description }} />
               </div>
@@ -368,8 +370,16 @@ export default function PackageLandingPage() {
 
             {/* Centered Image */}
             {activeVariant?.image && (
-              <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
-                <Image src={activeVariant.image} alt={activeVariant.tabName || "Itinerary image"} fill sizes="100vw" unoptimized className="object-fill" />
+              <div className="w-full max-w-7xl mx-auto mb-16 relative h-auto rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
+                {/* <Image src={activeVariant.image} alt={activeVariant.tabName || "Itinerary image"} fill sizes="100vw" unoptimized className="object-cover" /> */}
+                <Image 
+    src={activeVariant.image} 
+    alt={activeVariant.tabName || "Itinerary image"} 
+    width={1200} // Add this!
+    height={800} // Add this!
+    unoptimized
+    className="w-full h-auto object-cover rounded-2xl" 
+  />
               </div>
             )}
 
