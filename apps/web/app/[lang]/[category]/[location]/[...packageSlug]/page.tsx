@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { apiFetch } from "../../../../../lib/apiClient";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link"; 
@@ -44,29 +45,55 @@ export default function PackageLandingPage() {
     // FIX 2: Use the correctly extracted packageParam instead of the old 'slug' variable
     if (!packageParam) return;
     
-    Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(fullDbSlug)}?lang=${lang}`).then(res => res.json()),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`).then(res => res.json())
-    ])
-      .then(([pkgData, pricingData]) => {
-        if (pkgData.status === "success" && pkgData.data?.isPublished) {
-          setPkg(pkgData.data);
-          
-          if (pricingData.status === "success") {
-            const matchedPricing = pricingData.data.find((p: any) => p.packageId === pkgData.data.id);
-            setPricing(matchedPricing || null);
-          }
-        } else {
-          console.warn("Package not found or not published.");
-          setPkg("NOT_FOUND");
+    const load = async () => {
+      const [pkgResult, pricingResult] = await Promise.all([
+        apiFetch(`/packages/${encodeURIComponent(fullDbSlug)}?lang=${lang}`),
+        apiFetch("/pricing"),
+      ]);
+      if (pkgResult.ok && pkgResult.data?.isPublished) {
+        setPkg(pkgResult.data);
+        if (Array.isArray(pricingResult.data)) {
+          const matchedPricing = pricingResult.data.find((p: any) => p.packageId === pkgResult.data.id);
+          setPricing(matchedPricing || null);
         }
-      })
-      .catch(err => {
-        console.error("Failed to fetch data", err);
+        // Expose canonical slug for LanguageSwitcher cross-language navigation.
+        // pkg.canonicalSlug may be just the terminal segment (e.g. "3-days-trek") if the DB
+        // stores only the package-specific slug without the category/location prefix.
+        // categoryParam and locationParam are always English canonical slugs in the URL
+        // (location pages always link with canonical slugs), so we rebuild the full path here.
+        if (typeof window !== 'undefined') {
+          const rawCanonical = pkgResult.data.canonicalSlug || packageParam;
+          const fullCanonicalSlug = rawCanonical.includes('/')
+            ? rawCanonical
+            : `${categoryParam}/${locationParam}/${rawCanonical}`;
+          (window as any).__localeEntity = { canonicalSlug: fullCanonicalSlug };
+
+          // Normalize URL: if the localized slug differs from what's currently in the URL,
+          // update the address bar silently so the user sees the localized URL.
+          const rawLocalized = pkgResult.data.slug || packageParam;
+          const fullLocalizedSlug = rawLocalized.includes('/')
+            ? rawLocalized
+            : `${categoryParam}/${locationParam}/${rawLocalized}`;
+          if (fullLocalizedSlug !== fullDbSlug) {
+            window.history.replaceState({}, '', `/${lang}/${fullLocalizedSlug}`);
+          }
+        }
+      } else {
         setPkg("NOT_FOUND");
-      })
-      .finally(() => setIsLoading(false));
+      }
+      setIsLoading(false);
+    };
+    load().catch(() => { setPkg("NOT_FOUND"); setIsLoading(false); });
   }, [fullDbSlug, packageParam, lang]);
+
+  // Clear __localeEntity when navigating away
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        (window as any).__localeEntity = null;
+      }
+    };
+  }, []);
 
   // --- SCROLL ANIMATION OBSERVER ---
   useEffect(() => {
@@ -127,10 +154,6 @@ export default function PackageLandingPage() {
   return (
     <div className="bg-white min-h-screen font-sans text-gray-800">
       
-      <title>{pkg.metaTitle || `${pkg.title} | Habari Adventure`}</title>
-      <meta name="description" content={pkg.metaDescription || stripHtml(pkg.description).substring(0, 160)} />
-      {pkg.metaKeywords && <meta name="keywords" content={pkg.metaKeywords} />}
-      
       <style dangerouslySetInnerHTML={{__html: `
         .reveal-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
@@ -152,7 +175,7 @@ export default function PackageLandingPage() {
       <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
-            <Image src={pkg.bannerImage} alt={pkg.title} fill unoptimized className="object-fill" priority />
+            <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-fill" priority />
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
           </div>
@@ -232,7 +255,7 @@ export default function PackageLandingPage() {
             {pkg.quickFacts.image && (
               <div className="w-full lg:w-2/5 flex justify-center lg:justify-end reveal-on-scroll delay-200">
                 <div className="relative w-full max-w-[400px] h-[450px]">
-                  <Image src={pkg.quickFacts.image} alt="Quick Facts Illustration" fill unoptimized className="object-contain" />
+                  <Image src={pkg.quickFacts.image} alt="Quick Facts Illustration" fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized className="object-contain" />
                 </div>
               </div>
             )}
@@ -276,7 +299,7 @@ export default function PackageLandingPage() {
               {pkg.whyChoose.image && (
                 <div className="w-full lg:w-1/2 reveal-on-scroll delay-200">
                   <div className="relative w-full h-[250px] md:h-[350px] rounded-3xl overflow-hidden">
-                    <Image src={pkg.whyChoose.image} alt="Elevation Profile" fill unoptimized className="object-contain p-4 md:p-8" />
+                    <Image src={pkg.whyChoose.image} alt="Elevation Profile" fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized className="object-contain p-4 md:p-8" />
                   </div>
                 </div>
               )}
@@ -346,7 +369,7 @@ export default function PackageLandingPage() {
             {/* Centered Image */}
             {activeVariant?.image && (
               <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
-                <Image src={activeVariant.image} alt={activeVariant.tabName || "Itinerary image"} fill unoptimized className="object-fill" />
+                <Image src={activeVariant.image} alt={activeVariant.tabName || "Itinerary image"} fill sizes="100vw" unoptimized className="object-fill" />
               </div>
             )}
 

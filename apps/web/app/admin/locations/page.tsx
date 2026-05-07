@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 // 1. Added category to the interface
 interface Location {
@@ -27,13 +28,12 @@ export default function LocationsAdminPage() {
   const fetchLocations = async (categoryFilter: string) => {
     setIsLoading(true);
     try {
-      const endpoint = categoryFilter === "All" 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/locations`
-        : `${process.env.NEXT_PUBLIC_API_URL}/locations/category/${encodeURIComponent(categoryFilter)}`;
-        
-      const res = await fetch(endpoint);
-      const data = await res.json();
-      if (data.status === "success") setLocations(data.data);
+      const path = categoryFilter === "All"
+        ? "/locations"
+        : `/locations/category/${encodeURIComponent(categoryFilter)}`;
+
+      const { ok, data } = await apiFetch(path);
+      if (ok && data) setLocations(data);
     } catch (error) {
       console.error("Failed to fetch locations", error);
     } finally {
@@ -50,13 +50,12 @@ export default function LocationsAdminPage() {
     if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return;
     setIsDeleting(id);
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${id}`, {
-        method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+      const { ok, error } = await apiFetch(`/locations/${id}`, {
+        method: "DELETE",
+        token: getAdminToken()
       });
-      const data = await res.json();
-      if (data.status === "success") setLocations(locations.filter(l => l.id !== id));
-      else alert(data.message || "Failed to delete.");
+      if (ok) setLocations(locations.filter(l => l.id !== id));
+      else alert(error || "Failed to delete.");
     } catch (error) {
       alert("Network error occurred.");
     } finally {

@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 interface Blog {
   id: string;
@@ -24,17 +25,15 @@ export default function BlogManagementPage() {
   const fetchBlogs = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("adminToken");
       // Notice we don't pass ?publishedOnly=true here because Admins need to see Drafts too!
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
-        headers: { "Authorization": `Bearer ${token}` }
+      const { ok, data, error } = await apiFetch("/blogs", {
+        token: getAdminToken()
       });
-      const data = await res.json();
-      
-      if (data.status === "success") {
-        setBlogs(data.data);
+
+      if (ok && data) {
+        setBlogs(data);
       } else {
-        setError(data.message || "Failed to load blogs");
+        setError(error || "Failed to load blogs");
       }
     } catch (err) {
       setError("Network error. Ensure API is running.");
@@ -51,17 +50,15 @@ export default function BlogManagementPage() {
     if (!window.confirm(`Are you sure you want to permanently delete "${title}"?`)) return;
 
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}`, {
+      const { ok, error } = await apiFetch(`/blogs/${id}`, {
         method: "DELETE",
-        headers: { "Authorization": `Bearer ${token}` }
+        token: getAdminToken()
       });
 
-      const data = await res.json();
-      if (data.status === "success") {
+      if (ok) {
         setBlogs(blogs.filter(blog => blog.id !== id));
       } else {
-        alert(data.message || "Failed to delete blog post");
+        alert(error || "Failed to delete blog post");
       }
     } catch (err) {
       alert("Network error while deleting blog post.");

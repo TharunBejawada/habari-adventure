@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 export default function UpcomingDatesAdminPage() {
   const [locations, setLocations] = useState<any[]>([]);
@@ -43,18 +44,15 @@ export default function UpcomingDatesAdminPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [locRes, pkgRes, datesRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`)
+        const [locResult, pkgResult, datesResult] = await Promise.all([
+          apiFetch("/locations"),
+          apiFetch("/packages"),
+          apiFetch("/upcoming-dates")
         ]);
-        const locData = await locRes.json();
-        const pkgData = await pkgRes.json();
-        const datesData = await datesRes.json();
-        
-        if (locData.status === "success") setLocations(locData.data);
-        if (pkgData.status === "success") setPackages(pkgData.data);
-        if (datesData.status === "success") setDates(datesData.data);
+
+        if (locResult.ok && locResult.data) setLocations(locResult.data);
+        if (pkgResult.ok && pkgResult.data) setPackages(pkgResult.data);
+        if (datesResult.ok && datesResult.data) setDates(datesResult.data);
       } catch (err) {
         console.error("Failed to load data", err);
       } finally {
@@ -82,29 +80,27 @@ export default function UpcomingDatesAdminPage() {
 
     setIsSaving(true);
     try {
-      const token = localStorage.getItem("adminToken");
-      const url = editingId 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates/${editingId}`
-        : `${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates`;
-        
-      const res = await fetch(url, {
+      const path = editingId
+        ? `/upcoming-dates/${editingId}`
+        : `/upcoming-dates`;
+
+      const { ok, data, error } = await apiFetch(path, {
         method: editingId ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        token: getAdminToken(),
         body: JSON.stringify(formData)
       });
-      const data = await res.json();
-      
-      if (data.status === "success") {
+
+      if (ok && data) {
         if (editingId) {
-          setDates(dates.map(d => d.id === editingId ? data.data : d).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()));
+          setDates(dates.map(d => d.id === editingId ? data : d).sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()));
           alert("Departure updated successfully!");
         } else {
-          setDates([...dates, data.data].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()));
+          setDates([...dates, data].sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()));
           alert("Departure added successfully!");
         }
         resetForm();
       } else {
-        alert(data.message || "Failed to save.");
+        alert(error || "Failed to save.");
       }
     } catch (err) {
       alert("Error saving date.");
@@ -135,12 +131,12 @@ export default function UpcomingDatesAdminPage() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this departure date?")) return;
     try {
-      const token = localStorage.getItem("adminToken");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upcoming-dates/${id}`, {
-        method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+      await apiFetch(`/upcoming-dates/${id}`, {
+        method: "DELETE",
+        token: getAdminToken()
       });
       setDates(dates.filter(d => d.id !== id));
-      if (editingId === id) resetForm(); 
+      if (editingId === id) resetForm();
     } catch (err) {
       alert("Failed to delete");
     }

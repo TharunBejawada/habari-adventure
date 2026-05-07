@@ -677,6 +677,7 @@ import Link from "next/link";
 
 // IMPORT YOUR CENTRALIZED LANGUAGES (Adjust path if needed)
 import { SUPPORTED_LANGUAGES } from "../../../../lib/languages";
+import { apiFetch, getAdminToken } from "../../../../lib/apiClient";
 
 // Dynamically import ReactQuill to prevent SSR crashes
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
@@ -752,10 +753,9 @@ function EditorForm() {
     if (isEditMode) {
       const fetchBlog = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}`);
-          const data = await res.json();
-          if (data.status === "success") {
-            const b = data.data;
+          const { ok, data, error } = await apiFetch(`/blogs/${editId}`);
+          if (ok && data) {
+            const b = data;
             setTitle(b.title || "");
             setSlug(b.slug || "");
             setContent(b.content || "");
@@ -771,7 +771,7 @@ function EditorForm() {
             setMetaDescription(b.metaDescription || "");
             setMetaKeywords(b.metaKeywords || "");
             setFaqs(b.faqs || []);
-            
+
             if (b.publishedAt) {
               const date = new Date(b.publishedAt);
               setPublishedAt(date.toISOString().slice(0, 16));
@@ -779,13 +779,13 @@ function EditorForm() {
 
             // Set snapshot of translatable fields
             setSnapshot(JSON.stringify({
-              title: b.title || "", slug: b.slug || "", content: b.content || "", 
-              excerpt: b.excerpt || "", category: b.category || "", tags: b.tags || [], 
-              imageAltText: b.imageAltText || "", metaTitle: b.metaTitle || "", 
+              title: b.title || "", slug: b.slug || "", content: b.content || "",
+              excerpt: b.excerpt || "", category: b.category || "", tags: b.tags || [],
+              imageAltText: b.imageAltText || "", metaTitle: b.metaTitle || "",
               metaDescription: b.metaDescription || "", metaKeywords: b.metaKeywords || "", faqs: b.faqs || []
             }));
           } else {
-            setError(data.message || "Failed to load blog");
+            setError(error || "Failed to load blog");
           }
         } catch (err) {
           setError("Network error fetching blog.");
@@ -810,11 +810,10 @@ function EditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}?lang=${langCode}`);
-      const data = await res.json();
-      
-      if (data.status === "success" && data.data) {
-        const b = data.data;
+      const { ok, data } = await apiFetch(`/blogs/${editId}?lang=${langCode}`);
+
+      if (ok && data) {
+        const b = data;
         setTitle(b.title || "");
         setSlug(b.slug || "");
         setContent(b.content || "");
@@ -832,9 +831,9 @@ function EditorForm() {
         setFaqs(b.faqs || []);
 
         setSnapshot(JSON.stringify({
-          title: b.title || "", slug: b.slug || "", content: b.content || "", 
-          excerpt: b.excerpt || "", category: b.category || "", tags: b.tags || [], 
-          imageAltText: b.imageAltText || "", metaTitle: b.metaTitle || "", 
+          title: b.title || "", slug: b.slug || "", content: b.content || "",
+          excerpt: b.excerpt || "", category: b.category || "", tags: b.tags || [],
+          imageAltText: b.imageAltText || "", metaTitle: b.metaTitle || "",
           metaDescription: b.metaDescription || "", metaKeywords: b.metaKeywords || "", faqs: b.faqs || []
         }));
       }
@@ -848,17 +847,17 @@ function EditorForm() {
   // --- UPLOAD HANDLER ---
   const uploadImageToServer = async (file: File): Promise<string | null> => {
     const formData = new FormData();
-    formData.append("folder", "blogs"); 
+    formData.append("folder", "blogs");
     formData.append("asset", file);
 
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload?folder=blogs`, {
-        method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
+      const { ok, data } = await apiFetch("/upload?folder=blogs", {
+        method: "POST",
+        token: getAdminToken(),
+        body: formData
       });
-      const data = await res.json();
-      if (data.status === "success") return data.data.url; 
-      throw new Error(data.message);
+      if (ok && data) return data.url;
+      throw new Error("Upload failed");
     } catch (err) {
       alert("Failed to upload image.");
       return null;
@@ -964,27 +963,25 @@ function EditorForm() {
         }
       }
 
-      const token = localStorage.getItem("adminToken");
       const payload = {
         title, slug, content, excerpt, category, tags,
-        featuredImage, imageAltText, isPublished, 
+        featuredImage, imageAltText, isPublished,
         readingTime: readingTime ? Number(readingTime) : null,
         metaTitle, metaDescription, metaKeywords, faqs, authorName,
         publishedAt: publishedAt ? new Date(publishedAt).toISOString() : (isPublished ? new Date().toISOString() : null),
         languageCode: activeLang
       };
 
-      const url = isEditMode ? `${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}` : `${process.env.NEXT_PUBLIC_API_URL}/blogs`;
+      const path = isEditMode ? `/blogs/${editId}` : `/blogs`;
       const method = isEditMode ? "PUT" : "POST";
 
-      const res = await fetch(url, {
+      const { ok, error } = await apiFetch(path, {
         method,
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        token: getAdminToken(),
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
-      if (data.status === "success") {
+      if (ok) {
         if (activeLang === 'en') {
           router.push("/admin/blogs");
         } else {
@@ -992,7 +989,7 @@ function EditorForm() {
           setSnapshot(JSON.stringify({ title, slug, content, excerpt, category, tags, imageAltText, metaTitle, metaDescription, metaKeywords, faqs }));
         }
       } else {
-        setError(data.message || "Failed to save post");
+        setError(error || "Failed to save post");
       }
     } catch (err) {
       setError("Network error while saving.");
@@ -1026,9 +1023,9 @@ function EditorForm() {
               onClick={async () => {
                 if (!window.confirm(`Are you sure you want to delete the ${activeLang.toUpperCase()} translation?`)) return;
                 setIsLoading(true);
-                const token = localStorage.getItem("adminToken");
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${editId}/translations/${activeLang}`, {
-                  method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+                await apiFetch(`/blogs/${editId}/translations/${activeLang}`, {
+                  method: "DELETE",
+                  token: getAdminToken()
                 });
                 alert("Translation deleted. Reloading fallback text...");
                 handleLanguageSwitch(activeLang);

@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Caveat } from "next/font/google";
+import { useSettings } from "../context/SettingsContext";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -72,18 +73,8 @@ const getSocialIcon = (name: string) => {
 };
 
 export default function Hero() {
-  const [socialLinks, setSocialLinks] = useState<LinkItem[]>([]);
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/settings`)
-      .then(res => res.json())
-      .then(data => {
-        if (data?.data?.socialLinks) {
-          setSocialLinks(typeof data.data.socialLinks === 'string' ? JSON.parse(data.data.socialLinks) : data.data.socialLinks);
-        }
-      })
-      .catch(err => console.error("Failed to fetch settings", err));
-  }, []);
+  const { settings } = useSettings();
+  const socialLinks: LinkItem[] = settings?.socialLinks ?? [];
 
   return (
     <>
@@ -118,10 +109,11 @@ export default function Hero() {
 
   {/* Decorative Background Image (Fits perfectly without stretching using object-cover) */}
   <div className="absolute inset-0 z-0">
-    <Image 
-      src="/slider-bg.jpg" 
-      alt="Mountains Background" 
-      fill 
+    <Image
+      src="/slider-bg.jpg"
+      alt="Mountains Background"
+      fill
+      sizes="100vw"
       className="object-cover object-top w-full h-full opacity-60 mix-blend-overlay"
       priority
     />

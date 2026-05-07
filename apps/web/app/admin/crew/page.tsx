@@ -6,6 +6,7 @@ import { FaPlus, FaEdit, FaTrash, FaImage, FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -27,11 +28,10 @@ export default function AdminCrewDashboard() {
   // --- 1. FETCH DATA ---
   const fetchCrewData = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew`);
-      const data = await res.json();
-      if (data.status === "success") {
-        setSettings(data.data.settings || { heroBannerImage: "", porterBannerImage: "", porterDescription: "" });
-        setTeams(data.data.teams || []);
+      const { ok, data } = await apiFetch("/crew");
+      if (ok && data) {
+        setSettings(data.settings || { heroBannerImage: "", porterBannerImage: "", porterDescription: "" });
+        setTeams(data.teams || []);
       }
     } catch (error) {
       console.error("Error fetching crew data:", error);
@@ -58,14 +58,13 @@ export default function AdminCrewDashboard() {
 
     try {
       // Assuming you have a generic upload endpoint
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+      const { ok, data: responseData } = await apiFetch("/upload", {
         method: "POST",
-        headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` },
+        token: getAdminToken(),
         body: formData,
       });
-      const responseData = await res.json();
-      const uploadedUrl = responseData?.data?.url || responseData?.url;
-      if (uploadedUrl) {
+      const uploadedUrl = responseData?.url;
+      if (ok && uploadedUrl) {
         setter((prev: any) => ({ ...prev, [fieldName]: uploadedUrl }));
       } else {
         console.error("Backend response:", responseData);
@@ -81,15 +80,12 @@ export default function AdminCrewDashboard() {
   // --- 3. SAVE HANDLERS ---
   const handleSettingsSave = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/settings`, {
+      const { ok } = await apiFetch("/crew/settings", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-        },
+        token: getAdminToken(),
         body: JSON.stringify(settings),
       });
-      if (res.ok) alert("Page Settings Saved Successfully!");
+      if (ok) alert("Page Settings Saved Successfully!");
     } catch (err) {
       alert("Error saving settings.");
     }
@@ -98,12 +94,9 @@ export default function AdminCrewDashboard() {
   const handleTeamSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/team`, {
+      await apiFetch("/crew/team", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-        },
+        token: getAdminToken(),
         body: JSON.stringify(currentTeam),
       });
       setIsTeamModalOpen(false);
@@ -116,12 +109,9 @@ export default function AdminCrewDashboard() {
   const handleMemberSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/member`, {
+      await apiFetch("/crew/member", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-        },
+        token: getAdminToken(),
         body: JSON.stringify(currentMember),
       });
       setIsMemberModalOpen(false);
@@ -134,9 +124,9 @@ export default function AdminCrewDashboard() {
   const handleDelete = async (type: "team" | "member", id: string) => {
     if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew/${type}/${id}`, {
+      await apiFetch(`/crew/${type}/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${localStorage.getItem("adminToken")}` },
+        token: getAdminToken(),
       });
       fetchCrewData();
     } catch (err) {

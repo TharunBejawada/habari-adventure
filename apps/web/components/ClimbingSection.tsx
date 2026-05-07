@@ -38,9 +38,9 @@ export default function ClimbingSection() {
             {/* Happy Customers Mini-Stat */}
             <div className="flex items-center gap-3">
               <div className="flex -space-x-3">
-                <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-1.jpg" alt="Climber" fill className="object-cover" /></div>
-                <div className="w-8 h-8 rounded-full bg-gray-400 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-2.jpg" alt="Climber" fill className="object-cover" /></div>
-                <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-3.jpg" alt="Climber" fill className="object-cover" /></div>
+                <div className="w-8 h-8 rounded-full bg-gray-300 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-1.jpg" alt="Climber" fill sizes="32px" className="object-cover" /></div>
+                <div className="w-8 h-8 rounded-full bg-gray-400 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-2.jpg" alt="Climber" fill sizes="32px" className="object-cover" /></div>
+                <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-3.jpg" alt="Climber" fill sizes="32px" className="object-cover" /></div>
               </div>
               <div className="flex flex-col">
                 <span className="text-[#98D80D] font-extrabold text-sm leading-none">3.5k</span>
@@ -66,11 +66,12 @@ export default function ClimbingSection() {
       {/* Absolute positioned to hang off the top right edge, exactly like the design */}
       <div className="absolute top-0 right-0 w-[200px] md:w-[300px] lg:w-[450px] h-[300px] md:h-[450px] lg:h-[650px] pointer-events-none z-30 hidden sm:block">
         {/* Note: Use a transparent PNG of a rock climber here! */}
-        <Image 
-          src="/climber.png" 
-          alt="Rock Climber" 
-          fill 
-          className="object-cover object-right-top drop-shadow-2xl" 
+        <Image
+          src="/climber.png"
+          alt="Rock Climber"
+          fill
+          sizes="(max-width: 640px) 200px, (max-width: 1024px) 300px, 450px"
+          className="object-cover object-right-top drop-shadow-2xl"
         />
       </div>
 
@@ -82,7 +83,7 @@ export default function ClimbingSection() {
           <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
-              <Image src="/kili-mount.jpg" alt="Mount Kilimanjaro" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+              <Image src="/kili-mount.jpg" alt="Mount Kilimanjaro" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A484F] to-transparent opacity-80"></div>
               <div className="absolute bottom-4 left-4">
                 <h4 className="text-2xl font-bold text-white leading-tight">Kilimanjaro</h4>
@@ -114,7 +115,7 @@ export default function ClimbingSection() {
           <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
-              <Image src="/meru-mount.jpg" alt="Mount Meru" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+              <Image src="/meru-mount.jpg" alt="Mount Meru" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A484F] to-transparent opacity-80"></div>
               <div className="absolute bottom-4 left-4">
                 <h4 className="text-2xl font-bold text-white leading-tight">Mount Meru</h4>
@@ -146,7 +147,7 @@ export default function ClimbingSection() {
           <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
-              <Image src="/kenya-mount.jpg" alt="Mount Kenya" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+              <Image src="/kenya-mount.jpg" alt="Mount Kenya" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0A484F] to-transparent opacity-80"></div>
               <div className="absolute bottom-4 left-4">
                 <h4 className="text-2xl font-bold text-white leading-tight">Mount Kenya</h4>

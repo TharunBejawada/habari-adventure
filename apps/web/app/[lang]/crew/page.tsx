@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Caveat } from "next/font/google";
+import { apiFetch } from "../../../lib/apiClient";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -14,13 +15,12 @@ export default function OurCrewPage() {
 
   // --- 1. FETCH DATA ---
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/crew`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          setCrewData(data.data);
-          if (data.data.teams?.length > 0) {
-            setActiveSection(data.data.teams[0].id);
+    apiFetch("/crew")
+      .then((result) => {
+        if (result.ok && result.data) {
+          setCrewData(result.data);
+          if (Array.isArray(result.data?.teams) && result.data.teams.length > 0) {
+            setActiveSection(result.data.teams[0].id);
           }
         }
       })
@@ -104,12 +104,13 @@ export default function OurCrewPage() {
       {/* ========================================== */}
       <section className="relative w-full h-[55vh] min-h-[450px] flex flex-col justify-center -mt-[120px] pt-[120px] overflow-hidden bg-[#0a0f16]">
         {settings?.heroBannerImage ? (
-          <Image 
-            src={settings.heroBannerImage} 
-            alt="Our Crew" 
+          <Image
+            src={settings.heroBannerImage}
+            alt="Our Crew"
             fill
-            unoptimized 
-            className="object-cover object-top opacity-60 transition-transform duration-[10s] ease-out hover:scale-105" 
+            sizes="100vw"
+            unoptimized
+            className="object-cover object-top opacity-60 transition-transform duration-[10s] ease-out hover:scale-105"
             priority
           />
         ) : (
@@ -205,7 +206,8 @@ export default function OurCrewPage() {
                         <Image 
                           src={member.image || `https://ui-avatars.com/api/?name=${member.name}&background=135D66&color=fff`} 
                           alt={member.name} 
-                          fill 
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           unoptimized
                           className="object-cover object-top group-hover:scale-110 transition-transform duration-700 ease-in-out" 
                         />
@@ -258,7 +260,8 @@ export default function OurCrewPage() {
             <Image 
               src={settings.porterBannerImage} 
               alt="Our Porters" 
-              fill 
+              fill
+              sizes="100vw"
               unoptimized
               className="object-cover transform scale-105" 
             />

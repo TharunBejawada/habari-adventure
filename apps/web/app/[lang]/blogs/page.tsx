@@ -364,11 +364,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { FaSearch } from "react-icons/fa";
-import ContactHero from "../../../components/blogs/ContactHero"; 
+import ContactHero from "../../../components/blogs/ContactHero";
+import { apiFetch } from "../../../lib/apiClient";
+import { toSlug } from "../../../lib/slugify";
 
 interface Blog {
   id: string;
   slug: string;
+  canonicalSlug?: string;  // Original English slug preserved by API before translation overwrite
   title: string;
   excerpt: string;
   featuredImage: string;
@@ -400,25 +403,20 @@ export default function BlogsListingPage() {
   useEffect(() => {
     const fetchBlogData = async () => {
       try {
-        // Appended &lang=${lang} or ?lang=${lang} to all fetches
-        const [blogsRes, categoriesRes, tagsRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs?publishedOnly=true&lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-categories?lang=${lang}`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/stats/top-tags?lang=${lang}`),
+        const [blogsResult, catsResult, tagsResult] = await Promise.all([
+          apiFetch(`/blogs?publishedOnly=true&lang=${lang}`),
+          apiFetch(`/blogs/stats/top-categories?lang=${lang}`),
+          apiFetch(`/blogs/stats/top-tags?lang=${lang}`),
         ]);
 
-        const blogsData = await blogsRes.json();
-        const catsData = await categoriesRes.json();
-        const tagsData = await tagsRes.json();
-
-        if (blogsData.status === "success") {
-          const allBlogs = blogsData.data;
+        if (blogsResult.ok && Array.isArray(blogsResult.data)) {
+          const allBlogs = blogsResult.data;
           setBlogs(allBlogs);
           setDisplayedBlogs(allBlogs);
           setRecentPosts(allBlogs.slice(0, 5));
         }
-        if (catsData.status === "success") setTopCategories(catsData.data);
-        if (tagsData.status === "success") setTopTags(tagsData.data);
+        if (catsResult.ok) setTopCategories(catsResult.data ?? []);
+        if (tagsResult.ok) setTopTags(tagsResult.data ?? []);
       } catch (error) {
         console.error("Failed to fetch blog data", error);
       } finally {
@@ -529,9 +527,10 @@ export default function BlogsListingPage() {
                 {paginatedBlogs.map((blog, idx) => {
                   const { day, month } = formatDateForBadge(blog.publishedAt);
                   return (
-                    // Updated link with dynamic lang
-                    <Link 
-                      href={`/${lang}/blogs/${blog.slug}`} 
+                    // For non-English pages: prefer the localized slug (blog.slug after applyTranslationBlog)
+                    // For English: blog.slug and blog.canonicalSlug are identical — either works
+                    <Link
+                      href={`/${lang}/blogs/${toSlug(blog.slug || blog.canonicalSlug || "")}`}
                       key={blog.id}
                       className="group relative h-[420px] w-full rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 block animate-fade-up"
                       style={{ animationDelay: `${idx * 0.1}s` }}
@@ -540,7 +539,8 @@ export default function BlogsListingPage() {
                         <Image 
                           src={blog.featuredImage || "/placeholder-blog.jpg"} 
                           alt={blog.title} 
-                          fill 
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           unoptimized
                           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
@@ -636,8 +636,7 @@ export default function BlogsListingPage() {
                 const { day, month } = formatDateForBadge(post.publishedAt);
                 return (
                   <div key={post.id} className="relative">
-                    {/* Updated link with dynamic lang */}
-                    <Link href={`/${lang}/blogs/${post.slug}`} className="flex gap-4 items-center group py-5">
+                    <Link href={`/${lang}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
                       <div className="bg-[#135D66] text-white rounded-xl p-2 min-w-[55px] h-[55px] flex flex-col items-center justify-center shadow-md group-hover:-translate-y-1 transition-transform">
                         <span className="font-extrabold text-lg leading-none">{day}</span>
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>

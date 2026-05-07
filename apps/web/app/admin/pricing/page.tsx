@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { apiFetch, getAdminToken } from "../../../lib/apiClient";
 
 export default function PricingAdminPage() {
   const [locations, setLocations] = useState<any[]>([]);
@@ -28,19 +29,15 @@ export default function PricingAdminPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [locRes, pkgRes, priceRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`),
-          fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`)
+        const [locResult, pkgResult, priceResult] = await Promise.all([
+          apiFetch("/locations"),
+          apiFetch("/packages"),
+          apiFetch("/pricing")
         ]);
-        
-        const locData = await locRes.json();
-        const pkgData = await pkgRes.json();
-        const priceData = await priceRes.json();
-        
-        if (locData.status === "success") setLocations(locData.data);
-        if (pkgData.status === "success") setPackages(pkgData.data);
-        if (priceData.status === "success") setPricingList(priceData.data);
+
+        if (locResult.ok && locResult.data) setLocations(locResult.data);
+        if (pkgResult.ok && pkgResult.data) setPackages(pkgResult.data);
+        if (priceResult.ok && priceResult.data) setPricingList(priceResult.data);
       } catch (err) {
         console.error("Failed to load data", err);
       } finally {
@@ -78,27 +75,25 @@ export default function PricingAdminPage() {
 
     setIsSaving(true);
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing`, {
+      const { ok, data, error } = await apiFetch("/pricing", {
         method: "POST", // The backend handles this as an UPSERT
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        token: getAdminToken(),
         body: JSON.stringify(formData)
       });
-      const data = await res.json();
-      
-      if (data.status === "success") {
+
+      if (ok && data) {
         // Update local list (replace if exists, add if new)
-        const exists = pricingList.some(p => p.id === data.data.id);
+        const exists = pricingList.some(p => p.id === data.id);
         if (exists) {
-          setPricingList(pricingList.map(p => p.id === data.data.id ? data.data : p));
+          setPricingList(pricingList.map(p => p.id === data.id ? data : p));
         } else {
-          setPricingList([data.data, ...pricingList]);
+          setPricingList([data, ...pricingList]);
         }
         alert("Pricing matrix saved successfully!");
         setFormData({ packageId: "", tier1: "", tier2: "", tier3: "", tier4: "" });
         setFormLocation(""); // Reset location as well
       } else {
-        alert(data.message || "Failed to save pricing.");
+        alert(error || "Failed to save pricing.");
       }
     } catch (err) {
       alert("Error saving pricing.");
@@ -110,9 +105,9 @@ export default function PricingAdminPage() {
   const handleDelete = async (id: string) => {
     if (!window.confirm("Delete this pricing matrix?")) return;
     try {
-      const token = localStorage.getItem("adminToken");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pricing/${id}`, {
-        method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+      await apiFetch(`/pricing/${id}`, {
+        method: "DELETE",
+        token: getAdminToken()
       });
       setPricingList(pricingList.filter(p => p.id !== id));
       // If deleted while form is active, clear form

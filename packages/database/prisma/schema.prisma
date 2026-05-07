@@ -54,6 +54,17 @@ model Package {
   metaDescription String?
   metaKeywords    String?
 
+  // Extended SEO Fields (global per package, not per-language)
+  canonicalUrl       String?
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  twitterImage       String?
+  robots             String?
+  structuredData     Json?
+
   isPublished     Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -188,11 +199,26 @@ model Location {
   overviewText    String    // Rich text describing the location
   youtubeVideoUrl String?   // Optional YouTube embed or watch link
   isPublished     Boolean   @default(false)
+
+  // SEO Fields
+  metaTitle          String?
+  metaDescription    String?  @db.Text
+  metaKeywords       String?
+  canonicalUrl       String?
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  twitterImage       String?
+  robots             String?
+  structuredData     Json?
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
-  
+
   // Optional for later: If you want to link packages directly to this model
-  // packages      Package[] 
+  // packages      Package[]
   translations    LocationTranslation[]
 }
 

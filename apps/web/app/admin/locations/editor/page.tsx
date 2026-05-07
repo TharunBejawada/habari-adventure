@@ -8,6 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { SUPPORTED_LANGUAGES } from "../../../../lib/languages";
+import { apiFetch, getAdminToken } from "../../../../lib/apiClient";
+import { toSlug } from "../../../../lib/slugify";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false }) as any;
 import "react-quill-new/dist/quill.snow.css";
@@ -56,16 +58,28 @@ function LocationEditorForm() {
     heroImage: "", // Global
     overviewText: "",
     youtubeVideoUrl: "",
-    isPublished: false
+    isPublished: false,
+    // SEO fields
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    canonicalUrl: "",
+    ogTitle: "",
+    ogDescription: "",
+    ogImage: "",
+    twitterTitle: "",
+    twitterDescription: "",
+    twitterImage: "",
+    robots: "index, follow",
+    structuredData: "",
   });
 
   useEffect(() => {
     if (isEditMode) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(editSlug)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "success" && data.data) {
-            const p = data.data;
+      apiFetch(`/locations/${encodeURIComponent(editSlug)}`)
+        .then(({ ok, data }) => {
+          if (ok && data) {
+            const p = data;
             setFormData({
               id: p.id || "",
               title: p.title || "",
@@ -75,7 +89,19 @@ function LocationEditorForm() {
               heroImage: p.heroImage || "",
               overviewText: p.overviewText || "",
               youtubeVideoUrl: p.youtubeVideoUrl || "",
-              isPublished: p.isPublished || false
+              isPublished: p.isPublished || false,
+              metaTitle: p.metaTitle || "",
+              metaDescription: p.metaDescription || "",
+              metaKeywords: p.metaKeywords || "",
+              canonicalUrl: p.canonicalUrl || "",
+              ogTitle: p.ogTitle || "",
+              ogDescription: p.ogDescription || "",
+              ogImage: p.ogImage || "",
+              twitterTitle: p.twitterTitle || "",
+              twitterDescription: p.twitterDescription || "",
+              twitterImage: p.twitterImage || "",
+              robots: p.robots || "index, follow",
+              structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
             });
             setSnapshot(JSON.stringify({ title: p.title || "", slug: p.slug || "", overviewText: p.overviewText || "" }));
           }
@@ -88,9 +114,8 @@ function LocationEditorForm() {
   // NEW: Auto-generate the slug based on Category and Title if we are creating a new location
   useEffect(() => {
     if (!isEditMode && autoSlug) {
-      const catPart = formData.category ? formData.category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
-      // const titlePart = formData.title ? formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : '';
-      const titlePart = formData.title ? formData.title.trim() : '';
+      const catPart = formData.category ? toSlug(formData.category) : '';
+      const titlePart = formData.title ? toSlug(formData.title) : '';
       
       const generatedSlug = [catPart, titlePart].filter(Boolean).join('/');
       
@@ -112,11 +137,10 @@ function LocationEditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${encodeURIComponent(editSlug)}?lang=${langCode}`);
-      const data = await res.json();
-      
-      if (data.status === "success" && data.data) {
-        const p = data.data;
+      const { ok, data } = await apiFetch(`/locations/${encodeURIComponent(editSlug)}?lang=${langCode}`);
+
+      if (ok && data) {
+        const p = data;
         setFormData({
           id: p.id || "",
           title: p.title || "",
@@ -126,7 +150,19 @@ function LocationEditorForm() {
           heroImage: p.heroImage || "", // Global
           overviewText: p.overviewText || "",
           youtubeVideoUrl: p.youtubeVideoUrl || "", // Global
-          isPublished: p.isPublished || false // Global
+          isPublished: p.isPublished || false, // Global
+          metaTitle: p.metaTitle || "",
+          metaDescription: p.metaDescription || "",
+          metaKeywords: p.metaKeywords || "",
+          canonicalUrl: p.canonicalUrl || "", // Global
+          ogTitle: p.ogTitle || "", // Global
+          ogDescription: p.ogDescription || "", // Global
+          ogImage: p.ogImage || "", // Global
+          twitterTitle: p.twitterTitle || "", // Global
+          twitterDescription: p.twitterDescription || "", // Global
+          twitterImage: p.twitterImage || "", // Global
+          robots: p.robots || "index, follow", // Global
+          structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "", // Global
         });
         setSnapshot(JSON.stringify({ title: p.title || "", slug: p.slug || "", overviewText: p.overviewText || "" }));
       }
@@ -142,15 +178,15 @@ function LocationEditorForm() {
     const file = e.target.files?.[0];
     if (!file) return;
     const form = new FormData();
-    form.append("folder", "locations"); 
+    form.append("folder", "locations");
     form.append("asset", file);
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
-        method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: form
+      const { ok, data } = await apiFetch("/upload", {
+        method: "POST",
+        token: getAdminToken(),
+        body: form
       });
-      const data = await res.json();
-      if (data.status === "success") setFormData({ ...formData, [fieldName]: data.data.url });
+      if (ok && data) setFormData({ ...formData, [fieldName]: data.url });
     } catch (err) { alert("Upload failed."); }
   };
 
@@ -162,14 +198,26 @@ function LocationEditorForm() {
     }
     setIsSaving(true);
     try {
-      const payload = { ...formData, languageCode: activeLang };
+      // Parse structuredData JSON if provided; ignore if invalid
+      let parsedStructuredData: object | null = null;
+      if (formData.structuredData?.trim()) {
+        try { parsedStructuredData = JSON.parse(formData.structuredData); } catch { /* keep null */ }
+      }
+      const payload = { ...formData, languageCode: activeLang, structuredData: parsedStructuredData ?? undefined };
       const updateIdentifier = payload.id || editSlug;
 
       if (!isEditMode) delete (payload as any).id;
       else if (!updateIdentifier) { alert("Missing ID"); setIsSaving(false); return; }
 
       if (activeLang !== 'en') {
-        const currentDataToSave = { title: payload.title, slug: payload.slug, overviewText: payload.overviewText };
+        const currentDataToSave = {
+          title: payload.title,
+          slug: payload.slug,
+          overviewText: payload.overviewText,
+          metaTitle: payload.metaTitle,
+          metaDescription: payload.metaDescription,
+          metaKeywords: payload.metaKeywords,
+        };
         if (JSON.stringify(currentDataToSave) === snapshot) {
           alert("No translation changes detected. Save aborted to protect the automatic English fallback.");
           setIsSaving(false);
@@ -177,31 +225,29 @@ function LocationEditorForm() {
         }
       }
 
-      const url = isEditMode 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/locations/${updateIdentifier}` 
-        : `${process.env.NEXT_PUBLIC_API_URL}/locations`;
-        
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(url, {
-        method: isEditMode ? "PUT" : "POST", 
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      const path = isEditMode
+        ? `/locations/${updateIdentifier}`
+        : `/locations`;
+
+      const { ok, data, error } = await apiFetch(path, {
+        method: isEditMode ? "PUT" : "POST",
+        token: getAdminToken(),
         body: JSON.stringify(payload)
       });
-      
-      const data = await res.json();
-      if (data.status === "success") {
+
+      if (ok) {
         if (activeLang === 'en') {
           router.push("/admin/locations");
         } else {
           alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
-          setSnapshot(JSON.stringify({ title: payload.title, slug: payload.slug, overviewText: payload.overviewText }));
+          setSnapshot(JSON.stringify({ title: payload.title, slug: payload.slug, overviewText: payload.overviewText, metaTitle: payload.metaTitle, metaDescription: payload.metaDescription, metaKeywords: payload.metaKeywords }));
         }
       }
-      else if (data.message?.includes("Unique constraint failed")) {
+      else if (error?.includes("Unique constraint failed")) {
           alert("This URL Slug is already in use by another location!");
-      } 
+      }
       else {
-          alert(`Save failed: ${data.message || "Unknown error"}`);
+          alert(`Save failed: ${error || "Unknown error"}`);
       }
     } catch (err) { alert("Error saving."); } finally { setIsSaving(false); }
   };
@@ -226,9 +272,9 @@ function LocationEditorForm() {
               onClick={async () => {
                 if (!window.confirm(`Are you sure you want to delete the ${activeLang.toUpperCase()} translation?`)) return;
                 setIsLoading(true);
-                const token = localStorage.getItem("adminToken");
-                await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/${formData.id}/translations/${activeLang}`, {
-                  method: "DELETE", headers: { "Authorization": `Bearer ${token}` }
+                await apiFetch(`/locations/${formData.id}/translations/${activeLang}`, {
+                  method: "DELETE",
+                  token: getAdminToken()
                 });
                 alert("Translation deleted. Reloading fallback text...");
                 handleLanguageSwitch(activeLang);
@@ -364,6 +410,124 @@ function LocationEditorForm() {
           <BasicRTE value={formData.overviewText} onChange={(val) => setFormData({...formData, overviewText: val})} />
         </div>
 
+      </div>
+
+      {/* SEO SECTION */}
+      <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+        <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+          <h3 className="font-bold text-[#135D66] text-lg">Search Engine Optimization</h3>
+          {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
+        </div>
+
+        {/* Per-language: metaTitle, metaDescription, metaKeywords */}
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Meta Title</label>
+          <input
+            type="text"
+            placeholder={`${formData.title || "Location Title"} | Habari Adventure`}
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+            value={formData.metaTitle}
+            onChange={e => setFormData({...formData, metaTitle: e.target.value})}
+          />
+          <p className="text-xs text-gray-400 mt-1">Leave blank to auto-generate from title.</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Meta Description</label>
+          <textarea
+            rows={3}
+            placeholder="Brief summary shown in Google results (max 160 chars)..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors resize-none"
+            value={formData.metaDescription}
+            onChange={e => setFormData({...formData, metaDescription: e.target.value})}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Meta Keywords</label>
+          <input
+            type="text"
+            placeholder="kilimanjaro, safari, tanzania, climbing"
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors"
+            value={formData.metaKeywords}
+            onChange={e => setFormData({...formData, metaKeywords: e.target.value})}
+          />
+        </div>
+
+        {/* English-only: og, twitter, canonical, robots, structuredData */}
+        {activeLang === 'en' ? (
+          <>
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-4">Open Graph (Social Sharing)</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">OG Title</label>
+                  <input type="text" placeholder="Defaults to Meta Title" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={formData.ogTitle} onChange={e => setFormData({...formData, ogTitle: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">OG Description</label>
+                  <textarea rows={2} placeholder="Defaults to Meta Description" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none" value={formData.ogDescription} onChange={e => setFormData({...formData, ogDescription: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">OG Image URL</label>
+                  <input type="url" placeholder="Defaults to Banner Image" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={formData.ogImage} onChange={e => setFormData({...formData, ogImage: e.target.value})} />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-4">Twitter / X Card</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Twitter Title</label>
+                  <input type="text" placeholder="Defaults to Meta Title" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={formData.twitterTitle} onChange={e => setFormData({...formData, twitterTitle: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Twitter Description</label>
+                  <textarea rows={2} placeholder="Defaults to Meta Description" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none" value={formData.twitterDescription} onChange={e => setFormData({...formData, twitterDescription: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Twitter Image URL</label>
+                  <input type="url" placeholder="Defaults to OG Image or Banner Image" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={formData.twitterImage} onChange={e => setFormData({...formData, twitterImage: e.target.value})} />
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-gray-100">
+              <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-4">Technical SEO</p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Canonical URL</label>
+                  <input type="url" placeholder="Leave blank to auto-generate" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={formData.canonicalUrl} onChange={e => setFormData({...formData, canonicalUrl: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Robots Directive</label>
+                  <select className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 bg-gray-50 focus:bg-white" value={formData.robots} onChange={e => setFormData({...formData, robots: e.target.value})}>
+                    <option value="index, follow">index, follow (Default — recommended)</option>
+                    <option value="noindex, follow">noindex, follow</option>
+                    <option value="index, nofollow">index, nofollow</option>
+                    <option value="noindex, nofollow">noindex, nofollow</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Custom Structured Data (JSON-LD)</label>
+                  <textarea
+                    rows={5}
+                    placeholder={`Leave blank to auto-generate TouristDestination schema.\n\nOr paste custom JSON-LD here.`}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none font-mono"
+                    value={formData.structuredData}
+                    onChange={e => setFormData({...formData, structuredData: e.target.value})}
+                  />
+                  <p className="text-xs text-gray-400 mt-1">Must be valid JSON. Leave blank to auto-generate.</p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-3 rounded-lg border border-orange-100">
+            OG, Twitter, Canonical, Robots, and Structured Data are global and managed in the English tab.
+          </div>
+        )}
       </div>
 
       {/* PUBLISHING STATUS WITH CENTERED TOGGLE */}

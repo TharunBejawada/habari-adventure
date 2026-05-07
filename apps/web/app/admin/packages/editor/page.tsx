@@ -7,6 +7,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
 import { SUPPORTED_LANGUAGES } from "../../../../lib/languages";
+import { apiFetch, getAdminToken } from "../../../../lib/apiClient";
+import { toSlug, normalizeSlugPath } from "../../../../lib/slugify";
 
 // Dynamically import ReactQuill to prevent SSR crashes
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
@@ -34,13 +36,13 @@ function CustomRTE({ value, onChange, placeholder, minHeight = "200px" }: { valu
         formData.append("folder", "packages"); 
         formData.append("asset", file);
         try {
-          const token = localStorage.getItem("adminToken");
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
-            method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
+          const { ok, data } = await apiFetch("/upload", {
+            method: "POST",
+            token: getAdminToken(),
+            body: formData
           });
-          const data = await res.json();
-          if (data.status === "success" && quillRef.current) {
-            const url = data.data.url;
+          if (ok && data && quillRef.current) {
+            const url = data.url;
             const quill = quillRef.current.getEditor();
             const range = quill.getSelection();
             quill.insertEmbed(range ? range.index : 0, "image", url);
@@ -116,12 +118,18 @@ function PackageEditorForm() {
 
   // --- 1. CORE STATE ---
   const [coreInfo, setCoreInfo] = useState({
-    id: "", title: "", slug: "", badgeText: "", description: "", 
-    bannerImage: "", tripPlanPdf: "", 
-    category: "", 
-    location: "", 
+    id: "", title: "", slug: "", badgeText: "", description: "",
+    bannerImage: "", tripPlanPdf: "",
+    category: "",
+    location: "",
     isPublished: false,
-    metaTitle: "", metaDescription: "", metaKeywords: ""
+    metaTitle: "", metaDescription: "", metaKeywords: "",
+    // Extended SEO
+    canonicalUrl: "",
+    ogTitle: "", ogDescription: "", ogImage: "",
+    twitterTitle: "", twitterDescription: "", twitterImage: "",
+    robots: "index, follow",
+    structuredData: "",
   });
 
   // --- 2. QUICK FACTS STATE ---
@@ -158,27 +166,31 @@ function PackageEditorForm() {
   // --- INITIAL DATA FETCH ---
   useEffect(() => {
     if (isEditMode) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(editSlug as string)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "success") {
-            const p = data.data;
-            
+      apiFetch(`/packages/${encodeURIComponent(editSlug as string)}`)
+        .then(({ ok, data }) => {
+          if (ok && data) {
+            const p = data;
+
             // FIX: Safely slice off the first two segments (category/location) instead of aggressively popping
             const slugParts = (p.slug || "").split('/');
             const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
 
             setCoreInfo({
               id: p.id || "",
-              title: p.title || "", 
-              slug: loadedSlug, 
+              title: p.title || "",
+              slug: loadedSlug,
               badgeText: p.badgeText || "",
               description: p.description || "", bannerImage: p.bannerImage || "",
-              tripPlanPdf: p.tripPlanPdf || "", 
-              category: p.category || "", 
-              location: p.location || "", 
+              tripPlanPdf: p.tripPlanPdf || "",
+              category: p.category || "",
+              location: p.location || "",
               isPublished: p.isPublished || false,
-              metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || ""
+              metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
+              canonicalUrl: p.canonicalUrl || "",
+              ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
+              twitterTitle: p.twitterTitle || "", twitterDescription: p.twitterDescription || "", twitterImage: p.twitterImage || "",
+              robots: p.robots || "index, follow",
+              structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
             });
             if (p.quickFacts) setQuickFacts(p.quickFacts);
             if (p.whyChoose) setWhyChoose(p.whyChoose);
@@ -199,11 +211,10 @@ function PackageEditorForm() {
   // --- FETCH LOCATIONS DYNAMICALLY BASED ON CATEGORY ---
   useEffect(() => {
     if (coreInfo.category) {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/category/${encodeURIComponent(coreInfo.category)}?lang=${activeLang}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 'success') {
-            setAvailableLocations(data.data);
+      apiFetch(`/locations/category/${encodeURIComponent(coreInfo.category)}?lang=${activeLang}`)
+        .then(({ ok, data }) => {
+          if (ok && data) {
+            setAvailableLocations(data);
           } else {
             setAvailableLocations([]);
           }
@@ -231,27 +242,31 @@ function PackageEditorForm() {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages/${encodeURIComponent(editSlug as string)}?lang=${langCode}`);
-      const data = await res.json();
-      
-      if (data.status === "success") {
-        const p = data.data;
-        
+      const { ok, data } = await apiFetch(`/packages/${encodeURIComponent(editSlug as string)}?lang=${langCode}`);
+
+      if (ok && data) {
+        const p = data;
+
         // FIX: Safely slice off the first two segments (category/location)
         const slugParts = (p.slug || "").split('/');
         const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
 
         setCoreInfo({
           id: p.id || "",
-          title: p.title || "", 
-          slug: loadedSlug, 
+          title: p.title || "",
+          slug: loadedSlug,
           badgeText: p.badgeText || "",
           description: p.description || "", bannerImage: p.bannerImage || "",
-          tripPlanPdf: p.tripPlanPdf || "", 
-          category: p.category || "", 
+          tripPlanPdf: p.tripPlanPdf || "",
+          category: p.category || "",
           location: p.location || "",
           isPublished: p.isPublished || false,
-          metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || ""
+          metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
+          canonicalUrl: p.canonicalUrl || "",
+          ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
+          twitterTitle: p.twitterTitle || "", twitterDescription: p.twitterDescription || "", twitterImage: p.twitterImage || "",
+          robots: p.robots || "index, follow",
+          structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
         });
         if (p.quickFacts) setQuickFacts(p.quickFacts);
         if (p.whyChoose) setWhyChoose(p.whyChoose);
@@ -275,16 +290,16 @@ function PackageEditorForm() {
   // --- UNIVERSAL FILE UPLOADER ---
   const uploadFileToServer = async (file: File): Promise<string | null> => {
     const formData = new FormData();
-    formData.append("folder", "packages"); 
+    formData.append("folder", "packages");
     formData.append("asset", file);
     try {
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
-        method: "POST", headers: { "Authorization": `Bearer ${token}` }, body: formData
+      const { ok, data } = await apiFetch("/upload", {
+        method: "POST",
+        token: getAdminToken(),
+        body: formData
       });
-      const data = await res.json();
-      if (data.status === "success") return data.data.url;
-      throw new Error(data.message);
+      if (ok && data) return data.url;
+      throw new Error("Upload failed");
     } catch (err) {
       alert("Failed to upload file.");
       return null;
@@ -364,11 +379,13 @@ function PackageEditorForm() {
     if (!coreInfo.category) { alert("Please select a Category before saving."); return; }
     if (!coreInfo.location) { alert("Please select a Location before saving."); return; }
 
-    let fullSlugToSave = coreInfo.slug;
+    // Normalize the user-entered package slug segment (e.g. "8 Days Route" → "8-days-route")
+    const pkgSegment = toSlug(coreInfo.slug) || coreInfo.slug;
+    let fullSlugToSave = pkgSegment;
     if (selectedLocSlug && !selectedLocSlug.includes("[")) {
-      fullSlugToSave = `${selectedLocSlug}/${fullSlugToSave}`;
+      // Normalize the full path so any residual bad location slugs are cleaned up
+      fullSlugToSave = normalizeSlugPath(`${selectedLocSlug}/${pkgSegment}`);
     }
-    // Strictly strip ANY leading slashes
     fullSlugToSave = fullSlugToSave.replace(/^\/+/, '');
 
     setIsSaving(true);
@@ -387,8 +404,13 @@ function PackageEditorForm() {
         }
       }
 
-      const coreData = { ...coreInfo, slug: fullSlugToSave };
-      const updateIdentifier = coreData.id; 
+      // Parse structuredData JSON if provided; ignore if invalid
+      let parsedStructuredData: object | null = null;
+      if (coreInfo.structuredData?.trim()) {
+        try { parsedStructuredData = JSON.parse(coreInfo.structuredData); } catch { /* keep null */ }
+      }
+      const coreData = { ...coreInfo, slug: fullSlugToSave, structuredData: parsedStructuredData ?? undefined };
+      const updateIdentifier = coreData.id;
       
       if (!isEditMode) {
         delete (coreData as any).id; 
@@ -402,36 +424,33 @@ function PackageEditorForm() {
 
       const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries, languageCode: activeLang };
       
-      const url = isEditMode 
-        ? `${process.env.NEXT_PUBLIC_API_URL}/packages/${updateIdentifier}` 
-        : `${process.env.NEXT_PUBLIC_API_URL}/packages`;
-        
+      const path = isEditMode
+        ? `/packages/${updateIdentifier}`
+        : `/packages`;
+
       const method = isEditMode ? "PUT" : "POST";
-      const token = localStorage.getItem("adminToken");
-      const res = await fetch(url, {
-        method, 
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+      const { ok, error } = await apiFetch(path, {
+        method,
+        token: getAdminToken(),
         body: JSON.stringify(payload)
       });
-      
-      const data = await res.json();
-      
-      if (data.status === "success") {
+
+      if (ok) {
         if (activeLang === 'en') {
           router.push("/admin/packages");
         } else {
           alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
           const currentPayload = {
-            title: payload.title, slug: payload.slug, description: payload.description, 
+            title: payload.title, slug: payload.slug, description: payload.description,
             quickFacts, whyChoose, itineraryMeta, itineraries
           };
           setSnapshot(JSON.stringify(currentPayload));
         }
       } else {
-        if (data.message && data.message.includes("Unique constraint failed on the fields: (`slug`)")) {
+        if (error && error.includes("Unique constraint failed on the fields: (`slug`)")) {
           alert(`The URL slug "${coreData.slug}" is already in use by another package. Please change the title or manually edit the slug to make it unique.`);
         } else {
-          alert(data.message || "Failed to save package.");
+          alert(error || "Failed to save package.");
         }
       }
     } catch (err) {
@@ -925,6 +944,55 @@ function PackageEditorForm() {
               <label className="block text-sm font-bold text-gray-700 mb-2">Meta Keywords</label>
               <input type="text" placeholder="kilimanjaro, safari, climbing" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.metaKeywords} onChange={(e) => setCoreInfo({...coreInfo, metaKeywords: e.target.value})} />
             </div>
+
+            {/* Extended SEO — English only */}
+            {activeLang === 'en' ? (
+              <>
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-3">Open Graph</p>
+                  <div className="space-y-3">
+                    <input type="text" placeholder="OG Title (defaults to Meta Title)" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.ogTitle} onChange={e => setCoreInfo({...coreInfo, ogTitle: e.target.value})} />
+                    <textarea rows={2} placeholder="OG Description (defaults to Meta Description)" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none" value={coreInfo.ogDescription} onChange={e => setCoreInfo({...coreInfo, ogDescription: e.target.value})} />
+                    <input type="url" placeholder="OG Image URL (defaults to Banner Image)" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.ogImage} onChange={e => setCoreInfo({...coreInfo, ogImage: e.target.value})} />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-3">Twitter / X</p>
+                  <div className="space-y-3">
+                    <input type="text" placeholder="Twitter Title (defaults to Meta Title)" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.twitterTitle} onChange={e => setCoreInfo({...coreInfo, twitterTitle: e.target.value})} />
+                    <textarea rows={2} placeholder="Twitter Description" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none" value={coreInfo.twitterDescription} onChange={e => setCoreInfo({...coreInfo, twitterDescription: e.target.value})} />
+                    <input type="url" placeholder="Twitter Image URL" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.twitterImage} onChange={e => setCoreInfo({...coreInfo, twitterImage: e.target.value})} />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-gray-100 space-y-3">
+                  <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider">Technical SEO</p>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Canonical URL</label>
+                    <input type="url" placeholder="Leave blank to auto-generate" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white" value={coreInfo.canonicalUrl} onChange={e => setCoreInfo({...coreInfo, canonicalUrl: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Robots</label>
+                    <select className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 bg-gray-50 focus:bg-white" value={coreInfo.robots} onChange={e => setCoreInfo({...coreInfo, robots: e.target.value})}>
+                      <option value="index, follow">index, follow (Default)</option>
+                      <option value="noindex, follow">noindex, follow</option>
+                      <option value="index, nofollow">index, nofollow</option>
+                      <option value="noindex, nofollow">noindex, nofollow</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 mb-1">Custom JSON-LD</label>
+                    <textarea rows={4} placeholder={"Leave blank to auto-generate Product schema.\n\nOr paste custom JSON-LD here."} className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-sm text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white resize-none font-mono" value={coreInfo.structuredData} onChange={e => setCoreInfo({...coreInfo, structuredData: e.target.value})} />
+                    <p className="text-xs text-gray-400 mt-1">Must be valid JSON. Leave blank to auto-generate.</p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="pt-4 border-t border-gray-100">
+                <p className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-3 rounded-lg border border-orange-100">OG, Twitter, Canonical, Robots &amp; JSON-LD are global and managed in the English tab.</p>
+              </div>
+            )}
           </div>
 
         </div>
