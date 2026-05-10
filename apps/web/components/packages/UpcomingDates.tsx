@@ -7,7 +7,13 @@ import Link from "next/link";
 import { apiFetch } from "../../lib/apiClient";
 import { normalizeSlugPath } from "../../lib/slugify";
 
-export default function UpcomingDates() {
+// NEW: Define the TypeScript Interface for your props
+interface UpcomingDatesProps {
+  onBook?: (date: string) => void;
+}
+
+// NEW: Apply the Interface to your component signature
+export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
   const params = useParams();
   
   // Extract lang for links
@@ -115,7 +121,7 @@ export default function UpcomingDates() {
                           <div className="flex items-center flex-wrap gap-2">
                             <span className="font-bold text-gray-800">{row.title || "Standard Departure"}</span>
                             
-                            {/* NEW: Event Icons Container */}
+                            {/* Event Icons Container */}
                             <div className="flex items-center gap-1.5 text-lg relative top-[1px]">
                               {row.isFullMoon && (
                                 <div className="group/icon relative cursor-help flex items-center justify-center">
@@ -171,13 +177,12 @@ export default function UpcomingDates() {
                             SOLD OUT
                           </button>
                         ) : (
-                          <Link 
-                            // Passed the fullDbSlug safely to the booking page
-                            href={`/${lang}/book?date=${row.id}&package=${encodeURIComponent(fullDbSlug)}`} 
+                          <button 
+                            onClick={() => onBook && onBook(startDate)}
                             className="inline-block bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
                           >
                             BOOK NOW
-                          </Link>
+                          </button>
                         )}
                       </td>
                     </tr>

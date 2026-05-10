@@ -173,7 +173,7 @@ model CrewMember {
   modifiedBy    String?
 }
 
-model Booking {
+/* model Booking {
   id          String   @id @default(uuid())
   firstName   String
   lastName    String?  // Optional
@@ -187,6 +187,31 @@ model Booking {
   status      String   @default("New") // E.g., "New", "Contacted", "Closed"
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+} */
+
+model Booking {
+  id            String   @id @default(uuid())
+  bookingType   String   @default("General") // e.g., "Contact", "Package", "UpcomingDate"
+  
+  // Client Info (Core)
+  firstName     String
+  lastName      String?
+  email         String
+  phone         String?
+  
+  // Trip Context (Optional based on where the form was submitted)
+  location      String?  // e.g., "Kilimanjaro"
+  packageName   String?  // e.g., "8 Days Lemosho Route"
+  departureDate String?  // Pre-filled from Upcoming Dates
+  monthYear     String?  // User-filled for flexible dates
+  length        String?  // Total trip days
+  groupSize     String?  // Pre-filled from pricing cards or user-selected
+  
+  message       String?  @db.Text
+  
+  status        String   @default("New") // "New", "Contacted", "Closed"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Location {

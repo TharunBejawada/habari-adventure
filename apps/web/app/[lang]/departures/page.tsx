@@ -6,11 +6,28 @@ import Link from "next/link";
 import { Caveat } from "next/font/google";
 import { apiFetch } from "../../../lib/apiClient";
 
+// NEW: Import the Booking Modal
+import BookingModal from "../../../components/modals/BookingModal";
+
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
 export default function DeparturesPage() {
   const [dates, setDates] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // NEW: Booking Modal State
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingModalData, setBookingModalData] = useState<any>({});
+
+  // NEW: Booking Modal Handler
+  const openBooking = (pkgTitle: string, dateString: string) => {
+    setBookingModalData({
+      bookingType: "UpcomingDate",
+      packageName: pkgTitle || "Standard Departure",
+      departureDate: dateString,
+    });
+    setIsBookingModalOpen(true);
+  };
 
   // --- 1. FETCH DATA ---
   useEffect(() => {
@@ -251,9 +268,12 @@ export default function DeparturesPage() {
                                     Sold Out
                                   </button>
                                 ) : (
-                                  <Link href={`/book?date=${d.id}&package=${d.package?.slug}`} className="w-full md:w-auto px-8 py-3 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] shadow-lg shadow-[#98D80D]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center">
+                                  <button 
+                                    onClick={() => openBooking(d.package?.title, startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }))}
+                                    className="w-full md:w-auto px-8 py-3 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] shadow-lg shadow-[#98D80D]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center"
+                                  >
                                     Book Now
-                                  </Link>
+                                  </button>
                                 )}
                               </div>
 
@@ -270,6 +290,15 @@ export default function DeparturesPage() {
           </div>
         )}
       </section>
+
+      {/* ========================================== */}
+      {/* BOOKING MODAL                              */}
+      {/* ========================================== */}
+      <BookingModal 
+        isOpen={isBookingModalOpen} 
+        onClose={() => setIsBookingModalOpen(false)} 
+        initialData={bookingModalData} 
+      />
 
     </div>
   );

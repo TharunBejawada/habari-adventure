@@ -1,253 +1,306 @@
+// apps/web/app/admin/bookings/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import { apiFetch, getAdminToken } from "../../../lib/apiClient";
+// Use your existing API client setup!
+import { apiFetch, getAdminToken } from "../../../lib/apiClient"; 
 
 interface Booking {
   id: string;
+  bookingType: string;
   firstName: string;
-  lastName: string | null;
+  lastName?: string;
   email: string;
-  phone: string | null;
-  monthYear: string;
-  length: string;
-  groupSize: string;
-  include: string;
-  message: string;
+  phone?: string;
+  location?: string;
+  packageName?: string;
+  departureDate?: string;
+  monthYear?: string;
+  length?: string;
+  groupSize?: string;
+  message?: string;
   status: string;
   createdAt: string;
 }
 
-export default function BookingsAdminPage() {
+export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const fetchBookings = async () => {
-    try {
-      const { ok, data } = await apiFetch("/bookings", {
-        token: getAdminToken()
-      });
-
-      if (ok && data) {
-        setBookings(data);
-        setFilteredBookings(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch bookings", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   useEffect(() => {
     fetchBookings();
   }, []);
 
-  // Real-time Search Filter
-  useEffect(() => {
-    if (searchQuery.trim() === "") {
-      setFilteredBookings(bookings);
-    } else {
-      const query = searchQuery.toLowerCase();
-      const filtered = bookings.filter((b) =>
-        b.firstName.toLowerCase().includes(query) ||
-        (b.lastName && b.lastName.toLowerCase().includes(query)) ||
-        b.email.toLowerCase().includes(query) ||
-        b.include.toLowerCase().includes(query)
-      );
-      setFilteredBookings(filtered);
+  const fetchBookings = async () => {
+    setIsLoading(true);
+    try {
+      // Uses your exact existing apiFetch logic
+      const { ok, data } = await apiFetch("/bookings", {
+        token: getAdminToken() 
+      });
+      
+      if (ok && Array.isArray(data)) {
+        setBookings(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch bookings", err);
+    } finally {
+      setIsLoading(false);
     }
-  }, [searchQuery, bookings]);
+  };
 
-  // Helper to format the Date nicely
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const { ok } = await apiFetch(`/bookings/${id}`, {
+        method: "PUT",
+        token: getAdminToken(),
+        body: JSON.stringify({ status: newStatus }),
+      });
+      
+      if (ok) {
+        setBookings(bookings.map(b => b.id === id ? { ...b, status: newStatus } : b));
+        if (selectedBooking?.id === id) {
+          setSelectedBooking({ ...selectedBooking, status: newStatus });
+        }
+      }
+    } catch (err) {
+      alert("Failed to update status");
+    }
+  };
+
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return {
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
-    };
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
-  // Helper for Status Badge Colors
-  const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'new':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
-      case 'contacted':
-        return 'bg-orange-50 text-orange-700 border-orange-200';
-      case 'closed':
-        return 'bg-gray-100 text-gray-600 border-gray-200';
-      default:
-        return 'bg-gray-50 text-gray-700 border-gray-200';
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "New": return "bg-blue-100 text-blue-800 border-blue-200";
+      case "Contacted": return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "Closed": return "bg-gray-100 text-gray-800 border-gray-200";
+      default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  // Helper to format the "Include" type nicely
-  const formatInclude = (include: string) => {
-    const map: Record<string, string> = {
-      'kilimanjaro': 'Kilimanjaro',
-      'safari': 'Safari',
-      'zanzibar': 'Zanzibar',
-      'kili-safari': 'Kili + Safari',
-      'safari-zanzibar': 'Safari + Zanzibar',
-      'all': 'Full Combo'
-    };
-    return map[include] || include;
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case "UpcomingDate": return "bg-purple-50 text-purple-700 border-purple-200";
+      case "Package": return "bg-green-50 text-green-700 border-green-200";
+      case "Contact": return "bg-orange-50 text-orange-700 border-orange-200";
+      default: return "bg-gray-50 text-gray-700 border-gray-200";
+    }
   };
+
+  if (isLoading) {
+    return <div className="p-10 text-center font-bold text-gray-500">Loading Inquiries...</div>;
+  }
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8 space-y-8 min-h-screen">
-      
-      {/* Custom Keyframe Animations */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          .animate-row {
-            animation: slideUpFade 0.4s ease-out forwards;
-            opacity: 0;
-          }
-        `
-      }} />
-
-      {/* Header Section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+    <div className="space-y-6">
+      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
         <div>
-          <Link 
-            href="/admin" 
-            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
-          >
-            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Dashboard
-          </Link>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#135D66]">Trip Inquiries</h1>
-          <p className="text-gray-500 font-medium mt-1">Manage and respond to customer quote requests.</p>
+          <h2 className="text-2xl font-extrabold text-[#135D66]">Booking Inquiries</h2>
+          <p className="text-gray-500 text-sm mt-1">Manage all quotes, package requests, and departure bookings.</p>
         </div>
-        <div className="bg-[#E9F4F5] px-5 py-3 rounded-xl border border-[#135D66]/10">
-          <p className="text-sm font-bold text-[#135D66]">Total Inquiries</p>
-          <p className="text-2xl font-black text-gray-900">{bookings.length}</p>
+        <div className="text-sm font-bold text-gray-400 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+          Total: {bookings.length}
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
-        <div className="relative flex-1">
-          <svg className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input 
-            type="text" 
-            placeholder="Search by name, email, or trip type..." 
-            className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg outline-none focus:bg-white focus:border-[#135D66] focus:ring-1 focus:ring-[#135D66] transition-all font-medium text-gray-900 placeholder-gray-400"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* Data Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        {isLoading ? (
-          <div className="p-12 text-center flex flex-col items-center justify-center">
-             <div className="w-10 h-10 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin mb-4"></div>
-             <p className="text-gray-500 font-bold">Loading Inquiries...</p>
-          </div>
-        ) : filteredBookings.length === 0 ? (
-          <div className="p-16 text-center">
-            <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-100 text-gray-400">
-              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-            </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No Inquiries Found</h3>
-            <p className="text-gray-500 font-medium">When customers submit a quote request, they will appear here.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[1000px]">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-xs font-extrabold text-gray-500 uppercase tracking-wider">
-                  <th className="p-4 pl-6">Customer</th>
-                  <th className="p-4">Trip Details</th>
-                  <th className="p-4 w-1/3">Message Preview</th>
-                  <th className="p-4">Submitted</th>
-                  <th className="p-4 text-right pr-6">Status</th>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200 text-sm">
+                <th className="p-4 font-bold text-gray-600">Date Received</th>
+                <th className="p-4 font-bold text-gray-600">Client</th>
+                <th className="p-4 font-bold text-gray-600">Inquiry Type</th>
+                <th className="p-4 font-bold text-gray-600">Trip Context</th>
+                <th className="p-4 font-bold text-gray-600">Status</th>
+                <th className="p-4 font-bold text-gray-600 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-sm">
+              {bookings.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-gray-500 font-medium">No bookings found.</td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredBookings.map((booking, index) => {
-                  const { date, time } = formatDate(booking.createdAt);
-                  return (
-                    <tr 
-                      key={booking.id} 
-                      className="hover:bg-[#F0F9FA]/50 transition-colors group animate-row"
-                      style={{ animationDelay: `${index * 0.05}s` }} // Staggered animation
-                    >
-                      <td className="p-4 pl-6">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center font-bold text-lg shrink-0">
-                            {booking.firstName.charAt(0)}{booking.lastName ? booking.lastName.charAt(0) : ''}
-                          </div>
-                          <div>
-                            <p className="font-extrabold text-gray-900">{booking.firstName} {booking.lastName}</p>
-                            <a href={`mailto:${booking.email}`} className="text-xs font-medium text-gray-500 hover:text-[#135D66] transition-colors block mt-0.5">{booking.email}</a>
-                            {booking.phone && (
-                              <a href={`tel:${booking.phone}`} className="text-xs font-medium text-gray-500 hover:text-[#135D66] transition-colors block">{booking.phone}</a>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      
-                      <td className="p-4">
-                        <div className="flex flex-col gap-1.5">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-extrabold bg-gray-100 text-gray-700 border border-gray-200 w-fit uppercase tracking-wider">
-                            {formatInclude(booking.include)}
-                          </span>
-                          <p className="text-sm font-bold text-gray-800">
-                            {booking.monthYear} <span className="text-gray-400 font-normal">({booking.length} Days)</span>
-                          </p>
-                          <p className="text-xs font-medium text-gray-500">Group: {booking.groupSize} People</p>
-                        </div>
-                      </td>
-
-                      <td className="p-4">
-                        <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 group-hover:bg-white transition-colors h-full">
-                          <p className="text-sm text-gray-600 line-clamp-3 font-medium leading-relaxed italic">
-                            "{booking.message}"
-                          </p>
-                        </div>
-                      </td>
-
-                      <td className="p-4">
-                        <p className="text-sm font-bold text-gray-900">{date}</p>
-                        <p className="text-xs font-medium text-gray-500 mt-0.5">{time}</p>
-                      </td>
-
-                      <td className="p-4 text-right pr-6">
-                        <span className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusBadge(booking.status)}`}>
-                          {booking.status}
-                        </span>
-                        
-                        {/* Optional Action Button Placeholder */}
-                        <div className="mt-2 flex justify-end">
-                          <button className="text-xs font-bold text-[#E59A1D] hover:underline opacity-0 group-hover:opacity-100 transition-opacity">
-                            View Details →
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+              ) : (
+                bookings.map((booking) => (
+                  <tr key={booking.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="p-4 text-gray-500">{formatDate(booking.createdAt)}</td>
+                    <td className="p-4">
+                      <div className="font-bold text-gray-900">{booking.firstName} {booking.lastName}</div>
+                      <div className="text-gray-500 text-xs">{booking.email}</div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${getTypeColor(booking.bookingType)}`}>
+                        {booking.bookingType}
+                      </span>
+                    </td>
+                    <td className="p-4 max-w-[200px] truncate text-gray-700">
+                      {booking.packageName || booking.location || "General Inquiry"}
+                    </td>
+                    <td className="p-4">
+                      <select
+                        value={booking.status}
+                        onChange={(e) => updateStatus(booking.id, e.target.value)}
+                        className={`text-xs font-bold px-2 py-1 rounded-full border outline-none cursor-pointer ${getStatusColor(booking.status)}`}
+                      >
+                        <option value="New">New</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </td>
+                    <td className="p-4 text-right">
+                      <button
+                        onClick={() => setSelectedBooking(booking)}
+                        className="text-[#135D66] hover:text-[#E59A1D] font-bold text-sm transition-colors"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* ========================================== */}
+      {/* DETAILED BOOKING MODAL                     */}
+      {/* ========================================== */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setSelectedBooking(null)}></div>
+          
+          <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden z-10 animate-fade-in flex flex-col max-h-[90vh]">
+            
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50 shrink-0">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Inquiry Details</h3>
+                <p className="text-xs text-gray-500 mt-1">Received on {formatDate(selectedBooking.createdAt)}</p>
+              </div>
+              <button onClick={() => setSelectedBooking(null)} className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">✕</button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 overflow-y-auto space-y-8">
+              
+              <div className="flex justify-between items-center">
+                <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getTypeColor(selectedBooking.bookingType)}`}>
+                  Type: {selectedBooking.bookingType}
+                </span>
+                <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusColor(selectedBooking.status)}`}>
+                  Status: {selectedBooking.status}
+                </span>
+              </div>
+
+              {/* Client Info Grid */}
+              <div>
+                <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-3">Client Information</h4>
+                <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <div>
+                    <span className="block text-xs text-gray-500 mb-1">Name</span>
+                    <span className="font-bold text-gray-900">{selectedBooking.firstName} {selectedBooking.lastName}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs text-gray-500 mb-1">Email</span>
+                    <a href={`mailto:${selectedBooking.email}`} className="font-bold text-[#135D66] hover:underline">{selectedBooking.email}</a>
+                  </div>
+                  <div>
+                    <span className="block text-xs text-gray-500 mb-1">Phone / WhatsApp</span>
+                    {selectedBooking.phone ? (
+                      <a href={`tel:${selectedBooking.phone}`} className="font-bold text-[#135D66] hover:underline">{selectedBooking.phone}</a>
+                    ) : (
+                      <span className="text-gray-400 italic">Not provided</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Trip Context Grid */}
+              <div>
+                <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-3">Trip Details</h4>
+                <div className="grid grid-cols-2 gap-4 bg-[#F0F9FA] p-4 rounded-xl border border-[#135D66]/10">
+                  {selectedBooking.packageName && (
+                    <div className="col-span-2">
+                      <span className="block text-xs text-gray-500 mb-1">Package Name</span>
+                      <span className="font-bold text-[#135D66]">{selectedBooking.packageName}</span>
+                    </div>
+                  )}
+                  {selectedBooking.location && (
+                    <div>
+                      <span className="block text-xs text-gray-500 mb-1">Location</span>
+                      <span className="font-bold text-gray-900">{selectedBooking.location}</span>
+                    </div>
+                  )}
+                  {selectedBooking.departureDate ? (
+                    <div>
+                      <span className="block text-xs text-gray-500 mb-1">Fixed Departure Date</span>
+                      <span className="font-bold text-[#E59A1D]">{selectedBooking.departureDate}</span>
+                    </div>
+                  ) : selectedBooking.monthYear && (
+                    <div>
+                      <span className="block text-xs text-gray-500 mb-1">Flexible Travel Month</span>
+                      <span className="font-bold text-gray-900">{selectedBooking.monthYear}</span>
+                    </div>
+                  )}
+                  {selectedBooking.length && (
+                    <div>
+                      <span className="block text-xs text-gray-500 mb-1">Duration</span>
+                      <span className="font-bold text-gray-900">{selectedBooking.length} Days</span>
+                    </div>
+                  )}
+                  {selectedBooking.groupSize && (
+                    <div>
+                      <span className="block text-xs text-gray-500 mb-1">Group Size</span>
+                      <span className="font-bold text-gray-900">{selectedBooking.groupSize}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Message Box */}
+              {selectedBooking.message && (
+                <div>
+                  <h4 className="text-xs font-extrabold text-gray-400 uppercase tracking-wider mb-3">Client Message</h4>
+                  <div className="bg-white p-4 rounded-xl border border-gray-200 text-gray-700 whitespace-pre-wrap leading-relaxed text-sm shadow-inner">
+                    {selectedBooking.message}
+                  </div>
+                </div>
+              )}
+
+            </div>
+            
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+              <a 
+                href={`mailto:${selectedBooking.email}`} 
+                className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-full hover:bg-gray-50 transition-colors"
+              >
+                Reply via Email
+              </a>
+              <button 
+                onClick={() => setSelectedBooking(null)} 
+                className="px-6 py-2.5 bg-[#111827] hover:bg-black text-white font-bold rounded-full transition-colors"
+              >
+                Close Details
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
