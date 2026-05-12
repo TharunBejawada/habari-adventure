@@ -194,8 +194,8 @@ export default function PackageLandingPage() {
       <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
-            <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-fill" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+            <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-cover" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
           </div>
         ) : (
@@ -211,7 +211,9 @@ export default function PackageLandingPage() {
             
             {pkg.badgeText && (
               <h3 className="text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
-                <span className="text-[#98D80D]">Kilimanjaro's</span> <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span>
+                {/* <span className="text-[#98D80D]">Kilimanjaro's</span>  */}
+                {/* <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span> */}
+                <span className="notranslate text-[#98D80D]">{pkg.badgeText}</span>
               </h3>
             )}
 
