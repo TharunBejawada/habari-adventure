@@ -158,7 +158,7 @@ export default function Header() {
           <Image
             src="/logo-white.png" alt="Habari Adventure Logo"
             width={200} height={80}
-            className="object-contain max-h-14 w-auto transition-transform duration-300 hover:scale-105"
+            className="object-contain h-[80px] w-auto transition-transform duration-300 hover:scale-105"
             priority
           />
         </Link>
@@ -171,7 +171,7 @@ export default function Header() {
                 // Dropdown trigger — no page to navigate to
                 <button
                   type="button"
-                  className="hover:underline transition-colors py-2 flex items-center gap-1 text-center"
+                  className="transition-colors py-2 flex items-center gap-1 text-center"
                 >
                   {item.name}
                   {item.subItems.length > 0 && (
@@ -183,7 +183,7 @@ export default function Header() {
               ) : (
                 <Link
                   href={getLocalizedUrl(item.url)}
-                  className="hover:underline transition-colors py-2 flex items-center gap-1 text-center"
+                  className="transition-colors py-2 flex items-center gap-1 text-center"
                 >
                   {item.name}
                   {item.subItems.length > 0 && (
@@ -196,12 +196,12 @@ export default function Header() {
 
               {/* Desktop dropdown */}
               {item.subItems.length > 0 && (
-                <div className="absolute top-full left-0 mt-4 w-56 bg-white text-[#135D66] rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:mt-2 transition-all duration-300 ease-out border border-gray-100 overflow-hidden text-left text-base">
+                <div className="absolute top-full left-0 mt-4 w-56 bg-[#135D66] text-[#135D66] rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:mt-2 transition-all duration-300 ease-out border border-gray-100 overflow-hidden text-left text-base">
                   {item.subItems.map((sub, sIndex) => (
                     <Link
                       key={sIndex}
                       href={getLocalizedUrl(sub.url)}
-                      className="block px-5 py-3 hover:bg-gray-50 hover:underline hover:pl-7 transition-all duration-200 border-b border-gray-50 last:border-0 font-medium"
+                      className="block px-5 py-3 hover:bg-gray-50 hover:pl-7 transition-all duration-200 border-b border-gray-50 last:border-0 font-medium"
                     >
                       {sub.name}
                     </Link>

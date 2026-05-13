@@ -102,7 +102,7 @@ export default function OurCrewPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full h-[55vh] min-h-[450px] flex flex-col justify-center -mt-[120px] pt-[120px] overflow-hidden bg-[#0a0f16]">
+      <section className="relative w-full h-[55vh] min-h-[450px] flex flex-col justify-center -mt-[150px] pt-[120px] overflow-hidden bg-[#0a0f16]">
         {settings?.heroBannerImage ? (
           <Image
             src={settings.heroBannerImage}

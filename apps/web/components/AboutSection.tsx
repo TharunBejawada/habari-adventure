@@ -37,7 +37,7 @@ export default function AboutSection() {
             {/* Animated Headline Group */}
             <div className="animate-fade-in-up w-full" style={{ animationDelay: '0.1s' }}>
               <span className={`${caveat.className} text-3xl md:text-4xl text-[#E59A1D] block mb-2 tracking-wider`}>
-                DISCOVER OUR STORY
+                Discover Our Story
               </span>
               <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 text-gray-900">
                 About <span className="text-[#135D66]">Habari Adventure</span>

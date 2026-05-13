@@ -64,7 +64,7 @@ function AnimatedNumber({ end, duration = 2000, suffix = "+" }: { end: number, d
 // Helper function to map names to SVG icons (Same as Footer)
 const getSocialIcon = (name: string) => {
   const normalized = name.toLowerCase();
-  if (normalized.includes("facebook") || normalized.includes("fb")) return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" /></svg>;
+  if (normalized.includes("facebook") || normalized.includes("fb")) return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" /></svg>;
   if (normalized.includes("instagram") || normalized.includes("ig")) return <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
   if (normalized.includes("twitter") || normalized.includes("x")) return <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>;
   if (normalized.includes("pinterest") || normalized.includes("pin")) return <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.182 0 7.436 2.981 7.436 6.953 0 4.156-2.617 7.502-6.252 7.502-1.221 0-2.369-.634-2.763-1.383l-.752 2.869c-.272 1.038-1.011 2.339-1.505 3.132 1.157.348 2.388.536 3.654.536 6.623 0 11.985-5.365 11.985-11.987C23.97 5.367 18.633 0 12.017 0z"/></svg>;
@@ -93,7 +93,7 @@ export default function Hero() {
 
       {/* --- HERO SECTION --- */}
       {/* Background pulls underneath the header with -mt-[130px] */}
-      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[130px] rounded-b-[40px] shadow-2xl">
+      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[150px] rounded-b-[40px] shadow-2xl">
         
   {/* Animated Clouds */}
   <div className="absolute top-[180px] w-full z-10 pointer-events-none opacity-80">
@@ -108,7 +108,7 @@ export default function Hero() {
   </div>
 
   {/* Decorative Background Image (Fits perfectly without stretching using object-cover) */}
-  <div className="absolute inset-0 z-0">
+  {/* <div className="absolute inset-0 z-0">
     <Image
       src="/slider-bg.jpg"
       alt="Mountains Background"
@@ -116,6 +116,18 @@ export default function Hero() {
       sizes="100vw"
       className="object-cover object-top w-full h-full opacity-60 mix-blend-overlay"
       priority
+    />
+  </div> 
+  */}
+
+  {/* NEW: YouTube Video Background (0-40 secs looped) */}
+  <div className="absolute inset-0 z-0 overflow-hidden bg-black/10">
+    <iframe 
+      className="absolute top-1/2 left-1/2 w-[300vw] h-[300vh] sm:w-[200vw] sm:h-[200vh] md:w-[150vw] md:h-[150vh] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 mix-blend-overlay"
+      src="https://www.youtube.com/embed/7vzEHwJp5wM?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=7vzEHwJp5wM&start=0&end=40&playsinline=1&disablekb=1" 
+      title="Hero Background Video"
+      frameBorder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
     />
   </div>
 
@@ -188,20 +200,18 @@ export default function Hero() {
     </div>
 
     {/* RIGHT SIDE: Plane and Traveler Images */}
-    <div className="w-full lg:w-[50%] min-h-[400px] lg:min-h-0 relative z-20 mt-16 lg:mt-0">
+    {/* <div className="w-full lg:w-[50%] min-h-[400px] lg:min-h-0 relative z-20 mt-16 lg:mt-0">
       <div className="relative w-full h-full flex justify-end items-end">
         
-        {/* Airplane Line - Fixed to Top Right */}
         <div className="absolute top-[-80px] md:top-[-100px] right-0 w-[80%] md:w-[60%] lg:w-[120%] xl:w-[100%] pointer-events-none z-10">
             <img src="/Plane-With-Line.png" alt="Airplane" loading="lazy" className="w-full h-auto drop-shadow-lg animate-pulse" />
         </div>
         
-        {/* Traveler Image */}
         <div className="relative z-20 w-full sm:w-3/4 lg:w-[90%] xl:w-[85%] ml-auto">
             <img src="/right-pic.png" alt="Happy Traveler" loading="lazy" className="w-full h-auto drop-shadow-2xl" />
         </div>
       </div>
-    </div>
+    </div> */}
 
   </div>
 </section>

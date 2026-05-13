@@ -599,7 +599,7 @@ export default function BlogPostPage() {
         `
       }} />
 
-      <div className="mb-16 -mt-[120px]">
+      <div className="mb-16 -mt-[150px]">
         <ContactHero />
       </div>
 
