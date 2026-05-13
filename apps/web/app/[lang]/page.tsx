@@ -37,8 +37,8 @@ export default function HomePage() {
       /> */}
       <Hero />
       <AboutSection />
-      <SafariSection />
       <ClimbingSection />
+      <SafariSection />
       <HolidayPackages />
       <WhyChooseUs />
       <FAQSection />

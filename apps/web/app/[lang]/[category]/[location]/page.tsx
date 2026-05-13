@@ -253,7 +253,7 @@ export default function LocationLandingPage() {
 
         <div className="absolute inset-0 z-0">
           <Image src={locationData?.heroImage || "/contact-mountains.png"} alt="Mountains Background" fill sizes="100vw" unoptimized className="object-cover object-bottom opacity-90" priority />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
@@ -281,11 +281,11 @@ export default function LocationLandingPage() {
         </div>
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#135D66] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#98D80D] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
             {/* NEW: notranslate class added so Google doesn't translate the proper noun destination */}
             Explore <span className={`notranslate ${caveat.className} text-[#E59A1D] font-normal`}>{displayTitle}</span>
           </h1>
-          <p className="animate-fade-left font-medium text-gray-800 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+          <p className="animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
             Discover our curated selection of routes and adventures designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
           </p>
         </div>

@@ -14,6 +14,9 @@ import Testimonials from "../../../../../components/packages/Testimonials";
 import WhyChooseHabari from "../../../../../components/packages/WhyChooseHabari";
 import NextJourneyCTA from "../../../../../components/packages/NextJourneyCTA";
 
+// NEW: Import the Booking Modal
+import BookingModal from "../../../../../components/modals/BookingModal";
+
 export default function PackageLandingPage() {
   const params = useParams();
   const router = useRouter();
@@ -39,6 +42,22 @@ export default function PackageLandingPage() {
   const [activeVariantIdx, setActiveVariantIdx] = useState(0);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const tabsScrollRef = useRef<HTMLDivElement>(null);
+
+  // NEW: Booking Modal State
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [bookingModalData, setBookingModalData] = useState<any>({});
+
+  // NEW: Universal Booking Handler
+  const openBooking = (groupSize: string = "", departureDate: string = "") => {
+    setBookingModalData({
+      bookingType: departureDate ? "UpcomingDate" : "Package",
+      location: pkg?.location || locationParam,
+      packageName: pkg?.title || "",
+      groupSize: groupSize,
+      departureDate: departureDate,
+    });
+    setIsBookingModalOpen(true);
+  };
 
   // --- FETCH DATA ---
   useEffect(() => {
@@ -175,8 +194,8 @@ export default function PackageLandingPage() {
       <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
-            <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-fill" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
+            <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-cover" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
           </div>
         ) : (
@@ -192,7 +211,9 @@ export default function PackageLandingPage() {
             
             {pkg.badgeText && (
               <h3 className="text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
-                <span className="text-[#98D80D]">Kilimanjaro's</span> <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span>
+                {/* <span className="text-[#98D80D]">Kilimanjaro's</span>  */}
+                {/* <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span> */}
+                <span className="notranslate text-[#98D80D]">{pkg.badgeText}</span>
               </h3>
             )}
 
@@ -228,7 +249,7 @@ export default function PackageLandingPage() {
             
             <div className="w-full lg:w-3/5 reveal-on-scroll">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                Quick <span className="text-[#98D80D]">Facts</span>
+                {pkg.quickFacts.heading}
               </h2>
               <div 
                 className="notranslate text-gray-600 text-lg mb-10 rte-content" 
@@ -274,7 +295,7 @@ export default function PackageLandingPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal-on-scroll">
               <div>
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                  Why Choose <span className="notranslate text-[#98D80D]">{pkg.title.split(" ")[0]}</span>
+                  {pkg.whyChoose.heading}
                 </h2>
                 <div className="notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description }} />
               </div>
@@ -368,8 +389,15 @@ export default function PackageLandingPage() {
 
             {/* Centered Image */}
             {activeVariant?.image && (
-              <div className="w-full max-w-5xl mx-auto mb-16 relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
-                <Image src={activeVariant.image} alt={activeVariant.tabName || "Itinerary image"} fill sizes="100vw" unoptimized className="object-fill" />
+              <div className="w-full max-w-7xl mx-auto mb-16 relative h-auto rounded-2xl overflow-hidden shadow-md reveal-on-scroll">
+                <Image 
+                  src={activeVariant.image} 
+                  alt={activeVariant.tabName || "Itinerary image"} 
+                  width={1200}
+                  height={800}
+                  unoptimized
+                  className="w-full h-auto object-cover rounded-2xl" 
+                />
               </div>
             )}
 
@@ -465,7 +493,10 @@ export default function PackageLandingPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
               
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll">
+              <div 
+                onClick={() => openBooking("1 Person")}
+                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll cursor-pointer"
+              >
                 <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
                   <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
@@ -475,7 +506,10 @@ export default function PackageLandingPage() {
                 <p className="text-sm font-bold text-gray-400">Per Person</p>
               </div>
 
-              <div className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100">
+              <div 
+                onClick={() => openBooking("2 to 4 People")}
+                className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100 cursor-pointer"
+              >
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
                   Most Popular
                 </div>
@@ -488,7 +522,10 @@ export default function PackageLandingPage() {
                 <p className="text-sm font-bold text-gray-400">Per Person</p>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200">
+              <div 
+                onClick={() => openBooking("5 to 9 People")}
+                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200 cursor-pointer"
+              >
                 <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
                   <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                 </div>
@@ -498,7 +535,10 @@ export default function PackageLandingPage() {
                 <p className="text-sm font-bold text-gray-400">Per Person</p>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300">
+              <div 
+                onClick={() => openBooking("10+ People")}
+                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300 cursor-pointer"
+              >
                 <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
                   <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 </div>
@@ -511,12 +551,12 @@ export default function PackageLandingPage() {
             </div>
 
             <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
-              <Link 
-                href={`/${lang}/contact`} 
+              <button 
+                onClick={() => openBooking("")}
                 className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#98D80D]/30"
               >
                 Book This Trip Now
-              </Link>
+              </button>
               <p className="text-gray-400 text-sm font-medium mt-4">Want to customize this trip? Contact us for a bespoke quote.</p>
             </div>
 
@@ -525,7 +565,8 @@ export default function PackageLandingPage() {
       )}
 
       {/* External Components */}
-      <UpcomingDates />
+      {/* NEW: Passed the onBook prop so UpcomingDates can trigger the modal */}
+      <UpcomingDates onBook={(date: string) => openBooking("", date)} />
       <PreparationGuide />
       <RelatedAdventures currentCategory={pkg.category} />
       <Testimonials />
@@ -569,6 +610,15 @@ export default function PackageLandingPage() {
           </div>
         </div>
       )}
+
+      {/* ========================================== */}
+      {/* BOOKING MODAL                              */}
+      {/* ========================================== */}
+      <BookingModal 
+        isOpen={isBookingModalOpen} 
+        onClose={() => setIsBookingModalOpen(false)} 
+        initialData={bookingModalData} 
+      />
 
     </div>
   );

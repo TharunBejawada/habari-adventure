@@ -71,9 +71,23 @@ export default function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
+      // NEW: Adapt the payload for the Universal Booking API
+      const payload = {
+        bookingType: "Contact", // Tag it explicitly
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        monthYear: formData.monthYear,
+        length: formData.length,
+        groupSize: formData.groupSize,
+        // Safely map the specific inclusion dropdown to the top of the message
+        message: `[Interested in: ${formData.include}]\n\n${formData.message}`
+      };
+
       const { ok } = await apiFetch("/bookings", {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (ok) {
