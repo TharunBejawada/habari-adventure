@@ -357,3 +357,14 @@ model BlogTranslation {
   @@unique([blogId, languageCode])
   @@unique([languageCode, slug])
 }
+
+model Stat {
+  id        String   @id @default(uuid())
+  label     String   // e.g., "Happy Travelers"
+  value     Int      // e.g., 2000
+  suffix    String?  @default("+") // e.g., "+", "%", or "k"
+  order     Int      @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

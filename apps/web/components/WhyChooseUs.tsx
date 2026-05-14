@@ -1,15 +1,21 @@
 // apps/web/components/WhyChooseUs.tsx
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Caveat } from "next/font/google";
 import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
+import { apiFetch } from "../lib/apiClient";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
 export default function WhyChooseUs() {
   const { getLocalizedUrl } = useLocalizedUrl();
+  
+  // NEW: State for Happy Travelers with a built-in fallback
+  const [happyTravelers, setHappyTravelers] = useState<string>("2,000+");
+
   const features = [
     "13+ years of experience in Tanzania safari tours",
     "Licensed and certified mountain crew for Kilimanjaro",
@@ -18,6 +24,22 @@ export default function WhyChooseUs() {
     "High summit success rates on Kilimanjaro tours",
     "Personalized itineraries tailored to your travel style"
   ];
+
+  // NEW: Fetch stats and find the specific one for travelers
+  useEffect(() => {
+    apiFetch("/stats")
+      .then(res => {
+        if (res.ok && Array.isArray(res.data)) {
+          const travelersStat = res.data.find((s: any) => 
+            s.label.toLowerCase().includes("happy") || s.label.toLowerCase().includes("traveler")
+          );
+          if (travelersStat) {
+            setHappyTravelers(`${travelersStat.value.toLocaleString()}${travelersStat.suffix || ""}`);
+          }
+        }
+      })
+      .catch(err => console.error("Failed to fetch happy travelers stat", err));
+  }, []);
 
   return (
     <section className="w-full py-20 lg:py-32 bg-[#FDFEFE] relative overflow-hidden">
@@ -127,7 +149,7 @@ export default function WhyChooseUs() {
                 <div className="w-10 h-10 rounded-full bg-gray-500 border-2 border-white overflow-hidden relative"><Image src="/safari-3.jpg" alt="Customer" fill className="object-cover" /></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-[#135D66] font-extrabold text-xl leading-none">2,000+</span>
+                <span className="text-[#135D66] font-extrabold text-xl leading-none">{happyTravelers}</span>
                 <span className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-1">Happy Travelers</span>
               </div>
             </div>

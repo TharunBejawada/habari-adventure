@@ -110,7 +110,7 @@ export default function Footer() {
         <div className="w-full lg:w-[28%] space-y-6">
           <Link href={getLocalizedUrl("/")}>
             <Image 
-              src="/logo.png" 
+              src="/logo-black.png" 
               alt="Travlla Logo" 
               width={300} 
               height={120} 
