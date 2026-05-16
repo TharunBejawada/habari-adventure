@@ -116,7 +116,7 @@ export default function OurServicesPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full h-[55vh] min-h-[450px] flex flex-col justify-center -mt-[120px] pt-[120px] overflow-hidden bg-[#0a0f16]">
+      <section className="relative w-full h-[55vh] min-h-[450px] flex flex-col justify-center -mt-[150px] pt-[120px] overflow-hidden bg-[#0a0f16]">
         <div className="absolute inset-0 z-0">
           <Image 
             src="https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&q=80&w=1920" 

@@ -167,6 +167,7 @@ export const getPackages = async (req: Request, res: Response) => {
         id: true,
         title: true,
         slug: true,
+        badgeText: true,
         category: true,
         location: true,
         isPublished: true,

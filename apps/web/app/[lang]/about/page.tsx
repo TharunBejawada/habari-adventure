@@ -82,7 +82,7 @@ export default function AboutUsPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[120px] z-0">
+      <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[150px] z-0">
         
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -217,11 +217,14 @@ export default function AboutUsPage() {
                 </p>
 
                 {/* Highlight Quote Box */}
-                <div className="bg-[#F0F9FA] border-l-4 border-[#E59A1D] p-6 md:p-8 rounded-r-3xl shadow-sm">
+                <div className="bg-[#F0F9FA] p-6 md:p-8 rounded-r-3xl shadow-sm">
                   <h4 className="font-extrabold text-[#135D66] text-xl mb-3">Why did we start the company?</h4>
-                  <p className="text-gray-700 italic text-lg leading-relaxed">
+                  {/* <p className="text-gray-700 italic text-lg leading-relaxed">
                     "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
-                  </p>
+                  </p> */}
+                  <blockquote>
+  "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
+</blockquote>
                 </div>
               </div>
             </div>
@@ -475,12 +478,12 @@ export default function AboutUsPage() {
                   
                   {/* Member Details */}
                   <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <p className="text-xs font-bold text-[#E59A1D] uppercase tracking-wider mb-1 drop-shadow-md">
+                    <p className="text-xs font-medium text-[#E59A1D] uppercase tracking-wider mb-1 drop-shadow-md">
                       {member.designation}
                     </p>
-                    <h3 className="text-xl font-extrabold text-white drop-shadow-md">
+                    <h4 className="text-xl font-extrabold text-white drop-shadow-md">
                       {member.name}
-                    </h3>
+                    </h4>
                   </div>
                 </div>
               ))}

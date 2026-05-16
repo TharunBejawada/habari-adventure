@@ -42,7 +42,12 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#FEF9F0] text-[#135D66] pt-12 lg:pt-20 pb-8 px-6 sm:px-8 relative overflow-visible mt-32 lg:mt-40 border-t-2 border-[#135D66]">
-      
+      <img 
+              className="absolute left-0 bottom-0 h-full w-full object-cover" 
+              src="/ftr-light-bg.png" 
+              alt="Footer Background Accent" 
+              loading="lazy" 
+            />
       {/* --- CAR ANIMATION STYLES --- */}
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -105,7 +110,7 @@ export default function Footer() {
         <div className="w-full lg:w-[28%] space-y-6">
           <Link href={getLocalizedUrl("/")}>
             <Image 
-              src="/logo.png" 
+              src="/logo-black.png" 
               alt="Travlla Logo" 
               width={300} 
               height={120} 
@@ -184,7 +189,7 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} Habari Adventure All Rights Reserved.
         </p>
         
-        <Link 
+        {/* <Link 
           href="/admin/login" 
           className="text-sm font-medium text-[#135D66]/50 hover:text-[#E59A1D] transition-colors flex items-center gap-1.5 group"
           title="Admin Dashboard Login"
@@ -193,7 +198,7 @@ export default function Footer() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
           Admin Portal
-        </Link>
+        </Link> */}
       </div>
 
     </footer>

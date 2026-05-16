@@ -44,6 +44,11 @@ const navigationItems = [
     icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
     color: "text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400"
   },
+  { name: "Stats", 
+    href: "/admin/stats", 
+    icon: "M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+    color: "text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400"
+  },
   { 
     name: "Site Settings", 
     href: "/admin/settings", 

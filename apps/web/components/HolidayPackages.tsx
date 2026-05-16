@@ -1,49 +1,93 @@
 // apps/web/components/HolidayPackages.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { apiFetch } from "../lib/apiClient";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 export default function HolidayPackages() {
   const [activeFilter, setActiveFilter] = useState("All Packages");
+  const [packages, setPackages] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { getLocalizedUrl } = useLocalizedUrl();
+  
+  // Reference for the scrolling carousel
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const filters = ["All Packages", "Honeymoon", "Family", "Luxury"];
+  const filters = ["All Packages", "Climbing", "Safari", "Destinations", "Day Trips"];
 
-  const packages = [
-    {
-      title: "Serengeti + Zanzibar Beach",
-      image: "/holiday-1.jpg",
-      category: "All Packages",
-    },
-    {
-      title: "Honeymoon Safari Packages",
-      image: "/holiday-2.jpg",
-      category: "Honeymoon",
-    },
-    {
-      title: "Family Safari & Relaxation",
-      image: "/holiday-3.jpg",
-      category: "Family",
-    },
-    {
-      title: "Private Luxury Safari",
-      image: "/holiday-4.jpg",
-      category: "Luxury",
-    },
-  ];
+  // --- FETCH DATA ---
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [pkgResult, pricingResult] = await Promise.all([
+          apiFetch("/packages"),
+          apiFetch("/pricing"),
+        ]);
+
+        if (pkgResult.ok && Array.isArray(pkgResult.data)) {
+          // Merge pricing data into the packages array
+          const mergedPackages = pkgResult.data.map((pkg: any) => {
+            const matchedPricing = Array.isArray(pricingResult.data) 
+              ? pricingResult.data.find((p: any) => p.packageId === pkg.id) 
+              : null;
+            
+            return {
+              ...pkg,
+              startingPrice: matchedPricing?.tier4 || null,
+            };
+          });
+
+          // Only show published packages
+          setPackages(mergedPackages.filter(p => p.isPublished !== false));
+        }
+      } catch (error) {
+        console.error("Failed to load packages or pricing:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // --- FILTER LOGIC ---
+  const filteredPackages = packages.filter((pkg) => {
+    if (activeFilter === "All Packages") return true;
+    
+    // Safely check category names (assuming category is a string or an object with a name)
+    const categoryName = typeof pkg.category === "string" 
+      ? pkg.category 
+      : pkg.category?.name || "";
+      
+    return categoryName.toLowerCase().includes(activeFilter.toLowerCase());
+  });
+
+  // --- CAROUSEL SCROLL LOGIC ---
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = scrollRef.current.clientWidth; // Scroll by exactly one container width
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
-    <section className="w-full py-20 lg:py-32 bg-[#F6FBFB] relative overflow-hidden">
+    <section className="w-full py-8 lg:py-20 bg-[#F6FBFB] relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto w-[96%] px-4 sm:px-6">
         
         {/* --- SECTION HEADER --- */}
         <div className="text-center mb-12 flex flex-col items-center">
           <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] tracking-tight mb-4">
-            Safari + <span className="text-[#E59A1D]">Zanzibar</span> Holiday Packages
+            Explore Our <span className="text-[#E59A1D]">Adventures</span>
           </h2>
           
-          <p className="text-left text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
-            After your adventure-filled wildlife safari Tanzania or Kilimanjaro climbing journey, unwind on the white-sand beaches of Zanzibar. Our combined Tanzania safari packages include carefully curated experiences.
+          <p className="text-center text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+            From thrilling wildlife safaris in the Serengeti to conquering the peaks of Kilimanjaro, find the perfect itinerary tailored to your travel style.
           </p>
 
           {/* Dotted Airplane Graphic */}
@@ -55,11 +99,11 @@ export default function HolidayPackages() {
           </div>
         </div>
 
-        {/* --- PACKAGES CONTAINER (The Light Inner Box) --- */}
+        {/* --- PACKAGES CONTAINER --- */}
         <div className="bg-[#E9F4F5] rounded-[30px] p-6 md:p-10 relative shadow-inner">
           
           {/* Filters */}
-          <div className="label-primary flex flex-wrap items-center gap-8 mb-8">
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-10">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -75,50 +119,103 @@ export default function HolidayPackages() {
             ))}
           </div>
 
-          {/* Carousel / Grid Wrapper */}
-          <div className="relative w-full group">
-            
-            {/* Left Carousel Arrow (Decorative/UI) */}
-            <button className="absolute -left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#E59A1D] hover:bg-[#D48A18] text-white rounded-full flex items-center justify-center shadow-lg z-20 transition-transform transform hover:scale-110 hidden md:flex">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
-            </button>
-
-            {/* Cards Scroll Container */}
-            <div className="flex overflow-x-auto snap-x snap-mandatory gap-8 pb-6 hide-scrollbar">
-              {packages.map((pkg, idx) => (
-                <div 
-                  key={idx} 
-                  className="min-w-[280px] md:min-w-[350px] flex-1 relative h-[300px] md:h-[350px] rounded-2xl overflow-hidden snap-center group/card cursor-pointer shadow-md hover:shadow-2xl transition-shadow duration-300"
-                >
-                  {/* Card Image */}
-                  <Image 
-                    src={pkg.image} 
-                    alt={pkg.title} 
-                    fill 
-                    className="object-cover transition-transform duration-700 group-hover/card:scale-110" 
-                  />
-                  
-                  {/* Glassmorphism Bottom Bar */}
-                  <div className="absolute bottom-0 left-0 w-full h-[80px] bg-white/20 backdrop-blur-md border-t border-white/30 flex items-center justify-center p-4 translate-y-0 transition-all duration-300">
-                    <h4 className="text-white font-bold text-lg md:text-xl text-center drop-shadow-md leading-tight">
-                      {pkg.title}
-                    </h4>
-                  </div>
-                </div>
-              ))}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="w-12 h-12 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin"></div>
             </div>
+          ) : filteredPackages.length === 0 ? (
+            <div className="text-center py-20 text-gray-500 font-medium bg-white rounded-2xl">
+              No packages found for this category.
+            </div>
+          ) : (
+            <div className="relative w-full group">
+              
+              {/* Left Carousel Arrow */}
+              {filteredPackages.length > 3 && (
+                <button 
+                  onClick={() => scroll("left")}
+                  className="absolute -left-5 top-1/2 -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg z-20 transition-transform transform hover:scale-110 hover:bg-gray-50 hidden md:flex border border-gray-100"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+              )}
 
-            {/* Right Carousel Arrow (Decorative/UI) */}
-            <button className="absolute -right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-[#E59A1D] hover:bg-[#D48A18] text-white rounded-full flex items-center justify-center shadow-lg z-20 transition-transform transform hover:scale-110 hidden md:flex">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-            </button>
+              {/* Cards Scroll Container */}
+              <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar scroll-smooth"
+              >
+                {filteredPackages.map((pkg, idx) => {
+                  const categoryDisplay = typeof pkg.category === "string" ? pkg.category : pkg.category?.name || "safari";
+                  
+                  return (
+                    <div 
+                      key={idx} 
+                      className="min-w-[100%] md:min-w-[calc(50%-1.5rem)] lg:min-w-[calc(33.333%-1.5rem)] flex flex-col bg-white rounded-[24px] overflow-hidden snap-start shadow-sm border border-gray-100 transition-shadow duration-300 hover:shadow-xl"
+                    >
+                      {/* Image Top Half */}
+                      <div className="relative w-full h-[240px]">
+                        <Image 
+                          src={pkg.bannerImage}
+                          alt={pkg.title} 
+                           fill sizes="100vw" unoptimized className="object-cover" priority 
+                        />
+                      </div>
+                      
+                      {/* Content Bottom Half */}
+                      <div className="p-6 flex flex-col flex-1">
+                        
+                        {/* Subtitle / Category line */}
+                        <p className="text-sm text-gray-500 font-medium mb-2">
+                          {pkg.badgeText}
+                        </p>
+                        
+                        {/* Title */}
+                        <h3 className="text-xl font-bold text-gray-900 leading-snug mb-6 flex-1">
+                          {pkg.title}
+                        </h3>
 
-          </div>
+                        {/* Price & Action Row */}
+                        <div className="flex items-end justify-between mt-auto pt-2">
+                          <div className="flex flex-col">
+                            <span className="text-sm text-gray-500 mb-0.5">Starts from</span>
+                            <span className="text-2xl font-extrabold text-black leading-none mb-1">
+                              ${pkg.startingPrice || "N/A"}
+                            </span>
+                            <span className="text-sm text-gray-500">Per person</span>
+                          </div>
+                          
+                          <Link 
+                            href={getLocalizedUrl(`/${pkg.slug || ""}`)} 
+                            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full font-bold text-sm transition-colors bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66]"
+                          >
+                            View Trip
+                          </Link>
+                        </div>
+
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Right Carousel Arrow */}
+              {filteredPackages.length > 3 && (
+                <button 
+                  onClick={() => scroll("right")}
+                  className="absolute -right-5 top-1/2 -translate-y-1/2 w-12 h-12 bg-white text-gray-800 rounded-full flex items-center justify-center shadow-lg z-20 transition-transform transform hover:scale-110 hover:bg-gray-50 hidden md:flex border border-gray-100"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                </button>
+              )}
+
+            </div>
+          )}
         </div>
 
       </div>
 
-      {/* Global style to hide the ugly scrollbar on the carousel but keep functionality */}
+      {/* Hide default scrollbar but retain swipe/scroll capabilities */}
       <style dangerouslySetInnerHTML={{
         __html: `
           .hide-scrollbar::-webkit-scrollbar { display: none; }

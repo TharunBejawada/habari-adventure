@@ -12,7 +12,7 @@ const nextConfig = {
       // Pro-Tip: Add your future production backend domain here now so you don't forget later!
       {
         protocol: 'https',
-        hostname: 'habari-adventure.onrender.com', // Replace with your actual production API domain
+        hostname: 'development-habari.habariadventure.com', // Replace with your actual production API domain
         pathname: '/uploads/**',
       }
     ],
