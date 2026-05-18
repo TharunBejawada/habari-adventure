@@ -69,7 +69,7 @@ export default function DeparturesPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#fe6e00] rounded-full animate-spin mb-6"></div>
       </div>
     );
   }
@@ -154,7 +154,7 @@ export default function DeparturesPage() {
               <div key={year} className="space-y-8 animate-fade-in">
                 
                 {/* Year Header */}
-                <h2 className="text-4xl md:text-5xl font-black text-gray-900 border-b-4 border-[#98D80D] inline-block pb-2">
+                <h2 className="text-4xl md:text-5xl font-black text-gray-900 border-b-4 border-[#fe6e00] inline-block pb-2">
                   {year}
                 </h2>
 
@@ -247,7 +247,7 @@ export default function DeparturesPage() {
                                     {startDate.toLocaleDateString()} — {endDate.toLocaleDateString()}
                                   </span>
                                   <span className="text-gray-300 hidden md:inline">|</span>
-                                  <Link href={`/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#98D80D] transition-colors flex items-center gap-1 group">
+                                  <Link href={`/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#fe6e00] transition-colors flex items-center gap-1 group">
                                     Explore Trip Details
                                     <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                   </Link>
@@ -271,7 +271,7 @@ export default function DeparturesPage() {
                                 ) : (
                                   <button 
                                     onClick={() => openBooking(d.package?.title, startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }))}
-                                    className="w-full md:w-auto px-8 py-3 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] shadow-lg shadow-[#98D80D]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center"
+                                    className="w-full md:w-auto px-8 py-3 bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] shadow-lg shadow-[#fe6e00]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center"
                                   >
                                     Book Now
                                   </button>

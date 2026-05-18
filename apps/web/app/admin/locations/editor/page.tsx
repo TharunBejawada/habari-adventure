@@ -546,10 +546,10 @@ function LocationEditorForm() {
                   type="checkbox" className="sr-only peer" checked={formData.isPublished} 
                   onChange={(e) => setFormData({...formData, isPublished: e.target.checked})} 
                 />
-                <div className="relative w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#98D80D]"></div>
+                <div className="relative w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#fe6e00]"></div>
               </div>
 
-              <span className={`text-sm font-bold transition-colors duration-300 ${formData.isPublished ? 'text-[#98D80D]' : 'text-gray-400'}`}>
+              <span className={`text-sm font-bold transition-colors duration-300 ${formData.isPublished ? 'text-[#fe6e00]' : 'text-gray-400'}`}>
                 Published
               </span>
             </div>

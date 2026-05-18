@@ -145,12 +145,13 @@ export default function Header() {
   if (pathname?.startsWith("/admin")) return null;
 
   return (
-    <div className="w-full px-4 pt-4 pb-2 sticky top-0 z-[100]">
+    <div className="w-full px-4 pb-2 sticky top-0 z-[100]">
 
-      <header className={`w-[96%] max-w-[1400px] mx-auto text-white rounded-2xl px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${
+      <header className={`w-full mx-auto text-white rounded-b-2xl px-6 md:px-10 flex items-center justify-between transition-all duration-500 ${
         isScrolled
-          ? "bg-[#135D66] shadow-xl py-3 md:py-4 border border-transparent"
-          : "bg-black/30 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-white/20 py-4 md:py-5"
+          ? "bg-[#135D66] shadow-xl py-3 md:py-4"
+          // : "bg-black/30 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-white/20 py-4 md:py-5"
+          : "py-4 md:py-5"
       }`}>
 
         {/* Logo */}
@@ -158,7 +159,7 @@ export default function Header() {
           <Image
             src="/logo-white.png" alt="Habari Adventure Logo"
             width={200} height={80}
-            className="object-contain h-[80px] w-auto transition-transform duration-300 hover:scale-105"
+            className="object-contain h-auto w-[150px] transition-transform duration-300 hover:scale-105"
             priority
           />
         </Link>
@@ -215,13 +216,13 @@ export default function Header() {
         {/* Right: language + search + hamburger */}
         <div className="flex items-center gap-3 sm:gap-6 shrink-0 z-10">
           <LanguageSwitcher />
-          {/* <button className="hidden sm:block hover:text-[#98D80D] transition-colors hover:scale-110 transform duration-200 shrink-0">
+          {/* <button className="hidden sm:block hover:text-[#fe6e00] transition-colors hover:scale-110 transform duration-200 shrink-0">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </button> */}
           <button
-            className="lg:hidden hover:text-[#98D80D] transition-colors p-1 shrink-0"
+            className="lg:hidden hover:text-[#fe6e00] transition-colors p-1 shrink-0"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -257,10 +258,10 @@ export default function Header() {
               {item.subItems.length > 0 ? (
                 <button
                   onClick={() => setExpandedMobileItem(expandedMobileItem === index ? null : index)}
-                  className="w-full flex items-center justify-between py-4 font-medium text-left hover:text-[#98D80D] transition-colors"
+                  className="w-full flex items-center justify-between py-4 font-medium text-left hover:text-[#fe6e00] transition-colors"
                 >
                   {item.name}
-                  <svg className={`w-5 h-5 transform transition-transform duration-300 ${expandedMobileItem === index ? "rotate-180 text-[#98D80D]" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className={`w-5 h-5 transform transition-transform duration-300 ${expandedMobileItem === index ? "rotate-180 text-[#fe6e00]" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -270,7 +271,7 @@ export default function Header() {
               ) : (
                 <Link
                   href={getLocalizedUrl(item.url)}
-                  className="block py-4 font-medium hover:text-[#98D80D] transition-colors"
+                  className="block py-4 font-medium hover:text-[#fe6e00] transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
@@ -284,7 +285,7 @@ export default function Header() {
                       <Link
                         key={sIndex}
                         href={getLocalizedUrl(sub.url)}
-                        className="text-white/80 hover:text-[#98D80D] transition-colors py-1"
+                        className="text-white/80 hover:text-[#fe6e00] transition-colors py-1"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {sub.name}

@@ -187,7 +187,7 @@ export default function HolidayPackages() {
                           
                           <Link 
                             href={getLocalizedUrl(`/${pkg.slug || ""}`)} 
-                            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full font-bold text-sm transition-colors bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66]"
+                            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full font-bold text-sm transition-colors bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white"
                           >
                             View Trip
                           </Link>

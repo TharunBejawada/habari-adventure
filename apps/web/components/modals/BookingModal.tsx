@@ -90,7 +90,7 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
             <h3 className="text-2xl font-bold text-gray-900">
               {initialData.departureDate ? "Book Departure" : "Request a Quote"}
             </h3>
-            {initialData.packageName && <p className="text-sm font-bold text-[#98D80D] mt-1">{initialData.packageName}</p>}
+            {initialData.packageName && <p className="text-sm font-bold text-[#fe6e00] mt-1">{initialData.packageName}</p>}
           </div>
           <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">✕</button>
         </div>

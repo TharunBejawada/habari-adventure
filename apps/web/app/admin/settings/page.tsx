@@ -121,11 +121,11 @@ const SocialLinksBuilder = ({ list, setter }: { list: LinkItem[]; setter: (l: Li
       {list.map((link, i) => (
         <div key={i} className="flex items-center gap-2">
           <input type="text" placeholder="Platform (e.g. Instagram)"
-            className="w-1/3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-sm outline-none"
+            className="w-1/3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50  text-sm outline-none"
             value={link.name}
             onChange={e => { const n = [...list]; n[i] = { name: e.target.value, url: n[i]?.url ?? "" }; setter(n); }} />
           <input type="text" placeholder="URL"
-            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-sm outline-none"
+            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50  text-sm outline-none"
             value={link.url}
             onChange={e => { const n = [...list]; n[i] = { name: n[i]?.name ?? "", url: e.target.value }; setter(n); }} />
           <button type="button" onClick={() => setter(list.filter((_, j) => j !== i))}
@@ -217,7 +217,7 @@ function CategoryItemEditor({
           placeholder={item.reference ?? "Category name"}
           value={item.label ?? ""}
           onChange={e => onChange({ ...item, label: e.target.value })}
-          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm outline-none" />
+          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white  text-sm outline-none" />
       </div>
 
       {/* Auto / Manual toggle */}
@@ -368,13 +368,13 @@ function CategoryItemEditor({
               <input type="text" placeholder={`Title (default: ${dbTitle})`}
                 value={ov.title}
                 onChange={e => updateOverride(ov.slug, { title: e.target.value })}
-                className="flex-1 min-w-0 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 outline-none" />
+                className="flex-1 min-w-0 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50  outline-none" />
 
               {/* URL override */}
               <input type="text" placeholder={`URL (default: ${derivedUrl})`}
                 value={ov.url}
                 onChange={e => updateOverride(ov.slug, { url: e.target.value })}
-                className="w-40 shrink-0 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 outline-none" />
+                className="w-40 shrink-0 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50  outline-none" />
             </div>
           );
         })}
@@ -420,13 +420,13 @@ function CustomItemEditor({
         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider w-28 shrink-0">Menu Title</label>
         <input type="text" placeholder="e.g. About Us" value={item.name ?? ""}
           onChange={e => onChange({ ...item, name: e.target.value })}
-          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm outline-none" />
+          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white  text-sm outline-none" />
       </div>
       <div className="flex items-center gap-3">
         <label className="text-xs font-bold text-gray-500 uppercase tracking-wider w-28 shrink-0">Link URL</label>
         <input type="text" placeholder="e.g. /about" value={item.url ?? ""}
           onChange={e => onChange({ ...item, url: e.target.value })}
-          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-sm outline-none" />
+          className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white  text-sm outline-none" />
       </div>
 
       <div className="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
@@ -458,10 +458,10 @@ function CustomItemEditor({
             </div>
             <input type="text" placeholder="Name" value={s.name}
               onChange={e => updateSubItem(s.id, "name", e.target.value)}
-              className="flex-1 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 outline-none" />
+              className="flex-1 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50  outline-none" />
             <input type="text" placeholder="URL (e.g. /services/guide)" value={s.url}
               onChange={e => updateSubItem(s.id, "url", e.target.value)}
-              className="flex-1 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50 dark:bg-gray-700 outline-none" />
+              className="flex-1 px-2 py-1.5 text-sm border border-gray-200 dark:border-gray-600 rounded bg-gray-50  outline-none" />
             <button type="button" onClick={() => removeSubItem(s.id)}
               className="p-1.5 text-red-400 hover:text-red-600 shrink-0">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -839,22 +839,22 @@ export default function SettingsPage() {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Description</label>
-          <textarea rows={3} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
+          <textarea rows={3} className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50  outline-none"
             value={websiteInfo} onChange={e => setWebsiteInfo(e.target.value)} placeholder="Brief description…" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
-          <input type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
+          <input type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50  outline-none"
             value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} placeholder="+1 234 567 8900" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-          <input type="email" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
+          <input type="email" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50  outline-none"
             value={email} onChange={e => setEmail(e.target.value)} placeholder="info@company.com" />
         </div>
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Physical Address</label>
-          <input type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 outline-none"
+          <input type="text" className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50  outline-none"
             value={address} onChange={e => setAddress(e.target.value)} placeholder="123 Main St…" />
         </div>
       </div>
@@ -893,10 +893,10 @@ export default function SettingsPage() {
                 {col.links.map((link, li) => (
                   <div key={li} className="flex items-center gap-2">
                     <input type="text" placeholder="Name"
-                      className="w-1/3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-sm outline-none"
+                      className="w-1/3 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50  text-sm outline-none"
                       value={link.name} onChange={e => updateColLink(ci, li, "name", e.target.value)} />
                     <input type="text" placeholder="URL"
-                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-sm outline-none"
+                      className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50  text-sm outline-none"
                       value={link.url} onChange={e => updateColLink(ci, li, "url", e.target.value)} />
                     <button type="button" onClick={() => removeColLink(ci, li)}
                       className="p-2 text-red-500 hover:bg-red-50 rounded-md">

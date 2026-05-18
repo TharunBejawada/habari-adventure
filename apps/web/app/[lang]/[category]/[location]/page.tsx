@@ -217,7 +217,7 @@ export default function LocationLandingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#fe6e00] rounded-full animate-spin mb-6"></div>
       </div>
     );
   }
@@ -232,7 +232,7 @@ export default function LocationLandingPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[120px] z-0">
+      <section className="relative w-full pt-32 pb-40 lg:pt-48 lg:pb-56 overflow-hidden -mt-[150px] z-0">
         
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -281,7 +281,7 @@ export default function LocationLandingPage() {
         </div>
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#98D80D] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#fe6e00] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
             {/* NEW: notranslate class added so Google doesn't translate the proper noun destination */}
             Explore <span className={`notranslate ${caveat.className} text-[#E59A1D] font-normal`}>{displayTitle}</span>
           </h1>
@@ -349,7 +349,7 @@ export default function LocationLandingPage() {
                 {Object.keys(activeFilters).length > 0 && (
                   <button 
                     onClick={() => { setActiveFilters({}); setCurrentPage(1); }}
-                    className="text-xs font-bold text-[#98D80D] hover:underline"
+                    className="text-xs font-bold text-[#fe6e00] hover:underline"
                   >
                     Clear All
                   </button>
@@ -450,7 +450,7 @@ export default function LocationLandingPage() {
                       
                       <div className="p-6 flex flex-col flex-grow">
                         {/* NEW: notranslate class added */}
-                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#98D80D] transition-colors">{pkg.title}</h3>
+                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#fe6e00] transition-colors">{pkg.title}</h3>
                         
                         {pkg.badgeText && (
                           /* NEW: notranslate class added */
@@ -459,11 +459,11 @@ export default function LocationLandingPage() {
                         
                         {/* NEW: notranslate class added */}
                         <p className="notranslate text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3 break-words">
-                          {stripHtml(pkg.description)}
+                          {stripHtml(pkg.description?.replace(/&nbsp;/g, ' ') || "")}
                         </p>
                         
                         <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-                          <span className="text-sm font-bold text-[#135D66] group-hover:text-[#98D80D] transition-colors flex items-center gap-1">
+                          <span className="text-sm font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors flex items-center gap-1">
                             Explore Route 
                             <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                           </span>

@@ -341,7 +341,7 @@ export default function ContactFormSection() {
                   disabled={!isFormValid || isSubmitting}
                   className={`font-bold text-lg py-4 px-10 rounded-full transition-all shadow-lg w-full md:w-auto flex items-center justify-center gap-2
                     ${isFormValid && !isSubmitting
-                      ? "bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] hover:-translate-y-1 shadow-[#98D80D]/20 cursor-pointer" 
+                      ? "bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] hover:-translate-y-1 shadow-[#fe6e00]/20 cursor-pointer" 
                       : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                     }
                   `}

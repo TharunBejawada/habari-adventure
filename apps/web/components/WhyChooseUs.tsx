@@ -135,7 +135,7 @@ export default function WhyChooseUs() {
           <div className="flex flex-wrap items-center gap-8 border-t border-gray-200 pt-8 w-full">
             <Link 
               href={getLocalizedUrl("/about")} 
-              className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-base py-3 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#98D80D]/20"
+              className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold text-base py-3 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#fe6e00]/20"
             >
               Discover More
             </Link>

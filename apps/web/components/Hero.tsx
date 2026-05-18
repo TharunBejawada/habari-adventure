@@ -118,10 +118,10 @@ export default function Hero() {
       }} />
 
       {/* --- HERO SECTION --- */}
-      <section className="relative w-full bg-[#135D66] overflow-hidden pt-[160px] lg:pt-[190px] pb-32 lg:pb-40 z-0 -mt-[150px] rounded-b-[40px] shadow-2xl">
+      <section className="relative w-full bg-[#135D66] pt-[160px] lg:pt-[190px] pb-40 lg:pb-48 z-0 -mt-[150px] shadow-2xl">
         
         {/* YouTube Video Background (0-40 secs looped) */}
-        <div className="absolute inset-0 z-0 overflow-hidden bg-black/10 opacity-50">
+        <div className="absolute inset-0 z-0 bg-black/10 opacity-50">
           <iframe 
             className="absolute top-1/2 left-1/2 w-[300vw] h-[300vh] sm:w-[200vw] sm:h-[200vh] md:w-[150vw] md:h-[150vh] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 scale-[1.3] md:scale-150 pointer-events-none opacity-60 mix-blend-overlay"
             src="https://www.youtube.com/embed/7vzEHwJp5wM?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=7vzEHwJp5wM&start=0&end=40&playsinline=1&disablekb=1&iv_load_policy=3&modestbranding=1" 
@@ -152,12 +152,12 @@ export default function Hero() {
               Explore Serengeti wildlife and conquer Kilimanjaro with expertly guided Tanzania safari and climbing adventures designed for unforgettable journeys. Whether you're planning your first wildlife safari Tanzania or preparing for a life-changing Kilimanjaro climbing expedition, we ensure every detail is seamless.
             </p>
 
-            <Link href="/contact" className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#98D80D]/20">
+            <Link href="/contact" className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold text-lg py-4 px-10 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[#fe6e00]/20">
               Start Your Adventure
             </Link>
 
             {/* Trip Category Finder */}
-            <div className="mt-12 bg-white rounded-3xl md:rounded-full p-4 md:p-3 w-full flex flex-col md:flex-row items-center gap-4 md:gap-2 shadow-2xl">
+            {/* <div className="mt-12 bg-white rounded-3xl md:rounded-full p-4 md:p-3 w-full flex flex-col md:flex-row items-center gap-4 md:gap-2 shadow-2xl">
               <div className="flex-1 w-full px-4 border-b md:border-b-0 md:border-r border-gray-200 pb-3 md:pb-0">
                 <label className="block text-xs font-bold text-[#135D66] uppercase tracking-wider mb-1">Category</label>
                 <select className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none cursor-pointer appearance-none">
@@ -177,18 +177,18 @@ export default function Hero() {
                 <input type="number" min="1" placeholder="2 Adults" className="w-full text-sm font-medium text-gray-700 bg-transparent outline-none" />
               </div>
 
-              <button className="w-full md:w-14 h-12 md:h-14 mt-2 md:mt-0 bg-[#98D80D] hover:bg-[#86C00B] rounded-full flex items-center justify-center transition-colors shrink-0 text-[#135D66]">
+              <button className="w-full md:w-14 h-12 md:h-14 mt-2 md:mt-0 bg-[#fe6e00] hover:bg-[#fe6e00] rounded-full flex items-center justify-center transition-colors shrink-0 text-[#135D66]">
                 <span className="label-primary md:hidden font-bold mr-2">Search</span>
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
 
       {/* --- STATS / TRUST BAR --- */}
       {stats.length > 0 && (
-        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-16 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
+        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-44 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
           <div className={`grid grid-cols-1 md:grid-cols-${Math.min(stats.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E0E0E0] p-8 md:p-10 gap-10 md:gap-0`}>
             
             {stats.map((stat, idx) => (

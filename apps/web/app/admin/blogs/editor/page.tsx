@@ -544,7 +544,7 @@
 //               <span className="text-sm font-bold text-gray-700">Visibility</span>
 //               <label className="relative inline-flex items-center cursor-pointer">
 //                 <input type="checkbox" className="sr-only peer" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} />
-//                 <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#98D80D]"></div>
+//                 <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fe6e00]"></div>
 //                 <span className={`ml-3 text-sm font-bold ${isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{isPublished ? 'Published' : 'Draft'}</span>
 //               </label>
 //             </div>
@@ -1204,7 +1204,7 @@ function EditorForm() {
               <span className="text-sm font-bold text-gray-700">Visibility</span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} disabled={activeLang !== 'en'} />
-                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-[#98D80D]"></div>
+                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-[#fe6e00]"></div>
                 <span className={`ml-3 text-sm font-bold ${isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{isPublished ? 'Published' : 'Draft'}</span>
               </label>
             </div>

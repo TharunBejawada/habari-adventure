@@ -273,7 +273,7 @@ export default function UpcomingDatesAdminPage() {
               </label>
             </div>
 
-            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full py-3.5 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md mt-4">
+            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full py-3.5 bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md mt-4">
               {isSaving ? "Saving..." : (editingId ? "Update Departure" : "Add Departure Date")}
             </button>
           </form>
@@ -323,7 +323,8 @@ export default function UpcomingDatesAdminPage() {
                     </div>
                     
                     <p className="font-bold text-gray-900">
-                      {new Date(d.startDate).toLocaleDateString()} — {new Date(d.endDate).toLocaleDateString()}
+                      {/* {new Date(d.startDate).toLocaleDateString()} — {new Date(d.endDate).toLocaleDateString()} */}
+                      {new Date(d.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} — {new Date(d.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                     </p>
                     <p className="text-xs text-gray-500 font-medium mt-1">
                       {d.title && <span className="font-medium mr-2 text-gray-800">"{d.title}"</span>}

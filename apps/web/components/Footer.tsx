@@ -107,7 +107,7 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto w-full lg:w-[96%] flex flex-col lg:flex-row justify-between gap-12 lg:gap-8 relative z-10">
         
         {/* LEFT COLUMN: Logo, Info, and Socials */}
-        <div className="w-full lg:w-[28%] space-y-6">
+        <div className="w-full lg:w-[18%] space-y-6">
           <Link href={getLocalizedUrl("/")}>
             <Image 
               src="/logo-black.png" 
@@ -140,14 +140,14 @@ export default function Footer() {
         </div>
 
         {/* MIDDLE COLUMNS: Dynamic CMS Columns */}
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:justify-around gap-8 lg:gap-6">
+        <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-around gap-8 lg:gap-6">
           {settings.footerColumns?.map((col: FooterColumn, cIdx: number) => (
             <div key={cIdx} className="space-y-4 lg:space-y-6">
               <h4 className="font-bold text-lg">{col.title}</h4>
               <ul className="space-y-2 lg:space-y-3">
                 {col.links.map((link, lIdx) => (
                   <li key={lIdx}>
-                    <Link href={getLocalizedUrl(link.url)} className="text-sm font-medium text-[#135D66]/80 hover:text-[#98D80D] transition-colors inline-block py-1 lg:py-0">
+                    <Link href={getLocalizedUrl(link.url)} className="text-sm font-medium text-[#135D66]/80 hover:text-[#fe6e00] transition-colors inline-block py-1 lg:py-0">
                       {link.name}
                     </Link>
                   </li>

@@ -140,8 +140,8 @@ export default function PackageLandingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
-        <p className="text-[#98D80D] font-bold text-xl animate-pulse">Preparing your adventure...</p>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#fe6e00] rounded-full animate-spin mb-6"></div>
+        <p className="text-[#fe6e00] font-bold text-xl animate-pulse">Preparing your adventure...</p>
       </div>
     );
   }
@@ -191,7 +191,7 @@ export default function PackageLandingPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
+      <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[150px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
             <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-cover" priority />
@@ -211,21 +211,21 @@ export default function PackageLandingPage() {
             
             {pkg.badgeText && (
               <h3 className="text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
-                {/* <span className="text-[#98D80D]">Kilimanjaro's</span>  */}
+                {/* <span className="text-[#fe6e00]">Kilimanjaro's</span>  */}
                 {/* <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span> */}
-                <span className="notranslate text-[#98D80D]">{pkg.badgeText}</span>
+                <span className="notranslate text-[#fe6e00]">{pkg.badgeText}</span>
               </h3>
             )}
 
             <div 
               className="notranslate text-gray-200 text-lg font-medium mb-10 leading-relaxed drop-shadow-md rte-content max-w-full"
-              dangerouslySetInnerHTML={{ __html: pkg.description }} 
+              dangerouslySetInnerHTML={{ __html: pkg.description?.replace(/&nbsp;/g, ' ') || "" }} 
             />
 
             <div className="flex flex-wrap items-center gap-4">
               <button 
                 onClick={() => { document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="bg-[#98D80D] hover:bg-[#d41538] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
+                className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
               >
                 See Dates & Prices
               </button>
@@ -253,7 +253,7 @@ export default function PackageLandingPage() {
               </h2>
               <div 
                 className="notranslate text-gray-600 text-lg mb-10 rte-content" 
-                dangerouslySetInnerHTML={{ __html: pkg.quickFacts.description }} 
+                dangerouslySetInnerHTML={{ __html: pkg.quickFacts.description?.replace(/&nbsp;/g, ' ') || "" }} 
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
@@ -265,7 +265,7 @@ export default function PackageLandingPage() {
                       </div>
                     )}
                     <div>
-                      <h4 className="notranslate font-bold text-[#98D80D] text-lg mb-1">{fact.title}</h4>
+                      <h4 className="notranslate font-bold text-[#fe6e00] text-lg mb-1">{fact.title}</h4>
                       <p className="notranslate text-gray-800 font-medium text-sm sm:text-base leading-snug">{fact.desc}</p>
                     </div>
                   </div>
@@ -297,7 +297,7 @@ export default function PackageLandingPage() {
                 <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
                   {pkg.whyChoose.heading}
                 </h2>
-                <div className="notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description }} />
+                <div className="notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description?.replace(/&nbsp;/g, ' ') || "" }} />
               </div>
               
               {hasCompareTable && (
@@ -311,7 +311,7 @@ export default function PackageLandingPage() {
               <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-10">
                 {pkg.whyChoose.items?.map((item: any, idx: number) => (
                   <div key={idx} className={`reveal-on-scroll delay-${(idx % 3) * 100}`}>
-                    <h4 className="notranslate text-xl font-bold text-[#98D80D] mb-2">{item.title}</h4>
+                    <h4 className="notranslate text-xl font-bold text-[#fe6e00] mb-2">{item.title}</h4>
                     <p className="notranslate text-gray-700 leading-relaxed text-lg">{item.desc}</p>
                   </div>
                 ))}
@@ -342,7 +342,7 @@ export default function PackageLandingPage() {
                 <h2 className="notranslate text-4xl font-extrabold text-gray-900 mb-4">
                   {pkg.itineraryMeta?.heading || "Itinerary"}
                 </h2>
-                <div className="notranslate text-gray-600 text-lg rte-content max-w-3xl" dangerouslySetInnerHTML={{ __html: pkg.itineraryMeta?.description || "" }} />
+                <div className="notranslate text-gray-600 text-lg rte-content max-w-3xl" dangerouslySetInnerHTML={{ __html: pkg.itineraryMeta?.description?.replace(/&nbsp;/g, ' ') || "" }} />
               </div>
 
               {activeVariant?.documentPdf && (
@@ -358,7 +358,7 @@ export default function PackageLandingPage() {
               <div className="relative flex items-center mb-12 reveal-on-scroll group">
                 
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#fe6e00] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                   </button>
                 )}
@@ -370,7 +370,7 @@ export default function PackageLandingPage() {
                       onClick={() => setActiveVariantIdx(idx)}
                       className={`notranslate px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap shrink-0 ${
                         activeVariantIdx === idx 
-                          ? "bg-[#98D80D] text-white shadow-lg" 
+                          ? "bg-[#fe6e00] text-white shadow-lg" 
                           : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:text-gray-900"
                       }`}
                     >
@@ -380,7 +380,7 @@ export default function PackageLandingPage() {
                 </div>
 
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#fe6e00] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 )}
@@ -409,19 +409,19 @@ export default function PackageLandingPage() {
                   {activeVariant?.days.map((day: any, idx: number) => (
                     <div key={idx} className={`relative pl-8 md:pl-12 reveal-on-scroll delay-${(idx % 5) * 100}`}>
                       <div className="absolute left-[7px] top-3 bottom-[-40px] w-[2px] bg-gray-200 last:hidden"></div>
-                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#98D80D] rounded-full z-10"></div>
+                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#fe6e00] rounded-full z-10"></div>
 
                       <div>
                         <div className="flex flex-wrap items-baseline gap-3 mb-2">
-                          <span className="notranslate text-[#98D80D] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
+                          <span className="notranslate text-[#fe6e00] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
                           <h4 className="notranslate text-gray-900 font-bold text-lg md:text-xl uppercase tracking-wide">{day.heading}</h4>
                         </div>
                         
-                        <div className="notranslate text-gray-600 rte-content max-w-none mb-4" dangerouslySetInnerHTML={{ __html: day.description }} />
+                        <div className="notranslate text-gray-600 rte-content max-w-none mb-4" dangerouslySetInnerHTML={{ __html: day.description?.replace(/&nbsp;/g, ' ') || "" }} />
                         
                         {day.timeTaken && (
                           <div className="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                            <svg className="w-4 h-4 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <svg className="w-4 h-4 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span className="notranslate">{day.timeTaken}</span>
                           </div>
                         )}
@@ -484,7 +484,7 @@ export default function PackageLandingPage() {
             
             <div className="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
               <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                Pricing & <span className="text-[#98D80D]">Group Sizes</span>
+                Pricing & <span className="text-[#fe6e00]">Group Sizes</span>
               </h2>
               <p className="text-gray-600 text-lg">
                 Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!
@@ -553,7 +553,7 @@ export default function PackageLandingPage() {
             <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
               <button 
                 onClick={() => openBooking("")}
-                className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#98D80D]/30"
+                className="bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
               >
                 Book This Trip Now
               </button>
@@ -589,7 +589,7 @@ export default function PackageLandingPage() {
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="pb-4 font-bold text-gray-900 w-1/3">Feature</th>
-                    <th className="notranslate pb-4 font-extrabold text-[#98D80D] w-1/3 text-lg">{pkg.title}</th>
+                    <th className="notranslate pb-4 font-extrabold text-[#fe6e00] w-1/3 text-lg">{pkg.title}</th>
                     <th className="pb-4 font-bold text-gray-500 w-1/3 text-lg">Other Routes</th>
                   </tr>
                 </thead>

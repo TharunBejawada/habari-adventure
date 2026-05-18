@@ -225,7 +225,7 @@ export default function PricingAdminPage() {
               </div>
             </div>
 
-            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full mt-4 py-3.5 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md">
+            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full mt-4 py-3.5 bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md">
               {isSaving ? "Saving..." : (isUpdating ? "Update Pricing Matrix" : "Save Pricing Matrix")}
             </button>
           </form>

@@ -105,7 +105,7 @@ export default function ContactHero() {
       <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
         
         {/* Main Title with Caveat Accent */}
-        <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#98D80D] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+        <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#fe6e00] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
           Contact <span className={`${caveat.className} text-[#E59A1D] font-normal`}>Habari Adventure</span>
         </h1>
 

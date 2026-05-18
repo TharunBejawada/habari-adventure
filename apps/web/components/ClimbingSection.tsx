@@ -30,7 +30,7 @@ export default function ClimbingSection() {
           <div className="flex flex-wrap items-center gap-6 pt-2">
             <Link 
               href={getLocalizedUrl("/climbing/Kilimanjaro")}
-              className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-bold text-sm md:text-base py-3 md:py-4 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#98D80D]/20"
+              className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold text-sm md:text-base py-3 md:py-4 px-8 rounded-full transition-transform hover:-translate-y-1 shadow-lg shadow-[#fe6e00]/20"
             >
               View Expeditions
             </Link>
@@ -43,7 +43,7 @@ export default function ClimbingSection() {
                 <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-3.jpg" alt="Climber" fill sizes="32px" className="object-cover" /></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-[#98D80D] font-extrabold text-sm leading-none">3.5k</span>
+                <span className="text-[#fe6e00] font-extrabold text-sm leading-none">3.5k</span>
                 <span className="text-white/60 text-[10px] font-bold uppercase tracking-wider mt-0.5">Summits</span>
               </div>
             </div>
@@ -95,8 +95,8 @@ export default function ClimbingSection() {
               <div>
                 <span className="text-white/50 text-[11px] uppercase tracking-widest font-bold block mb-2.5 border-b border-white/10 pb-1">Popular Routes</span>
                 <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Machame & Lemosho Route</li>
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Marangu & Northern Circuit</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Machame & Lemosho Route</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Marangu & Northern Circuit</li>
                   <li className="flex items-start gap-2 text-white/70 text-xs italic mt-2">Carefully structured to maximize acclimatization and summit success.</li>
                 </ul>
               </div>
@@ -127,8 +127,8 @@ export default function ClimbingSection() {
               <div>
                 <span className="text-white/50 text-[11px] uppercase tracking-widest font-bold block mb-2.5 border-b border-white/10 pb-1">Why Choose Meru?</span>
                 <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Spectacular crater & sunrise views</li>
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Wildlife encounters during ascent</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Spectacular crater & sunrise views</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Wildlife encounters during ascent</li>
                   <li className="flex items-start gap-2 text-white/70 text-xs italic mt-2">Ideal acclimatization and warm-up before a full Kilimanjaro expedition.</li>
                 </ul>
               </div>
@@ -159,8 +159,8 @@ export default function ClimbingSection() {
               <div>
                 <span className="text-white/50 text-[11px] uppercase tracking-widest font-bold block mb-2.5 border-b border-white/10 pb-1">The Experience</span>
                 <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Rugged alpine & glacial scenery</li>
-                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5 text-xs">✔</span> Sirimon, Chogoria & Naro Moru routes</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Rugged alpine & glacial scenery</li>
+                  <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5 text-xs">✔</span> Sirimon, Chogoria & Naro Moru routes</li>
                   <li className="flex items-start gap-2 text-white/70 text-xs italic mt-2">Technical and non-technical options with fewer crowds for a remote feel.</li>
                 </ul>
               </div>

@@ -45,9 +45,9 @@ export default function SafariSection() {
             <div className="space-y-3">
               <span className="text-white font-semibold text-sm uppercase tracking-wider mb-1 block">Whether you want:</span>
               <ul className="space-y-2">
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5">✔</span> A luxury Serengeti safari</li>
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5">✔</span> A private wildlife safari Tanzania experience</li>
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#98D80D] mt-0.5">✔</span> A multi-park adventure covering Ngorongoro and Tarangire</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> A luxury Serengeti safari</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> A private wildlife safari Tanzania experience</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> A multi-park adventure covering Ngorongoro and Tarangire</li>
               </ul>
             </div>
             <div className="space-y-3">
@@ -106,7 +106,7 @@ export default function SafariSection() {
 
             {/* Card 3: Tarangire */}
             <div className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
-              <div className="w-12 h-12 mx-auto mb-4 text-[#98D80D]">
+              <div className="w-12 h-12 mx-auto mb-4 text-[#fe6e00]">
                 {/* Tree/Nature Icon */}
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
               </div>
@@ -115,7 +115,7 @@ export default function SafariSection() {
                 A hidden gem famous for giant baobab trees and large elephant herds, perfect for many Tanzania safari tours.
               </p>
               {/* Folded Corner Effect (Green) */}
-              <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#98D80D] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
+              <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#fe6e00] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
                 03
               </div>
             </div>

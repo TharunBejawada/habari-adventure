@@ -69,8 +69,7 @@ export default function AdminStatsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        {/* Back to Dashboard Link */}
+      {/* Back to Dashboard Link */}
           <Link 
             href="/admin" 
             className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
@@ -80,6 +79,33 @@ export default function AdminStatsPage() {
             </svg>
             Back to Dashboard
           </Link>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        <table className="w-full text-left">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="p-4 font-bold text-gray-600">Order</th>
+              <th className="p-4 font-bold text-gray-600">Label</th>
+              <th className="p-4 font-bold text-gray-600">Value</th>
+              <th className="p-4 font-bold text-gray-600 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {stats.map(stat => (
+              <tr key={stat.id} className="hover:bg-gray-50">
+                <td className="p-4 font-bold text-gray-400">{stat.order}</td>
+                <td className="p-4 font-bold text-gray-900">{stat.label}</td>
+                <td className="p-4 font-bold text-[#135D66]">{stat.value}{stat.suffix}</td>
+                <td className="p-4 text-right space-x-3">
+                  <button onClick={() => handleEdit(stat)} className="text-[#E59A1D] font-bold">Edit</button>
+                  <button onClick={() => handleDelete(stat.id)} className="text-red-500 font-bold">Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        
         <h2 className="text-2xl font-extrabold text-[#135D66] mb-6">
           {isEditing ? "Edit Stat" : "Add New Stat"}
         </h2>
@@ -113,31 +139,7 @@ export default function AdminStatsPage() {
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="p-4 font-bold text-gray-600">Order</th>
-              <th className="p-4 font-bold text-gray-600">Label</th>
-              <th className="p-4 font-bold text-gray-600">Value</th>
-              <th className="p-4 font-bold text-gray-600 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {stats.map(stat => (
-              <tr key={stat.id} className="hover:bg-gray-50">
-                <td className="p-4 font-bold text-gray-400">{stat.order}</td>
-                <td className="p-4 font-bold text-gray-900">{stat.label}</td>
-                <td className="p-4 font-bold text-[#135D66]">{stat.value}{stat.suffix}</td>
-                <td className="p-4 text-right space-x-3">
-                  <button onClick={() => handleEdit(stat)} className="text-[#E59A1D] font-bold">Edit</button>
-                  <button onClick={() => handleDelete(stat.id)} className="text-red-500 font-bold">Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      
     </div>
   );
 }
