@@ -219,7 +219,7 @@ export default function Hero() {
                 {/* </div> */}
                 <div className="flex flex-col items-center">
                   <p className="headingCSS text-white text-lg font-medium tracking-wide">{stat.label}</p>
-                  <h2 className="text-[#fe6e00] text-4xl font-black mt-1">
+                  <h2 className="notranslate text-[#fe6e00] text-4xl font-black mt-1">
                     <AnimatedNumber end={stat.value} suffix={stat.suffix || ""} />
                   </h2>
                 </div>

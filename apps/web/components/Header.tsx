@@ -197,7 +197,7 @@ export default function Header() {
 
               {/* Desktop dropdown */}
               {item.subItems.length > 0 && (
-                <div className="absolute top-full left-0 mt-4 w-56 bg-white text-[#135D66] rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:mt-2 transition-all duration-300 ease-out border border-gray-100 overflow-hidden text-left text-base">
+                <div className="absolute top-full left-0 mt-4 w-max bg-white text-[#135D66] rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:mt-2 transition-all duration-300 ease-out border border-gray-100 overflow-hidden text-left text-base">
                   {item.subItems.map((sub, sIndex) => (
                     <Link
                       key={sIndex}

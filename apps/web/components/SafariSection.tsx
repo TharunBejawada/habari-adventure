@@ -12,7 +12,7 @@ export default function SafariSection() {
   const { getLocalizedUrl } = useLocalizedUrl();
 
   return (
-    <section className="w-full bg-[#135D66] relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-visible z-20">
+    <section className="w-full bg-[#135D66] relative pt-8 pb-24 lg:pt-12 lg:pb-32 overflow-visible z-20">
       
 
       <div className="max-w-[1400px] mx-auto w-[96%] px-4 sm:px-6 flex flex-col lg:flex-row items-start justify-between gap-12 relative z-10">
@@ -78,10 +78,10 @@ export default function SafariSection() {
             
             {/* Card 1: Serengeti */}
             <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
-              <div className="w-12 h-12 mx-auto mb-4 text-[#3B82F6]">
+              <div className="w-24 h-24 mx-auto mb-4 text-[#3B82F6]">
                 {/* Safari Icon */}
                 {/* <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg> */}
-                <img src="/serengeti.png" alt="Serengeti Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/serengeti.png" alt="Serengeti Icon" className="w-24 h-24 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
               <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Serengeti<br/>National Park</h4>
               <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">
@@ -95,9 +95,9 @@ export default function SafariSection() {
 
             {/* Card 2: Ngorongoro */}
             <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
-              <div className="w-12 h-12 mx-auto mb-4 text-[#fe6e00]">
+              <div className="w-24 h-24 mx-auto mb-4 text-[#fe6e00]">
                 {/* Crater/Mountain Icon */}
-                <img src="/crater.png" alt="Ngorongoro Crater Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/crater.png" alt="Ngorongoro Crater Icon" className="w-24 h-24 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
               <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Ngorongoro<br/>Crater</h4>
               <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">
@@ -111,9 +111,9 @@ export default function SafariSection() {
 
             {/* Card 3: Tarangire */}
             <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
-              <div className="w-12 h-12 mx-auto mb-4 text-[#fe6e00]">
+              <div className="w-24 h-24 mx-auto mb-4 text-[#fe6e00]">
                 {/* Tree/Nature Icon */}
-                <img src="/tarangiri.png" alt="Tarangire Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/tarangiri.png" alt="Tarangire Icon" className="w-24 h-24 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
               <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Tarangire<br/>National Park</h4>
               <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">

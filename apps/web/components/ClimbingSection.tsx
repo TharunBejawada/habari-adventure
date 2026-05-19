@@ -8,7 +8,7 @@ import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 export default function ClimbingSection() {
   const { getLocalizedUrl } = useLocalizedUrl();
   return (
-    <section className="w-full bg-[#135D66] relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden z-20">
+    <section className="w-full bg-[#135D66] relative pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden z-20">
       
       {/* Decorative Background Elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] aspect-square rounded-full bg-white/5 blur-[120px] pointer-events-none z-0"></div>
@@ -51,20 +51,20 @@ export default function ClimbingSection() {
         </div>
 
         {/* Right Side: Huge Typography */}
-        <div className="w-full lg:w-[60%] flex flex-col justify-center items-start lg:items-end mt-16 lg:mt-0 relative">
-          <h3 className=" text-[#fe6e00] font-black text-6xl md:text-8xl lg:text-[110px] leading-none tracking-tighter drop-shadow-lg">
-            TOP!
-          </h3>
-          <h3 className="text-white font-black text-5xl md:text-7xl lg:text-[90px] leading-none tracking-tighter drop-shadow-lg lg:-mt-4">
+        <div className="opacity-30 w-full lg:w-[60%] flex flex-col justify-center items-start lg:items-end mr-24 mt-16 lg:mt-18 relative">
+          <div className="!text-[42px] text-[#fe6e00] font-black text-6xl md:text-8xl lg:text-[110px] leading-none tracking-tighter drop-shadow-lg">
+            TOP
+          </div>
+          <div className="!text-[42px] text-white font-black text-5xl md:text-7xl lg:text-[90px] leading-none tracking-tighter drop-shadow-lg">
             EXPEDITIONS
-          </h3>
+          </div>
         </div>
 
       </div>
 
       {/* --- THE ROCK CLIMBER IMAGE --- */}
       {/* Absolute positioned to hang off the top right edge, exactly like the design */}
-      <div className="absolute top-0 right-0 w-[200px] md:w-[300px] lg:w-[450px] h-[300px] md:h-[450px] lg:h-[650px] pointer-events-none z-30 hidden sm:block">
+      <div className="absolute top-0 right-0 w-[200px] md:w-[300px] lg:w-[450px] h-[300px] md:h-[450px] lg:h-[925px] pointer-events-none z-30 hidden sm:block">
         {/* Note: Use a transparent PNG of a rock climber here! */}
         <Image
           src="/climber.png"

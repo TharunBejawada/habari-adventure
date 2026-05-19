@@ -27,7 +27,7 @@ export default function AboutSection() {
       {/* -mt-24 lg:-mt-32 pulls this section underneath the Hero Stats Bar 
           pt-32 lg:pt-48 ensures the text starts BELOW the overlap 
       */}
-      <section className="w-full pt-32 pb-20 lg:pt-48 lg:pb-32 bg-[#FDFEFE] relative overflow-hidden -mt-12 lg:-mt-20 z-10">
+      <section className="w-full pt-24 pb-16 lg:pt-36 lg:pb-24 bg-[#FDFEFE] relative overflow-hidden -mt-12 lg:-mt-20 z-10">
         
         <div className="max-w-[1400px] mx-auto w-[96%] px-4 sm:px-6 flex flex-col lg:flex-row items-center gap-12 lg:gap-8">
           
@@ -69,7 +69,7 @@ export default function AboutSection() {
                   01
                 </div>
                 {/* <svg className="w-12 h-12 text-[#fe6e00] mb-3 mt-4 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg> */}
-                <img src="/travel_goals.png" alt="Travel Goals Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/travel_goals.png" alt="Travel Goals Icon" className="w-18 h-16 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
                 <h4 className="descCSS font-bold text-[#135D66] mb-2 text-lg">Share your travel goals</h4>
               </div>
 
@@ -79,7 +79,7 @@ export default function AboutSection() {
                   02
                 </div>
                 {/* <svg className="w-12 h-12 text-[#fe6e00] mb-3 mt-4 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg> */}
-                <img src="/customized_package.png" alt="Customized Package Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/customized_package.png" alt="Customized Package Icon" className="w-18 h-16 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
                 <h4 className="descCSS font-bold text-[#135D66] mb-2 text-lg">Receive customized package</h4>
               </div>
 
@@ -89,7 +89,7 @@ export default function AboutSection() {
                   03
                 </div>
                 {/* <svg className="w-12 h-12 text-[#fe6e00] mb-3 mt-4 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> */}
-                <img src="/itenary.png" alt="Confirm Itinerary Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/itenary.png" alt="Confirm Itinerary Icon" className="w-18 h-16 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
                 <h4 className="descCSS font-bold text-[#135D66] mb-2 text-lg">Confirm your itinerary</h4>
               </div>
 
@@ -98,7 +98,7 @@ export default function AboutSection() {
                 <div className="absolute -top-6 w-12 h-12 rounded-full bg-[#135D66] text-white flex items-center justify-center font-bold text-xl shadow-lg border-4 border-white group-hover:bg-[#fe6e00] transition-colors duration-300">
                   04
                 </div>
-                <img src="/travel_confidently.png" alt="Local Support Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+                <img src="/travel_confidently.png" alt="Local Support Icon" className="w-18 h-16 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
                 <h4 className="descCSS font-bold text-[#135D66] mb-2 text-lg">Travel confidently with local support</h4>
               </div>
 

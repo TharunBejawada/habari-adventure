@@ -115,8 +115,8 @@ export default function UpcomingDatesAdminPage() {
     setFormData({
       packageId: d.packageId,
       title: d.title || "",
-      startDate: new Date(d.startDate).toISOString().split('T')[0] as string,
-      endDate: new Date(d.endDate).toISOString().split('T')[0] as string,
+      startDate: d.startDate.split('T')[0],
+      endDate: d.endDate.split('T')[0],
       price: d.price.toString(),
       totalSeats: d.totalSeats,
       availableSeats: d.availableSeats,
@@ -323,9 +323,8 @@ export default function UpcomingDatesAdminPage() {
                     </div>
                     
                     <p className="font-bold text-gray-900">
-                      {/* {new Date(d.startDate).toLocaleDateString()} — {new Date(d.endDate).toLocaleDateString()} */}
-                      {new Date(d.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} — {new Date(d.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                    </p>
+  {new Date(d.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })} — {new Date(d.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })}
+</p>
                     <p className="text-xs text-gray-500 font-medium mt-1">
                       {d.title && <span className="font-medium mr-2 text-gray-800">"{d.title}"</span>}
                       <span className="text-[#fe6e00] font-bold">${d.price}</span> • {d.availableSeats}/{d.totalSeats} seats available

@@ -42,7 +42,7 @@ export default function WhyChooseUs() {
   }, []);
 
   return (
-    <section className="w-full py-20 lg:py-32 bg-[#FDFEFE] relative overflow-hidden">
+    <section className="w-full py-8 lg:py-16 bg-[#FDFEFE] relative overflow-hidden">
       
       {/* CSS Animation for the floating airplane */}
       <style dangerouslySetInnerHTML={{

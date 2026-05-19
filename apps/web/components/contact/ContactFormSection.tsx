@@ -256,6 +256,12 @@ export default function ContactFormSection() {
                 <input 
                   type="tel" name="phone" placeholder="WhatsApp / Phone (Optional)"
                   value={formData.phone} onChange={handleInputChange}
+                  onKeyDown={(e) => {
+                    // Allow navigation/control keys, plus numbers and standard phone symbols (+ - ( ) space)
+                    if (!/^[0-9+\-() ]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
               </div>
@@ -271,12 +277,24 @@ export default function ContactFormSection() {
                     type="month" name="monthYear" required
                     min={minMonth}
                     value={formData.monthYear} onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                      // Allow only numbers and hyphens for fallback browsers (YYYY-MM format)
+                      if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
                     className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700 bg-white"
                   />
                 </div>
                 <input 
                   type="number" name="length" min="1" placeholder="Total Trip Length (days) *" required
                   value={formData.length} onChange={handleInputChange}
+                  onKeyDown={(e) => {
+                    // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.')
+                    if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
                   className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
               </div>
@@ -341,7 +359,7 @@ export default function ContactFormSection() {
                   disabled={!isFormValid || isSubmitting}
                   className={`font-bold text-lg py-4 px-10 rounded-full transition-all shadow-lg w-full md:w-auto flex items-center justify-center gap-2
                     ${isFormValid && !isSubmitting
-                      ? "bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] hover:-translate-y-1 shadow-[#fe6e00]/20 cursor-pointer" 
+                      ? "bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white hover:-translate-y-1 shadow-[#fe6e00]/20 cursor-pointer" 
                       : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                     }
                   `}
