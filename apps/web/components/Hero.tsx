@@ -97,10 +97,10 @@ export default function Hero() {
 
     // Match PNGs based on database label text
     if (label.includes("happy") || label.includes("travellers") || label.includes("customers") ) {
-      return <img src="/happy_travellers.png" alt={stat.label} className="w-8 h-8 object-contain" />;
+      return <img src="/happy_travellers.png" alt={stat.label} className="w-24 h-24 object-contain" />;
     }
     if (label.includes("year") || label.includes("safari") || label.includes("expertise")) {
-      return <img src="/years_of_safari.png" alt={stat.label} className="w-8 h-8 object-contain" />;
+      return <img src="/years_of_safari.png" alt={stat.label} className="w-24 h-24 object-contain" />;
     }
 
     // Fallback SVGs if you add new stats later without custom PNGs
@@ -140,7 +140,7 @@ export default function Hero() {
           />
         </div> */}
         {/* Local Video Background (hero.mp4) */}
-        <div className="absolute inset-0 z-0 bg-black/10 opacity-50">
+        <div className="absolute inset-0 z-0 bg-black/30 opacity-50">
           <video 
             autoPlay 
             loop 
@@ -209,14 +209,14 @@ export default function Hero() {
 
       {/* --- STATS / TRUST BAR --- */}
       {stats.length > 0 && (
-        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-48 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
-          <div className={`grid grid-cols-1 md:grid-cols-${Math.min(stats.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E0E0E0] p-8 md:p-10 gap-10 md:gap-0`}>
+        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-44 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
+          <div className={`grid grid-cols-1 md:grid-cols-${Math.min(stats.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E0E0E0] p-[12px] md:p-[16px] gap-10 md:gap-0`}>
             
             {stats.map((stat, idx) => (
-              <div key={stat.id} className="flex flex-col items-center justify-center gap-4 py-4 md:py-6 h-full text-center">
-                <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
+              <div key={stat.id} className="flex flex-col items-center justify-center gap-1 py-4 md:py-6 h-full text-center">
+                {/* <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0"> */}
                   {getStatIcon(stat, idx)}
-                </div>
+                {/* </div> */}
                 <div className="flex flex-col items-center">
                   <p className="headingCSS text-white text-lg font-medium tracking-wide">{stat.label}</p>
                   <h2 className="text-[#fe6e00] text-4xl font-black mt-1">

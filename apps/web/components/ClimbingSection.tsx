@@ -43,7 +43,7 @@ export default function ClimbingSection() {
                 <div className="w-8 h-8 rounded-full bg-gray-500 border-2 border-[#135D66] overflow-hidden relative"><Image src="/safari-3.jpg" alt="Climber" fill sizes="32px" className="object-cover" /></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-[#fe6e00] font-extrabold text-xl leading-none">3500+</span>
+                <span className="text-[#fe6e00] font-extrabold text-xl leading-none">3,500+</span>
                 <span className="text-white/80 text-xs font-bold uppercase tracking-wider mt-1">Summits</span>
               </div>
             </div>
