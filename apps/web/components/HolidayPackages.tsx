@@ -11,6 +11,9 @@ export default function HolidayPackages() {
   const [activeFilter, setActiveFilter] = useState("All Packages");
   const [packages, setPackages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // --- NEW: Carousel Pagination State ---
+  const [currentPage, setCurrentPage] = useState(0);
   const { getLocalizedUrl } = useLocalizedUrl();
   
   // Reference for the scrolling carousel
@@ -66,6 +69,8 @@ export default function HolidayPackages() {
   });
 
   // --- CAROUSEL SCROLL LOGIC ---
+  const totalPages = Math.ceil(filteredPackages.length / 3);
+
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const scrollAmount = scrollRef.current.clientWidth; // Scroll by exactly one container width
@@ -75,6 +80,36 @@ export default function HolidayPackages() {
       });
     }
   };
+
+  const scrollToPage = (pageIndex: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: pageIndex * scrollRef.current.clientWidth,
+        behavior: "smooth"
+      });
+      setCurrentPage(pageIndex);
+    }
+  };
+
+  // Sync dots when user manually swipes/scrolls
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollLeft = scrollRef.current.scrollLeft;
+      const clientWidth = scrollRef.current.clientWidth;
+      const newPage = Math.round(scrollLeft / clientWidth);
+      if (newPage !== currentPage) {
+        setCurrentPage(newPage);
+      }
+    }
+  };
+
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setCurrentPage(0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+    }
+  }, [activeFilter]);
 
   return (
     <section className="w-full py-8 lg:py-20 bg-[#F6FBFB] relative overflow-hidden">
@@ -91,12 +126,6 @@ export default function HolidayPackages() {
           </p>
 
           {/* Dotted Airplane Graphic */}
-          {/* <div className="mt-8 mb-4 opacity-40">
-            <svg width="250" height="40" viewBox="0 0 250 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 20 Q 125 -10, 240 30" stroke="#135D66" strokeWidth="2" strokeDasharray="6 6" fill="none" />
-              <path d="M235 25 L 245 30 L 235 35 Z" fill="#135D66" transform="rotate(-15 240 30)" />
-            </svg>
-          </div> */}
           <div className="-mt-7">
               <Image src="/Title-Separator.png" alt="Image" className="w-117.5" width="470" height="70" loading="lazy" />
           </div>
@@ -146,6 +175,7 @@ export default function HolidayPackages() {
               {/* Cards Scroll Container */}
               <div 
                 ref={scrollRef}
+                onScroll={handleScroll}
                 className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar scroll-smooth"
               >
                 {filteredPackages.map((pkg, idx) => {
@@ -161,7 +191,7 @@ export default function HolidayPackages() {
                         <Image 
                           src={pkg.bannerImage}
                           alt={pkg.title} 
-                           fill sizes="100vw" unoptimized className="object-cover" priority 
+                          fill sizes="100vw" unoptimized className="object-cover" priority 
                         />
                       </div>
                       
@@ -210,6 +240,22 @@ export default function HolidayPackages() {
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </button>
+              )}
+
+              {/* --- PAGINATION DOTS --- */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2.5 mt-4">
+                  {Array.from({ length: totalPages }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => scrollToPage(idx)}
+                      className={`h-3 rounded-full transition-all duration-300 ${
+                        currentPage === idx ? "w-8 bg-[#fe6e00]" : "w-3 bg-gray-300 hover:bg-gray-400"
+                      }`}
+                      aria-label={`Go to page ${idx + 1}`}
+                    />
+                  ))}
+                </div>
               )}
 
             </div>
