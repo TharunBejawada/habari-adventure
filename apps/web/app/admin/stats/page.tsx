@@ -96,7 +96,7 @@ export default function AdminStatsPage() {
                 <td className="p-4 font-bold text-gray-900">{stat.label}</td>
                 <td className="p-4 font-bold text-[#135D66]">{stat.value}{stat.suffix}</td>
                 <td className="p-4 text-right space-x-3">
-                  <button onClick={() => handleEdit(stat)} className="text-[#E59A1D] font-bold">Edit</button>
+                  <button onClick={() => handleEdit(stat)} className="text-[#fe6e00] font-bold">Edit</button>
                   <button onClick={() => handleDelete(stat.id)} className="text-red-500 font-bold">Delete</button>
                 </td>
               </tr>

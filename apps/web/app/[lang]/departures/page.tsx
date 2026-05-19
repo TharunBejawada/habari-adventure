@@ -129,10 +129,10 @@ export default function DeparturesPage() {
         </div>
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-            Upcoming <span className={`${caveat.className} text-[#E59A1D] font-normal`}>Departures</span>
+          <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+            <span className="text-[0.85em]">Upcoming</span>{' '}<span className={`${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>Departures</span>
           </h1>
-          <p className="animate-fade-left font-medium text-white/90 text-sm md:text-lg leading-relaxed max-w-3xl drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+          <p className="descCSS animate-fade-left font-medium text-white/90 text-sm md:text-lg leading-relaxed max-w-3xl drop-shadow-md" style={{ animationDelay: '0.3s' }}>
             Join a scheduled group climb or safari. Fixed dates, guaranteed adventures, and amazing new friends.
           </p>
         </div>
@@ -141,7 +141,7 @@ export default function DeparturesPage() {
       {/* ========================================== */}
       {/* 2. SCHEDULE LISTING SECTION                */}
       {/* ========================================== */}
-      <section className="relative z-20 -mt-24 mb-16 px-4 md:px-8 max-w-5xl mx-auto">
+      <section className="relative z-20 -mt-24 mb-16 px-4 md:px-8 max-w-5xl mx-auto border-gray-200 bg-white/70 rounded-3xl shadow-lg py-12">
         
         {dates.length === 0 ? (
           <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-16 text-center">
@@ -192,7 +192,7 @@ export default function DeparturesPage() {
                                 <div className="flex flex-wrap items-center gap-2">
                                   <span className={`text-[10px] md:text-xs font-bold px-3 py-1 rounded-full shadow-sm ${
                                     isSoldOut ? 'bg-red-50 text-red-600 border border-red-200' :
-                                    isGuaranteed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                    isGuaranteed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-green-50 text-green-700 border border-green-200'
                                   }`}>
                                     {d.status}
                                   </span>
@@ -237,14 +237,14 @@ export default function DeparturesPage() {
                                     </div>
                                   </div>
                                   
-                                  {d.title && <p className="text-sm font-bold text-[#E59A1D] mt-1">{d.title}</p>}
+                                  {d.title && <p className="text-sm font-bold text-[#fe6e00] mt-1">{d.title}</p>}
                                 </div>
 
                                 {/* Date Range & Explore Link */}
                                 <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">
                                   <span className="flex items-center gap-1.5">
                                     <svg className="w-4 h-4 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                                    {startDate.toLocaleDateString()} — {endDate.toLocaleDateString()}
+                                    {startDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} — {endDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                                   </span>
                                   <span className="text-gray-300 hidden md:inline">|</span>
                                   <Link href={`/${d.package?.slug}`} className="text-[#135D66] font-bold hover:underline hover:text-[#fe6e00] transition-colors flex items-center gap-1 group">
@@ -265,13 +265,13 @@ export default function DeparturesPage() {
                                 </div>
                                 
                                 {isSoldOut ? (
-                                  <button disabled className="w-full md:w-auto px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-xl cursor-not-allowed uppercase tracking-wider text-sm">
+                                  <button disabled className="w-full md:w-auto px-6 py-3 bg-gray-200 text-gray-500 font-bold rounded-xl cursor-not-allowed uppercase tracking-normal text-sm">
                                     Sold Out
                                   </button>
                                 ) : (
                                   <button 
-                                    onClick={() => openBooking(d.package?.title, startDate.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }))}
-                                    className="w-full md:w-auto px-8 py-3 bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] shadow-lg shadow-[#fe6e00]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center"
+                                    onClick={() => openBooking(d.package?.title, startDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }))}
+                                    className="w-full md:w-auto px-8 py-3 bg-[#fe6e00] hover:bg-[#fe6e00] text-white shadow-lg shadow-[#fe6e00]/20 font-black rounded-xl transition-transform hover:-translate-y-1 text-center"
                                   >
                                     Book Now
                                   </button>

@@ -281,11 +281,11 @@ export default function LocationLandingPage() {
         </div>
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#fe6e00] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+          <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
             {/* NEW: notranslate class added so Google doesn't translate the proper noun destination */}
-            Explore <span className={`notranslate ${caveat.className} text-[#E59A1D] font-normal`}>{displayTitle}</span>
+            <span className="text-[0.85em]">Explore</span>{' '}<span className={`notranslate ${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>{displayTitle}</span>
           </h1>
-          <p className="animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+          <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
             Discover our curated selection of routes and adventures designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
           </p>
         </div>
@@ -316,13 +316,13 @@ export default function LocationLandingPage() {
 
             <div className={`min-w-0 w-full ${(locationData.bannerImage || locationData.youtubeVideoUrl) ? 'lg:w-1/2' : 'w-full'} p-8 md:p-12 flex flex-col justify-center`}>
               {/* NEW: notranslate added to the dynamic location title */}
-              <h2 className="notranslate text-3xl font-extrabold text-[#135D66] mb-4 truncate">
+              <h2 className="notranslate headingCSS text-3xl font-extrabold text-[#135D66] mb-4 truncate">
                 {locationData.title || displayTitle}
               </h2>
               
               {/* NEW: notranslate added to the rich text overview content */}
               <div 
-                className="notranslate text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
+                className="descCSS notranslate text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
                 dangerouslySetInnerHTML={{ 
                   __html: locationData.overviewText
                     .replace(/<ul>/g, '<ul style="list-style-type: disc; padding-left: 1.5rem;">')
@@ -454,7 +454,7 @@ export default function LocationLandingPage() {
                         
                         {pkg.badgeText && (
                           /* NEW: notranslate class added */
-                          <p className="notranslate text-sm font-bold text-[#E59A1D] mb-3">{pkg.badgeText}</p>
+                          <p className="notranslate text-sm font-bold text-[#fe6e00] mb-3">{pkg.badgeText}</p>
                         )}
                         
                         {/* NEW: notranslate class added */}

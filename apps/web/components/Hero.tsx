@@ -92,14 +92,23 @@ export default function Hero() {
       .catch(err => console.error("Failed to fetch stats", err));
   }, []);
 
-  const getStatIcon = (index: number) => {
-    const icons = [
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
-      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>,
+  const getStatIcon = (stat: any, index: number) => {
+    const label = stat.label.toLowerCase();
+
+    // Match PNGs based on database label text
+    if (label.includes("happy") || label.includes("travellers") || label.includes("customers") ) {
+      return <img src="/happy_travellers.png" alt={stat.label} className="w-8 h-8 object-contain" />;
+    }
+    if (label.includes("year") || label.includes("safari") || label.includes("expertise")) {
+      return <img src="/years_of_safari.png" alt={stat.label} className="w-8 h-8 object-contain" />;
+    }
+
+    // Fallback SVGs if you add new stats later without custom PNGs
+    const fallbackIcons = [
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
     ];
-    return icons[index % icons.length];
+    return fallbackIcons[index % fallbackIcons.length];
   };
 
   return (
@@ -118,10 +127,10 @@ export default function Hero() {
       }} />
 
       {/* --- HERO SECTION --- */}
-      <section className="relative w-full bg-[#135D66] pt-[160px] lg:pt-[190px] pb-40 lg:pb-48 z-0 -mt-[150px] shadow-2xl">
+      <section className="relative w-full pt-[160px] lg:pt-[190px] pb-40 lg:pb-48 z-0 -mt-[152px] shadow-2xl">
         
         {/* YouTube Video Background (0-40 secs looped) */}
-        <div className="absolute inset-0 z-0 bg-black/10 opacity-50">
+        {/* <div className="absolute inset-0 z-0 bg-black/10 opacity-50">
           <iframe 
             className="absolute top-1/2 left-1/2 w-[300vw] h-[300vh] sm:w-[200vw] sm:h-[200vh] md:w-[150vw] md:h-[150vh] min-w-full min-h-full -translate-x-1/2 -translate-y-1/2 scale-[1.3] md:scale-150 pointer-events-none opacity-60 mix-blend-overlay"
             src="https://www.youtube.com/embed/7vzEHwJp5wM?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=7vzEHwJp5wM&start=0&end=40&playsinline=1&disablekb=1&iv_load_policy=3&modestbranding=1" 
@@ -129,6 +138,18 @@ export default function Hero() {
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           />
+        </div> */}
+        {/* Local Video Background (hero.mp4) */}
+        <div className="absolute inset-0 z-0 bg-black/10 opacity-50">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none opacity-60 mix-blend-overlay"
+          >
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
         </div>
 
         {/* Main Hero Content */}
@@ -144,11 +165,11 @@ export default function Hero() {
               & Kilimanjaro Climbing Adventures
             </h1>
 
-            <p className="text-white text-lg md:text-xl font-semibold tracking-wide mb-3">
+            <p className="headingCSS text-white text-lg md:text-xl font-semibold tracking-wide mb-3">
               Experience authentic African safari adventures with trusted Tanzania experts.
             </p>
 
-            <p className="text-white/90 text-sm md:text-base leading-relaxed max-w-2xl mb-8">
+            <p className="descCSS text-white/90 text-sm md:text-base leading-relaxed max-w-2xl mb-8">
               Explore Serengeti wildlife and conquer Kilimanjaro with expertly guided Tanzania safari and climbing adventures designed for unforgettable journeys. Whether you're planning your first wildlife safari Tanzania or preparing for a life-changing Kilimanjaro climbing expedition, we ensure every detail is seamless.
             </p>
 
@@ -188,17 +209,17 @@ export default function Hero() {
 
       {/* --- STATS / TRUST BAR --- */}
       {stats.length > 0 && (
-        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-44 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
+        <div className="relative z-30 max-w-[1200px] mx-auto w-[96%] -mt-48 bg-[#0E4950] rounded-2xl shadow-2xl border border-white/10">
           <div className={`grid grid-cols-1 md:grid-cols-${Math.min(stats.length, 4)} divide-y md:divide-y-0 md:divide-x divide-[#E0E0E0] p-8 md:p-10 gap-10 md:gap-0`}>
             
             {stats.map((stat, idx) => (
               <div key={stat.id} className="flex flex-col items-center justify-center gap-4 py-4 md:py-6 h-full text-center">
                 <div className="w-14 h-14 rounded-full border border-white/30 flex items-center justify-center text-white shrink-0">
-                  {getStatIcon(idx)}
+                  {getStatIcon(stat, idx)}
                 </div>
                 <div className="flex flex-col items-center">
-                  <p className="text-white text-lg font-medium tracking-wide">{stat.label}</p>
-                  <h2 className="text-[#E59A1D] text-4xl font-black mt-1">
+                  <p className="headingCSS text-white text-lg font-medium tracking-wide">{stat.label}</p>
+                  <h2 className="text-[#fe6e00] text-4xl font-black mt-1">
                     <AnimatedNumber end={stat.value} suffix={stat.suffix || ""} />
                   </h2>
                 </div>

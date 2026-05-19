@@ -99,13 +99,13 @@ export default function BookingPolicyPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className="text-[#fe6e00] font-bold text-sm uppercase tracking-widest mb-4 block">
+          <span className="headingCSS text-[#fe6e00] font-bold text-sm uppercase tracking-widest mb-4 block">
             Terms & Conditions
           </span>
-          <h1 className="text-white text-5xl md:text-6xl font-extrabold uppercase tracking-tight mb-4 drop-shadow-lg">
+          <h1 className="headingCSS text-white text-5xl md:text-6xl font-extrabold uppercase tracking-tight mb-4 drop-shadow-lg">
             Booking Policy
           </h1>
-          <p className="text-gray-200 text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow-md mb-6">
+          <p className="descCSS text-gray-200 text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow-md mb-6">
             Transparent and straightforward terms to ensure you have a seamless experience from booking to summit.
           </p>
         </div>
@@ -156,8 +156,8 @@ export default function BookingPolicyPage() {
             
             {/* Overview */}
             <div id="overview" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Overview</h2>
-              <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
+              <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Overview</h2>
+              <div className="descCSS prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   These Terms and Conditions apply to any tours booked with Habari Adventure, a local family owned Adventure Travel Company based in Moshi, Tanzania. These Terms & Conditions govern the contractual relationship between Habari Adventure and yourself. Please read these Terms and Conditions carefully as by booking any tour with Habari Adventure you acknowledge that you have read and understood these Terms and Conditions and you accept and agree to be bound by these Terms and Conditions.
                 </p>
@@ -169,13 +169,13 @@ export default function BookingPolicyPage() {
 
             {/* Booking & Payment Terms */}
             <div id="booking" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Booking & Payment Terms</h2>
+              <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Booking & Payment Terms</h2>
               
               <div className="bg-gray-50 p-8 rounded-2xl border border-gray-200 flex flex-col md:flex-row gap-8 items-center shadow-sm">
                 <div className="w-16 h-16 bg-[#fe6e00] text-white rounded-full flex items-center justify-center shrink-0">
                   <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                 </div>
-                <div className="prose prose-lg text-gray-700 max-w-none">
+                <div className="descCSS prose prose-lg text-gray-700 max-w-none">
                   <p className="mb-0">
                     Your booking request has to be made in writing and a <strong>15% deposit</strong> is required. The balance has to be paid <strong>21 days before trip date</strong>. All payments should be free from bank chargers.
                   </p>
@@ -185,8 +185,8 @@ export default function BookingPolicyPage() {
 
             {/* Cancellation Policy */}
             <div id="cancellation" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Cancellation Policy</h2>
-              <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
+              <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Cancellation Policy</h2>
+              <div className="descCSS prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>A client may cancel their booking by notifying Habari Adventure.</p>
                 
                 <div className="space-y-4">
@@ -227,8 +227,8 @@ export default function BookingPolicyPage() {
             {/* VISA & Medical */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div id="visa" className="reveal-on-scroll scroll-mt-32">
-                <h2 className="text-2xl font-extrabold text-[#fe6e00] mb-4">VISA</h2>
-                <div className="prose text-gray-600 max-w-none">
+                <h2 className="headingCSS text-2xl font-extrabold text-[#fe6e00] mb-4">VISA</h2>
+                <div className="descCSS prose text-gray-600 max-w-none">
                   <p>
                     All nationals will require visa for TANZANIA. We recommend that where possible clients should attain their visas in advance, although they are available upon arrival in TANZANIA at the Airport.
                   </p>
@@ -236,8 +236,8 @@ export default function BookingPolicyPage() {
               </div>
 
               <div id="medical" className="reveal-on-scroll scroll-mt-32 delay-100">
-                <h2 className="text-2xl font-extrabold text-[#fe6e00] mb-4">Medical Conditions</h2>
-                <div className="prose text-gray-600 max-w-none">
+                <h2 className="headingCSS text-2xl font-extrabold text-[#fe6e00] mb-4">Medical Conditions</h2>
+                <div className="descCSS prose text-gray-600 max-w-none">
                   <p>
                     All clients are obligated to truthfully provide requested relevant medical information to us booking their tour. Clients are responsible for assessing their own suitability and capability to participate a tour with us. All clients should consult their physician regarding their fitness for taking part in the booked tour. Habari Adventure recommends all clients to seek their physician's advice regarding necessary or advisable vaccinations, medical precautions, or other medical concerns regarding the entirety of the client's travel with Habari Adventure does not provide medical advice.
                   </p>
@@ -248,8 +248,8 @@ export default function BookingPolicyPage() {
             {/* Climate & Shopping */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div id="climate" className="reveal-on-scroll scroll-mt-32">
-                <h2 className="text-2xl font-extrabold text-[#fe6e00] mb-4">Climate</h2>
-                <div className="prose text-gray-600 max-w-none">
+                <h2 className="headingCSS text-2xl font-extrabold text-[#fe6e00] mb-4">Climate</h2>
+                <div className="descCSS prose text-gray-600 max-w-none">
                   <p>
                     The climate is hot and sometimes humid. From December to March when the north east monsoon blows, it is hot and humid. In April and May heavy rains occurs with June to October being the coolest and driest period. The lesser rains falls in November, temperature sways between 25 degrees Celsius and 35 degrees Celsius and annual rainfall is about 20mm.
                   </p>
@@ -257,8 +257,8 @@ export default function BookingPolicyPage() {
               </div>
 
               <div id="shopping" className="reveal-on-scroll scroll-mt-32 delay-100">
-                <h2 className="text-2xl font-extrabold text-[#fe6e00] mb-4">Shopping Trips</h2>
-                <div className="prose text-gray-600 max-w-none">
+                <h2 className="headingCSS text-2xl font-extrabold text-[#fe6e00] mb-4">Shopping Trips</h2>
+                <div className="descCSS prose text-gray-600 max-w-none">
                   <p>
                     Driver / guide will stop at the shop / curios stall which are recommended by Habari Adventure. We provide 100% escort at no extra costs to accompany guest on shopping trips so as to help with recommendation and save.
                   </p>
@@ -268,8 +268,8 @@ export default function BookingPolicyPage() {
 
             {/* Special Requirements */}
             <div id="special" className="reveal-on-scroll scroll-mt-32 bg-gray-50 p-8 rounded-2xl border border-gray-100">
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-4">Special Requirements</h2>
-              <div className="prose prose-lg text-gray-600 max-w-none">
+              <h2 className="headingCSS text-2xl font-extrabold text-gray-900 mb-4">Special Requirements</h2>
+              <div className="descCSS prose prose-lg text-gray-600 max-w-none">
                 <p className="mb-0 font-medium">
                   Habari Adventure will strive to accommodate the special requests of clients, including (without limitation) dietary and accommodation requests.
                 </p>
@@ -278,8 +278,8 @@ export default function BookingPolicyPage() {
 
             {/* Third Party Suppliers */}
             <div id="suppliers" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Third Party Suppliers</h2>
-              <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
+              <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Third Party Suppliers</h2>
+              <div className="descCSS prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Habari Adventure makes arrangements with accommodation providers, activity providers, airlines, coach companies, transfer operators, shore excursion operators, tour and local guides, and other independent parties ("Third Party Suppliers") to provide you with the travel services and other services you purchase or which form the component parts of your product Tour.
                 </p>
@@ -296,8 +296,8 @@ export default function BookingPolicyPage() {
             <div id="liability" className="reveal-on-scroll scroll-mt-32 space-y-12">
               
               <div>
-                <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Liability</h2>
-                <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
+                <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Liability</h2>
+                <div className="descCSS prose prose-lg text-gray-600 max-w-none space-y-6">
                   <p>
                     Habari Adventure act as agent for hotels, transportations services and facilities provided by other parties, firms or corporation and cannot be held responsible for delays, injury, damage or accident, change of itineraries which may occur through the negligence of client.
                   </p>
@@ -308,8 +308,8 @@ export default function BookingPolicyPage() {
               </div>
 
               <div>
-                <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Force Majeure</h2>
-                <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
+                <h2 className="headingCSS text-3xl font-extrabold text-[#fe6e00] mb-6">Force Majeure</h2>
+                <div className="descCSS prose prose-lg text-gray-600 max-w-none space-y-6">
                   <p>
                     The company accepts any liability/pay in compensation in respect to delays or lack of performance affected by force majeure.
                   </p>
@@ -324,21 +324,21 @@ export default function BookingPolicyPage() {
             {/* Insurance & Law */}
             <div id="insurance" className="reveal-on-scroll scroll-mt-32 border-t border-gray-200 pt-12 grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-4 flex items-center gap-3">
+                <h2 className="headingCSS text-2xl font-extrabold text-gray-900 mb-4 flex items-center gap-3">
                   <svg className="w-6 h-6 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                   Insurance
                 </h2>
-                <p className="text-gray-600 text-lg">
+                <p className="descCSS text-gray-600 text-lg">
                   You are strongly advised to take adequate insurance against all risk for an adequate sum.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-4 flex items-center gap-3">
+                <h2 className="headingCSS text-2xl font-extrabold text-gray-900 mb-4 flex items-center gap-3">
                   <svg className="w-6 h-6 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
                   Law
                 </h2>
-                <p className="text-gray-600 text-lg">
+                <p className="descCSS text-gray-600 text-lg">
                   The company's contract will be governed by constructed in accordance with the law of Tanzania. Accordingly each party irrevocably submits to the jurisdiction of the Tanzania courts to settle and matter arising under this contract.
                 </p>
               </div>

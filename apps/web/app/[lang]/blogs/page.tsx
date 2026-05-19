@@ -164,7 +164,7 @@
 //               <span className="text-5xl mb-4 block">🏜️</span>
 //               <h3 className="text-2xl font-bold text-[#135D66] mb-2">No adventures found!</h3>
 //               <p className="text-gray-500">Try searching for something else or clear your filters.</p>
-//               <button onClick={() => { setSearchQuery(""); setActiveFilter(null); }} className="mt-6 px-6 py-2 bg-[#E59A1D] text-white font-bold rounded-full hover:-translate-y-1 transition-transform">
+//               <button onClick={() => { setSearchQuery(""); setActiveFilter(null); }} className="mt-6 px-6 py-2 bg-[#fe6e00] text-white font-bold rounded-full hover:-translate-y-1 transition-transform">
 //                 Clear All Filters
 //               </button>
 //             </div>
@@ -204,7 +204,7 @@
 
 //                       {/* Content (Bottom) */}
 //                       <div className="absolute bottom-0 left-0 w-full p-8 z-10 flex flex-col justify-end">
-//                         <span className="text-[#E59A1D] font-bold text-sm mb-3 uppercase tracking-wider flex items-center gap-2">
+//                         <span className="text-[#fe6e00] font-bold text-sm mb-3 uppercase tracking-wider flex items-center gap-2">
 //                           By {blog.authorName || "Habari Team"}
 //                         </span>
 //                         <h2 className="text-white text-2xl md:text-3xl font-bold leading-snug group-hover:text-[#E9F4F5] transition-colors line-clamp-3">
@@ -282,7 +282,7 @@
 
 //           {/* RECENT POSTS WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Recent Posts
 //             </h3>
 //             <div className="space-y-0">
@@ -297,7 +297,7 @@
 //                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>
 //                       </div>
 //                       {/* Title */}
-//                       <h4 className="font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors leading-tight text-sm">
+//                       <h4 className="font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors leading-tight text-sm">
 //                         {post.title}
 //                       </h4>
 //                     </Link>
@@ -314,7 +314,7 @@
 
 //           {/* TOP DESTINATIONS / CATEGORIES WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Top Destinations
 //             </h3>
 //             <div className="space-y-4">
@@ -324,7 +324,7 @@
 //                   onClick={() => setActiveFilter({ type: "category", value: cat.category })}
 //                   className="w-full flex justify-between items-center group py-1"
 //                 >
-//                   <span className="font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors">{cat.category}</span>
+//                   <span className="font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors">{cat.category}</span>
 //                   <span className="text-gray-400 font-medium text-sm">( {cat.count.toString().padStart(2, '0')} Listing )</span>
 //                 </button>
 //               ))}
@@ -334,7 +334,7 @@
 
 //           {/* POPULAR TAGS WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Popular Tags
 //             </h3>
 //             <div className="flex flex-wrap gap-3">
@@ -517,7 +517,7 @@ export default function BlogsListingPage() {
               <span className="text-5xl mb-4 block">🏜️</span>
               <h3 className="text-2xl font-bold text-[#135D66] mb-2">No adventures found!</h3>
               <p className="text-gray-500">Try searching for something else or clear your filters.</p>
-              <button onClick={() => { setSearchQuery(""); setActiveFilter(null); }} className="mt-6 px-6 py-2 bg-[#E59A1D] text-white font-bold rounded-full hover:-translate-y-1 transition-transform">
+              <button onClick={() => { setSearchQuery(""); setActiveFilter(null); }} className="mt-6 px-6 py-2 bg-[#fe6e00] text-white font-bold rounded-full hover:-translate-y-1 transition-transform">
                 Clear All Filters
               </button>
             </div>
@@ -555,7 +555,7 @@ export default function BlogsListingPage() {
 
                       <div className="absolute bottom-0 left-0 w-full p-8 z-10 flex flex-col justify-end">
                         {/* notranslate added to author */}
-                        <span className="notranslate text-[#E59A1D] font-bold text-sm mb-3 uppercase tracking-wider flex items-center gap-2">
+                        <span className="notranslate text-[#fe6e00] font-bold text-sm mb-3 uppercase tracking-wider flex items-center gap-2">
                           By {blog.authorName || "Habari Team"}
                         </span>
                         {/* notranslate added to title */}
@@ -628,7 +628,7 @@ export default function BlogsListingPage() {
           </div>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Recent Posts
             </h3>
             <div className="space-y-0">
@@ -642,7 +642,7 @@ export default function BlogsListingPage() {
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>
                       </div>
                       {/* notranslate added to recent post title */}
-                      <h4 className="notranslate font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors leading-tight text-sm">
+                      <h4 className="notranslate font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors leading-tight text-sm">
                         {post.title}
                       </h4>
                     </Link>
@@ -657,7 +657,7 @@ export default function BlogsListingPage() {
           </div>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Top Categories
             </h3>
             <div className="space-y-4">
@@ -668,7 +668,7 @@ export default function BlogsListingPage() {
                   className="w-full flex justify-between items-center group py-1"
                 >
                   {/* notranslate added to category */}
-                  <span className="notranslate font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors">{cat.category}</span>
+                  <span className="notranslate font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors">{cat.category}</span>
                   <span className="text-gray-400 font-medium text-sm">( {cat.count.toString().padStart(2, '0')} )</span>
                 </button>
               ))}
@@ -677,7 +677,7 @@ export default function BlogsListingPage() {
           </div>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Popular Tags
             </h3>
             <div className="flex flex-wrap gap-3">

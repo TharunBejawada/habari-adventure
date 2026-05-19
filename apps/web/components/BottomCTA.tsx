@@ -21,27 +21,27 @@ export default function BottomCTA() {
         {/* --- LEFT SIDE: Text Content --- */}
         <div className="w-full lg:w-[50%] relative z-20 text-center lg:text-left">
           
-          <h3 className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl mb-2 md:mb-3 tracking-wide`}>
-            BUILT ON TRUST
+          <h3 className={`${caveat.className} text-3xl md:text-4xl text-[#fe6e00] block mb-2 tracking-normal`}>
+            Built On Trust
           </h3>
           
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-md">
-            Ready to Begin Your African Safari?
+          <h2 className="headingCSS text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-md">
+            Ready to Begin Your <span className="text-[#fe6e00]">African Safari</span>?
           </h2>
 
-          <div className="text-left text-white/90 text-sm md:text-base leading-relaxed mb-8 space-y-4 max-w-lg mx-auto lg:mx-0 text-left">
+          <div className="descCSS text-left text-white/90 text-sm md:text-base leading-relaxed mb-8 space-y-4 max-w-lg mx-auto lg:mx-0 text-left">
             <p>Whether you dream of:</p>
             <ul className="space-y-2 ml-2">
               <li className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#E59A1D] shrink-0"></span>
+                <span className="w-2 h-2 rounded-full bg-[#fe6e00] shrink-0"></span>
                 <span>A breathtaking Serengeti safari</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#E59A1D] shrink-0"></span>
+                <span className="w-2 h-2 rounded-full bg-[#fe6e00] shrink-0"></span>
                 <span>A life-changing Kilimanjaro climbing adventure</span>
               </li>
               <li className="flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-[#E59A1D] shrink-0"></span>
+                <span className="w-2 h-2 rounded-full bg-[#fe6e00] shrink-0"></span>
                 <span>A luxury Tanzania safari package</span>
               </li>
             </ul>
@@ -63,7 +63,7 @@ export default function BottomCTA() {
         <div className="w-full lg:w-[50%] relative h-[320px] sm:h-[400px] md:h-[500px] flex items-center justify-center z-20 mt-4 lg:mt-0">
           
           {/* Abstract Colored Background Blocks */}
-          <div className="absolute top-[40%] right-[5%] md:right-[10%] w-[60%] h-[40%] bg-[#E59A1D] transform rotate-6 rounded-lg opacity-90 z-0"></div>
+          <div className="absolute top-[40%] right-[5%] md:right-[10%] w-[60%] h-[40%] bg-[#fe6e00] transform rotate-6 rounded-lg opacity-90 z-0"></div>
           <div className="absolute top-[30%] left-[10%] md:left-[20%] w-[50%] h-[50%] bg-[#0A7391] transform -rotate-12 rounded-lg opacity-90 z-0"></div>
 
           {/* Polaroid 1 (Left - Tilted Left) */}

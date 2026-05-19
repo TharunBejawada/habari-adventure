@@ -328,7 +328,7 @@ export default function UpcomingDatesAdminPage() {
                     </p>
                     <p className="text-xs text-gray-500 font-medium mt-1">
                       {d.title && <span className="font-medium mr-2 text-gray-800">"{d.title}"</span>}
-                      <span className="text-[#E59A1D] font-bold">${d.price}</span> • {d.availableSeats}/{d.totalSeats} seats available
+                      <span className="text-[#fe6e00] font-bold">${d.price}</span> • {d.availableSeats}/{d.totalSeats} seats available
                     </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
@@ -338,7 +338,7 @@ export default function UpcomingDatesAdminPage() {
                     }`}>
                       {d.status}
                     </span>
-                    <button onClick={() => handleEdit(d)} className="text-[#E59A1D] hover:text-orange-600 text-xs font-bold bg-orange-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
+                    <button onClick={() => handleEdit(d)} className="text-[#fe6e00] hover:text-orange-600 text-xs font-bold bg-orange-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
                     <button onClick={() => handleDelete(d.id)} className="text-red-400 hover:text-red-600 text-xs font-bold bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Delete</button>
                   </div>
                 </div>

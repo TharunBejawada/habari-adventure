@@ -147,7 +147,7 @@ export default function PricingAdminPage() {
           <form onSubmit={handleSave} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5 sticky top-8">
             <div className="border-b pb-3 flex justify-between items-center">
               <h3 className="font-extrabold text-lg text-[#135D66]">Pricing Matrix</h3>
-              {isUpdating && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Editing Existing</span>}
+              {isUpdating && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Editing Existing</span>}
             </div>
             
             {/* NEW: Dependent Dropdowns */}
@@ -304,7 +304,7 @@ export default function PricingAdminPage() {
                                 tier4: p.tier4.toString() 
                               });
                             }} 
-                            className="text-[#E59A1D] hover:underline font-bold text-xs mr-3"
+                            className="text-[#fe6e00] hover:underline font-bold text-xs mr-3"
                           >
                             Edit
                           </button>

@@ -41,6 +41,14 @@
     font-family: 'Poppins','Segoe UI', system-ui,sans-serif !important;
   }
 
+  .headingCSS {
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.descCSS {
+  font-family: 'Segoe UI', sans-serif !important;
+}
+
   h1 {
     font-size: 48px !important;
     font-weight: 700 !important;
@@ -62,9 +70,10 @@
   }
 
   nav a, nav button {
-    font-size: 18px !important;
+    font-size: 16px !important;
     font-weight: 500 !important;
     /* color: #FFFFFF !important; */
+    font-family: 'Poppins', sans-serif !important;
     text-decoration: none !important;
   }
 

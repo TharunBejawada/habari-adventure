@@ -35,10 +35,10 @@ export default function PreparationGuide() {
       >
         {/* Header Section */}
         <motion.div className="mb-16" variants={itemVariants}>
-          <h2 className="text-[2.75rem] leading-tight font-bold text-black mb-3 tracking-tight">
+          <h2 className="headingCSS text-[2.75rem] leading-tight font-bold text-black mb-3 tracking-tight">
             Preparation <span className="text-[#fe6e00]">Guide</span>
           </h2>
-          <p className="text-black text-[1.1rem]">
+          <p className="descCSS text-black text-[1.1rem]">
             Train smart, pack right, and understand altitude for a safer, happier summit push.
           </p>
         </motion.div>
@@ -119,7 +119,7 @@ export default function PreparationGuide() {
           variants={itemVariants}
           className="mt-16 pt-4"
         >
-          <p className="text-black text-lg">
+          <p className="descCSS text-black text-lg">
             <span className="text-[#fe6e00]">Need rentals?</span> Reserve sleeping bags, down jackets, and poles in advance.
           </p>
         </motion.div>

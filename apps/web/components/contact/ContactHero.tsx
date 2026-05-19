@@ -105,12 +105,12 @@ export default function ContactHero() {
       <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
         
         {/* Main Title with Caveat Accent */}
-        <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#fe6e00] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-          Contact <span className={`${caveat.className} text-[#E59A1D] font-normal`}>Habari Adventure</span>
+        <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+          <span className="text-[0.85em]">Contact</span>{' '}<span className={`${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>Habari Adventure</span>
         </h1>
 
         {/* Paragraph Content - Normal font, readable formatting */}
-        <p className="animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+        <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
           Planning a Tanzania trip—Kilimanjaro + Safari + Zanzibar? Share a few details and we’ll recommend the best sequence, routes, parks, and beach stay, then send a complete plan with pricing, inclusions, and logistics so you can book with confidence. From the mountain to the savannah to the sea, we coordinate your climb (private or group departures), safari, and beach days into one smooth schedule—including transfers, accommodations, and timing—with straightforward communication and transparent costs.
         </p>
 
@@ -128,7 +128,7 @@ export default function ContactHero() {
               <FaWhatsapp className="w-6 h-6" />
             </div>
             <div className="text-left">
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">WhatsApp / Phone</span>
+              <span className="block text-xs font-bold text-gray-500 uppercase tracking-normal">WhatsApp / Phone</span>
               <span className="block text-[#135D66] font-bold group-hover:text-[#25D366] transition-colors">+255 762 992 308</span>
             </div>
           </a>
@@ -140,12 +140,12 @@ export default function ContactHero() {
             href="mailto:habariadventure@gmail.com" 
             className="flex items-center gap-3 group hover:scale-105 transition-transform duration-300"
           >
-            <div className="w-12 h-12 rounded-full bg-[#E59A1D]/10 group-hover:bg-[#E59A1D]/20 transition-colors flex items-center justify-center text-[#E59A1D]">
+            <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 group-hover:bg-[#fe6e00]/20 transition-colors flex items-center justify-center text-[#fe6e00]">
               <FaEnvelope className="w-5 h-5" />
             </div>
             <div className="text-left">
-              <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Email</span>
-              <span className="block text-[#135D66] font-bold group-hover:text-[#E59A1D] transition-colors">habariadventure@gmail.com</span>
+              <span className="block text-xs font-bold text-gray-500 uppercase tracking-normal">Email</span>
+              <span className="block text-[#135D66] font-bold group-hover:text-[#fe6e00] transition-colors">habariadventure@gmail.com</span>
             </div>
           </a>
 

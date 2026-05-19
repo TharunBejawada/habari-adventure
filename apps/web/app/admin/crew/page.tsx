@@ -170,13 +170,13 @@ export default function AdminCrewDashboard() {
       <div className="flex space-x-4 mb-6 border-b border-gray-200">
         <button 
           onClick={() => setActiveTab("settings")}
-          className={`pb-3 px-4 font-bold text-sm transition-colors border-b-2 ${activeTab === "settings" ? "border-[#E59A1D] text-[#E59A1D]" : "border-transparent text-gray-500 hover:text-gray-800"}`}
+          className={`pb-3 px-4 font-bold text-sm transition-colors border-b-2 ${activeTab === "settings" ? "border-[#fe6e00] text-[#fe6e00]" : "border-transparent text-gray-500 hover:text-gray-800"}`}
         >
           Page Banners & Porter Section
         </button>
         <button 
           onClick={() => setActiveTab("teams")}
-          className={`pb-3 px-4 font-bold text-sm transition-colors border-b-2 ${activeTab === "teams" ? "border-[#E59A1D] text-[#E59A1D]" : "border-transparent text-gray-500 hover:text-gray-800"}`}
+          className={`pb-3 px-4 font-bold text-sm transition-colors border-b-2 ${activeTab === "teams" ? "border-[#fe6e00] text-[#fe6e00]" : "border-transparent text-gray-500 hover:text-gray-800"}`}
         >
           Teams & Members
         </button>
@@ -264,7 +264,7 @@ export default function AdminCrewDashboard() {
           <div className="flex justify-end mb-6">
             <button 
               onClick={() => { setCurrentTeam({}); setIsTeamModalOpen(true); }}
-              className="bg-[#E59A1D] text-white px-6 py-3 rounded-full font-bold shadow-md hover:bg-[#c98618] transition-all flex items-center gap-2"
+              className="bg-[#fe6e00] text-white px-6 py-3 rounded-full font-bold shadow-md hover:bg-[#c98618] transition-all flex items-center gap-2"
             >
               <FaPlus /> Add New Team Category
             </button>
@@ -319,7 +319,7 @@ export default function AdminCrewDashboard() {
     
     <div className="flex-1 pr-6">
       <h4 className="font-bold text-gray-900 text-lg leading-tight">{member.name}</h4>
-      <p className="text-sm text-[#E59A1D] font-bold mb-3">{member.designation}</p>
+      <p className="text-sm text-[#fe6e00] font-bold mb-3">{member.designation}</p>
       
       <p className="text-sm text-gray-600 leading-relaxed">
   {truncateForPreview(member.description, 150)}

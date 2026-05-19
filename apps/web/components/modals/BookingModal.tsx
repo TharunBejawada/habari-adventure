@@ -157,7 +157,7 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
               </div>
 
               <div className="pt-4">
-                <button type="submit" disabled={isSubmitting} className="w-full bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold py-4 rounded-xl uppercase tracking-widest transition-all">
+                <button type="submit" disabled={isSubmitting} className="w-full bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold py-4 rounded-xl uppercase tracking-widest transition-all">
                   {isSubmitting ? "Submitting..." : "Submit Inquiry"}
                 </button>
               </div>

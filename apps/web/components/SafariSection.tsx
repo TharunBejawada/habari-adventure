@@ -2,11 +2,15 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Caveat } from "next/font/google";
+import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
 export default function SafariSection() {
+  const { getLocalizedUrl } = useLocalizedUrl();
+
   return (
     <section className="w-full bg-[#135D66] relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-visible z-20">
       
@@ -32,16 +36,16 @@ export default function SafariSection() {
         {/* --- RIGHT SIDE: Text & Cards --- */}
         <div className="w-full lg:w-[65%] flex flex-col items-start order-1 lg:order-2 relative z-20">
           
-          <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6">
+          <h2 className="headingCSS text-3xl md:text-5xl font-bold text-white leading-tight mb-6">
             Authentic African Safari Experiences <br className="hidden md:block" />
-            <span className="text-[#E59A1D]">Designed Around You</span>
+            <span className="text-[#fe6e00]">Designed Around You</span>
           </h2>
 
-          <p className="text-white/90 text-sm md:text-base leading-relaxed mb-4 max-w-3xl">
+          <p className="descCSS text-white/90 text-sm md:text-base leading-relaxed mb-4 max-w-3xl">
             Every traveler’s vision of an African safari is unique. And that’s exactly how we design our journeys. As a trusted tour operator Tanzania, Habari Adventure creates fully customized Tanzania safari tours that balance wildlife encounters, scenic landscapes, and cultural immersion.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 w-full mb-6">
+          <div className="headingCSS grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 w-full mb-6">
             <div className="space-y-3">
               <span className="text-white font-semibold text-sm uppercase tracking-wider mb-1 block">Whether you want:</span>
               <ul className="space-y-2">
@@ -53,14 +57,14 @@ export default function SafariSection() {
             <div className="space-y-3">
               <span className="text-white font-semibold text-sm uppercase tracking-wider mb-1 block">We ensure:</span>
               <ul className="space-y-2">
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#E59A1D] mt-0.5">✔</span> Seamless logistics</li>
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#E59A1D] mt-0.5">✔</span> Expert guiding</li>
-                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#E59A1D] mt-0.5">✔</span> Meaningful moments in Africa’s most iconic destinations</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> Seamless logistics</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> Expert guiding</li>
+                <li className="flex items-start gap-2 text-white/90 text-sm"><span className="text-[#fe6e00] mt-0.5">✔</span> Meaningful moments in Africa’s most iconic destinations</li>
               </ul>
             </div>
           </div>
           
-          <p className="text-white/80 text-sm italic mb-12">
+          <p className="descCSS text-white/80 text-sm italic mb-12">
             *Our itineraries are crafted around your pace and preferences, perfect for honeymooners seeking intimate lodges or families exploring for the first time.
           </p>
 
@@ -73,52 +77,53 @@ export default function SafariSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             
             {/* Card 1: Serengeti */}
-            <div className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
               <div className="w-12 h-12 mx-auto mb-4 text-[#3B82F6]">
                 {/* Safari Icon */}
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg>
+                {/* <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg> */}
+                <img src="/serengeti.png" alt="Serengeti Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
-              <h4 className="text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Serengeti<br/>National Park</h4>
-              <p className="text-gray-500 text-xs text-center leading-relaxed">
+              <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Serengeti<br/>National Park</h4>
+              <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">
                 Home to the legendary safari, the Great Migration, Big Five sightings, and endless golden savannah landscapes.
               </p>
               {/* Folded Corner Effect (Blue) */}
               <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#3B82F6] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
                 01
               </div>
-            </div>
+            </Link>
 
             {/* Card 2: Ngorongoro */}
-            <div className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
-              <div className="w-12 h-12 mx-auto mb-4 text-[#E59A1D]">
+            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+              <div className="w-12 h-12 mx-auto mb-4 text-[#fe6e00]">
                 {/* Crater/Mountain Icon */}
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M9 10l2 2 4-4" /></svg>
+                <img src="/crater.png" alt="Ngorongoro Crater Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
-              <h4 className="text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Ngorongoro<br/>Crater</h4>
-              <p className="text-gray-500 text-xs text-center leading-relaxed">
+              <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Ngorongoro<br/>Crater</h4>
+              <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">
                 "Africa’s Eden." Offers one of the highest densities of wildlife in Africa, including year-round rhino sightings.
               </p>
               {/* Folded Corner Effect (Yellow) */}
-              <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#E59A1D] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
+              <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#fe6e00] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
                 02
               </div>
-            </div>
+            </Link>
 
             {/* Card 3: Tarangire */}
-            <div className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
               <div className="w-12 h-12 mx-auto mb-4 text-[#fe6e00]">
                 {/* Tree/Nature Icon */}
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                <img src="/tarangiri.png" alt="Tarangire Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
               </div>
-              <h4 className="text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Tarangire<br/>National Park</h4>
-              <p className="text-gray-500 text-xs text-center leading-relaxed">
+              <h4 className="headingCSS text-[#135D66] font-bold text-center mb-3 text-lg leading-tight">Tarangire<br/>National Park</h4>
+              <p className="descCSS text-gray-500 text-xs text-center leading-relaxed">
                 A hidden gem famous for giant baobab trees and large elephant herds, perfect for many Tanzania safari tours.
               </p>
               {/* Folded Corner Effect (Green) */}
               <div className="absolute bottom-0 left-0 w-16 h-12 bg-[#fe6e00] rounded-tr-[20px] rounded-bl-[30px] flex items-center justify-center text-white font-bold text-sm">
                 03
               </div>
-            </div>
+            </Link>
 
           </div>
         </div>

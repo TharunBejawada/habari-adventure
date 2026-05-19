@@ -62,10 +62,10 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
     return (
       <section className="py-16 lg:py-24 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+          <h2 className="headingCSS text-3xl font-extrabold text-gray-900 mb-4">
             Upcoming <span className="text-[#fe6e00]">Dates</span>
           </h2>
-          <p className="text-gray-600 text-lg mb-6">
+          <p className="descCSS text-gray-600 text-lg mb-6">
             We are currently organizing our next group departures for this route.
           </p>
           <Link href={`/${lang}/contact`} className="bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-bold py-3 px-8 rounded-full transition-all shadow-md">
@@ -81,10 +81,10 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         
         <div className="mb-10">
-          <h2 className="text-4xl font-extrabold text-gray-900 mb-2">
+          <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-2">
             Upcoming <span className="text-[#fe6e00]">Dates</span>
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="descCSS text-gray-600 text-lg">
             Join a group or go private. Early season and group discounts available.
           </p>
         </div>
@@ -161,8 +161,8 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                             {isSoldOut ? '0 Spots Left' : `${row.availableSeats} Spots Left`}
                           </span>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full w-fit ${
-                            isSoldOut ? 'bg-red-50 text-red-600' :
-                            isGuaranteed ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'
+                            isSoldOut ? 'bg-red-50 text-red-600 border border-red-200' :
+                            isGuaranteed ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-green-50 text-green-700 border border-green-200'
                           }`}>
                             {row.status}
                           </span>
@@ -179,7 +179,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                         ) : (
                           <button 
                             onClick={() => onBook && onBook(startDate)}
-                            className="inline-block bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
+                            className="inline-block bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
                           >
                             BOOK NOW
                           </button>

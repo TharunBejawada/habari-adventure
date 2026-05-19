@@ -504,7 +504,7 @@ function PackageEditorForm() {
               Clear Translation
             </button>
           )}
-          <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold rounded-lg shadow-md transition-all">
+          <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold rounded-lg shadow-md transition-all">
             {isSaving ? "Saving..." : (activeLang !== 'en' ? `Save ${activeLang.toUpperCase()} Translation` : (coreInfo.isPublished ? "Update Published Package" : "Save Package"))}
           </button>
         </div>
@@ -553,7 +553,7 @@ function PackageEditorForm() {
                 {activeLang === 'en' ? (
                   <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "bannerImage")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
                 ) : (
-                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                  <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
                 )}
                 {coreInfo.bannerImage && (
                   <div className="mt-3 relative w-full h-32 rounded-xl overflow-hidden border border-gray-200 shadow-sm">
@@ -566,10 +566,10 @@ function PackageEditorForm() {
                 {activeLang === 'en' ? (
                   <input type="file" accept="application/pdf" onChange={(e) => handleFileUpload(e, setCoreInfo, coreInfo, "tripPlanPdf")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
                 ) : (
-                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                  <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
                 )}
                 {coreInfo.tripPlanPdf && (
-                  <a href={coreInfo.tripPlanPdf} target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-sm font-bold text-[#135D66] hover:text-[#E59A1D] transition-colors p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                  <a href={coreInfo.tripPlanPdf} target="_blank" rel="noreferrer" className="mt-3 flex items-center gap-2 text-sm font-bold text-[#135D66] hover:text-[#fe6e00] transition-colors p-3 bg-gray-50 border border-gray-200 rounded-xl">
                     <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 17h-2.5v-10h2.5v10zm-1.25-11.25c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm6.75 11.25h-2.5v-5.5c0-1.38-.56-2.5-2.25-2.5-1.423 0-2.25 1.055-2.25 2.5v5.5h-2.5v-10h4.25v1.5h.063c.594-1.125 2.037-1.875 3.563-1.875 2.375 0 4.125 1.563 4.125 4.875v5.5z"/></svg>
                     View Uploaded Document
                   </a>
@@ -597,7 +597,7 @@ function PackageEditorForm() {
                 {activeLang === 'en' ? (
                   <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setQuickFacts, quickFacts, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
                 ) : (
-                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                  <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
                 )}
                 {quickFacts.image && (
                   <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden border border-gray-200">
@@ -615,7 +615,7 @@ function PackageEditorForm() {
             <div className="space-y-4 pt-4">
               <div className="flex justify-between items-center">
                 <label className="block text-sm font-bold text-gray-700">Fact Items</label>
-                <button type="button" onClick={() => setQuickFacts({...quickFacts, items: [...quickFacts.items, { icon: "", title: "", desc: "" }]})} className="text-sm font-bold text-[#E59A1D] hover:underline">+ Add Fact</button>
+                <button type="button" onClick={() => setQuickFacts({...quickFacts, items: [...quickFacts.items, { icon: "", title: "", desc: "" }]})} className="text-sm font-bold text-[#fe6e00] hover:underline">+ Add Fact</button>
               </div>
               {quickFacts.items.map((item, idx) => (
                 <div key={idx} className="flex gap-4 p-5 bg-gray-50 border border-gray-200 rounded-lg items-start shadow-sm relative">
@@ -662,7 +662,7 @@ function PackageEditorForm() {
                 {activeLang === 'en' ? (
                   <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setWhyChoose, whyChoose, "image")} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700" />
                 ) : (
-                  <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+                  <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
                 )}
                 {whyChoose.image && (
                   <div className="mt-3 relative w-full h-24 rounded-xl overflow-hidden">
@@ -680,7 +680,7 @@ function PackageEditorForm() {
             <div className="space-y-4 pt-2">
               <div className="flex justify-between items-center">
                 <label className="block text-sm font-bold text-gray-700">Reason Items</label>
-                <button type="button" onClick={() => setWhyChoose({...whyChoose, items: [...whyChoose.items, { title: "", desc: "" }]})} className="text-sm font-bold text-[#E59A1D] hover:underline">+ Add Reason</button>
+                <button type="button" onClick={() => setWhyChoose({...whyChoose, items: [...whyChoose.items, { title: "", desc: "" }]})} className="text-sm font-bold text-[#fe6e00] hover:underline">+ Add Reason</button>
               </div>
               {whyChoose.items.map((item, idx) => (
                 <div key={idx} className="flex flex-col md:flex-row gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg items-start shadow-sm relative">
@@ -699,7 +699,7 @@ function PackageEditorForm() {
             <div className="space-y-4 pt-4 border-t border-gray-100">
               <div className="flex justify-between items-center">
                 <label className="block text-sm font-bold text-gray-700">Comparison Table (Optional)</label>
-                <button type="button" onClick={() => setWhyChoose({...whyChoose, table: [...whyChoose.table, { feature: "", thisRoute: "", otherRoutes: "" }]})} className="text-sm font-bold text-[#E59A1D] hover:underline">+ Add Row</button>
+                <button type="button" onClick={() => setWhyChoose({...whyChoose, table: [...whyChoose.table, { feature: "", thisRoute: "", otherRoutes: "" }]})} className="text-sm font-bold text-[#fe6e00] hover:underline">+ Add Row</button>
               </div>
               {whyChoose.table.map((row, idx) => (
                 <div key={idx} className="flex gap-4 p-4 bg-gray-50 border border-gray-200 rounded-lg items-center">
@@ -734,7 +734,7 @@ function PackageEditorForm() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                      <label className="block text-sm font-bold text-gray-700">What's Included</label>
-                     <button type="button" onClick={() => addIncludedNotIncluded("included")} className="text-xs font-bold text-[#E59A1D] hover:underline">+ Add</button>
+                     <button type="button" onClick={() => addIncludedNotIncluded("included")} className="text-xs font-bold text-[#fe6e00] hover:underline">+ Add</button>
                   </div>
                   {itineraryMeta.included.map((item, idx) => (
                     <div key={idx} className="flex gap-2">
@@ -747,7 +747,7 @@ function PackageEditorForm() {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                      <label className="block text-sm font-bold text-gray-700">What's Not Included</label>
-                     <button type="button" onClick={() => addIncludedNotIncluded("notIncluded")} className="text-xs font-bold text-[#E59A1D] hover:underline">+ Add</button>
+                     <button type="button" onClick={() => addIncludedNotIncluded("notIncluded")} className="text-xs font-bold text-[#fe6e00] hover:underline">+ Add</button>
                   </div>
                   {itineraryMeta.notIncluded.map((item, idx) => (
                     <div key={idx} className="flex gap-2">
@@ -763,7 +763,7 @@ function PackageEditorForm() {
             <div className="pt-6 border-t border-gray-200 space-y-6">
               <div className="flex justify-between items-center">
                 <h4 className="font-bold text-gray-800">Itinerary Variants</h4>
-                <button type="button" onClick={addTab} className="text-sm font-bold text-white bg-[#E59A1D] px-4 py-2 rounded-lg hover:bg-[#c98616]">+ Add Variant Tab</button>
+                <button type="button" onClick={addTab} className="text-sm font-bold text-white bg-[#fe6e00] px-4 py-2 rounded-lg hover:bg-[#c98616]">+ Add Variant Tab</button>
               </div>
 
               {itineraries.map((tab, tabIdx) => (
@@ -799,7 +799,7 @@ function PackageEditorForm() {
                          <div className="text-[10px] font-bold text-gray-400">Edit in English Tab</div>
                        )}
                        {tab.documentPdf && (
-                          <a href={tab.documentPdf} target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-xs font-bold text-[#135D66] hover:text-[#E59A1D] transition-colors p-2 bg-white border border-gray-200 rounded-lg">
+                          <a href={tab.documentPdf} target="_blank" rel="noreferrer" className="mt-2 flex items-center gap-1 text-xs font-bold text-[#135D66] hover:text-[#fe6e00] transition-colors p-2 bg-white border border-gray-200 rounded-lg">
                             <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.5 17h-2.5v-10h2.5v10zm-1.25-11.25c-.828 0-1.5-.672-1.5-1.5s.672-1.5 1.5-1.5 1.5.672 1.5 1.5-.672 1.5-1.5 1.5zm6.75 11.25h-2.5v-5.5c0-1.38-.56-2.5-2.25-2.5-1.423 0-2.25 1.055-2.25 2.5v5.5h-2.5v-10h4.25v1.5h.063c.594-1.125 2.037-1.875 3.563-1.875 2.375 0 4.125 1.563 4.125 4.875v5.5z"/></svg>
                             View PDF
                           </a>
@@ -856,7 +856,7 @@ function PackageEditorForm() {
                   <span className={`text-sm font-bold transition-colors duration-300 ${coreInfo.isPublished ? 'text-[#fe6e00]' : 'text-gray-400'}`}>Published</span>
                 </div>
               ) : (
-                <span className="text-sm font-bold text-[#E59A1D]">Visibility Managed in English Tab</span>
+                <span className="text-sm font-bold text-[#fe6e00]">Visibility Managed in English Tab</span>
               )}
             </label>
           </div>
@@ -865,7 +865,7 @@ function PackageEditorForm() {
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6 relative">
             {activeLang !== 'en' && (
               <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl">
-                 <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#E59A1D] border border-orange-100 text-sm">Managed in English Tab</span>
+                 <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#fe6e00] border border-orange-100 text-sm">Managed in English Tab</span>
               </div>
             )}
             <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Categorization</h3>
@@ -914,7 +914,7 @@ function PackageEditorForm() {
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
             <div className="flex justify-between items-center border-b border-gray-100 pb-3">
               <h3 className="font-bold text-[#135D66] text-lg">Search Engine Optimization</h3>
-              {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
+              {activeLang !== 'en' && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
             </div>
             
             <div>
@@ -990,7 +990,7 @@ function PackageEditorForm() {
               </>
             ) : (
               <div className="pt-4 border-t border-gray-100">
-                <p className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-3 rounded-lg border border-orange-100">OG, Twitter, Canonical, Robots &amp; JSON-LD are global and managed in the English tab.</p>
+                <p className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-3 rounded-lg border border-orange-100">OG, Twitter, Canonical, Robots &amp; JSON-LD are global and managed in the English tab.</p>
               </div>
             )}
           </div>

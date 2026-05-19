@@ -89,31 +89,31 @@ export default function WhyChooseUs() {
         <div className="w-full lg:w-1/2 flex flex-col items-start relative z-10 lg:pr-16">
           
           {/* Rotated Experience Text (Visible on LG screens and up) */}
-          <div className="hidden xl:flex absolute right-[-60px] top-[40%] origin-bottom-right rotate-90 items-center gap-3 tracking-widest">
-            <span className="text-5xl font-black text-[#E59A1D]">13</span>
+          <div className="headingCSS hidden xl:flex absolute right-[-60px] top-[40%] origin-bottom-right rotate-90 items-center gap-3 tracking-widest">
+            <span className="text-5xl font-black text-[#fe6e00]">13</span>
             <span className="text-xl font-bold text-[#135D66] uppercase tracking-[0.2em] whitespace-nowrap">
               Years of <br /> Experience
             </span>
           </div>
 
-          <span className="text-[#E59A1D] font-bold tracking-widest uppercase text-sm mb-3">
+          <span className={`${caveat.className} text-3xl md:text-4xl text-[#fe6e00] block mb-2 tracking-normal`}>
             Why Choose Habari Adventure
           </span>
           
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] leading-tight mb-6">
+          <h2 className="headingCSS text-3xl md:text-5xl font-extrabold text-[#135D66] leading-tight mb-6">
             A Certified & Trusted <br className="hidden lg:block" />
-            <span className="text-[#E59A1D]">Tour Operator</span> in Tanzania
+            <span className="text-[#fe6e00]">Tour Operator</span> in Tanzania
           </h2>
 
-          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-4">
+          <p className="descCSS text-gray-600 text-sm md:text-base leading-relaxed mb-4">
             Choosing the right tour operator in Tanzania is the most important decision for your African adventure. At Habari Adventure, we combine local expertise, safety standards, and premium service to create authentic Tanzania safari packages and mountain expeditions.
           </p>
 
-          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-8">
+          <p className="descCSS text-gray-600 text-sm md:text-base leading-relaxed mb-8">
             Our team operates from Tanzania, with deep knowledge of Serengeti ecosystems, Ngorongoro Crater wildlife patterns, and Kilimanjaro trekking routes including Machame, Lemosho, and Marangu.
           </p>
 
-          <h3 className="text-xl font-bold text-[#135D66] mb-5 border-l-4 border-[#E59A1D] pl-3">
+          <h3 className="headingCSS text-xl font-bold text-[#135D66] mb-5 border-l-4 border-[#fe6e00] pl-3">
             What Sets Us Apart
           </h3>
 
@@ -122,11 +122,11 @@ export default function WhyChooseUs() {
             {features.map((feature, idx) => (
               <div key={idx} className="flex items-start gap-3">
                 <div className="mt-1 w-5 h-5 rounded-full bg-[#135D66]/10 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <svg className="w-3 h-3 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-gray-700 leading-snug">{feature}</span>
+                <span className="descCSS text-sm font-medium text-gray-700 leading-snug">{feature}</span>
               </div>
             ))}
           </div>
@@ -149,8 +149,8 @@ export default function WhyChooseUs() {
                 <div className="w-10 h-10 rounded-full bg-gray-500 border-2 border-white overflow-hidden relative"><Image src="/safari-3.jpg" alt="Customer" fill className="object-cover" /></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-[#135D66] font-extrabold text-xl leading-none">{happyTravelers}</span>
-                <span className="text-gray-500 text-xs font-bold uppercase tracking-wider mt-1">Happy Travelers</span>
+                <span className="text-[#fe6e00] font-extrabold text-xl leading-none">{happyTravelers}</span>
+                <span className="text-gray-700 text-xs font-bold uppercase tracking-wider mt-1">Happy Travelers</span>
               </div>
             </div>
           </div>

@@ -82,20 +82,23 @@ export default function HolidayPackages() {
         
         {/* --- SECTION HEADER --- */}
         <div className="text-center mb-12 flex flex-col items-center">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] tracking-tight mb-4">
-            Explore Our <span className="text-[#E59A1D]">Adventures</span>
+          <h2 className="headingCSS text-3xl md:text-5xl font-extrabold text-[#135D66] tracking-tight mb-4">
+            Explore Our <span className="text-[#fe6e00]">Adventures</span>
           </h2>
           
-          <p className="text-center text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+          <p className="descCSS text-center text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
             From thrilling wildlife safaris in the Serengeti to conquering the peaks of Kilimanjaro, find the perfect itinerary tailored to your travel style.
           </p>
 
           {/* Dotted Airplane Graphic */}
-          <div className="mt-8 mb-4 opacity-40">
+          {/* <div className="mt-8 mb-4 opacity-40">
             <svg width="250" height="40" viewBox="0 0 250 40" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M10 20 Q 125 -10, 240 30" stroke="#135D66" strokeWidth="2" strokeDasharray="6 6" fill="none" />
               <path d="M235 25 L 245 30 L 235 35 Z" fill="#135D66" transform="rotate(-15 240 30)" />
             </svg>
+          </div> */}
+          <div className="-mt-7">
+              <Image src="/Title-Separator.png" alt="Image" className="w-117.5" width="470" height="70" loading="lazy" />
           </div>
         </div>
 
@@ -103,7 +106,7 @@ export default function HolidayPackages() {
         <div className="bg-[#E9F4F5] rounded-[30px] p-6 md:p-10 relative shadow-inner">
           
           {/* Filters */}
-          <div className="flex flex-wrap justify-center items-center gap-4 mb-10">
+          <div className="headingCSS flex flex-wrap justify-center items-center gap-4 mb-10">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -124,7 +127,7 @@ export default function HolidayPackages() {
               <div className="w-12 h-12 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin"></div>
             </div>
           ) : filteredPackages.length === 0 ? (
-            <div className="text-center py-20 text-gray-500 font-medium bg-white rounded-2xl">
+            <div className="headingCSS text-center py-20 text-gray-500 font-medium bg-white rounded-2xl">
               No packages found for this category.
             </div>
           ) : (
@@ -166,17 +169,17 @@ export default function HolidayPackages() {
                       <div className="p-6 flex flex-col flex-1">
                         
                         {/* Subtitle / Category line */}
-                        <p className="text-sm text-gray-500 font-medium mb-2">
+                        <p className="descCSS text-sm text-gray-500 font-medium mb-2">
                           {pkg.badgeText}
                         </p>
                         
                         {/* Title */}
-                        <h3 className="text-xl font-bold text-gray-900 leading-snug mb-6 flex-1">
+                        <h3 className="headingCSS text-xl font-bold text-gray-900 leading-snug mb-6 flex-1">
                           {pkg.title}
                         </h3>
 
                         {/* Price & Action Row */}
-                        <div className="flex items-end justify-between mt-auto pt-2">
+                        <div className="descCSS flex items-end justify-between mt-auto pt-2">
                           <div className="flex flex-col">
                             <span className="text-sm text-gray-500 mb-0.5">Starts from</span>
                             <span className="text-2xl font-extrabold text-black leading-none mb-1">

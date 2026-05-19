@@ -52,7 +52,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="w-full py-20 lg:py-32 bg-white relative overflow-hidden">
+    <section className="w-full py-12 lg:py-24 bg-white relative overflow-hidden">
       
       {/* Decorative Background Element */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[#F2F8F8] rounded-full blur-[100px] pointer-events-none -z-10"></div>
@@ -61,27 +61,29 @@ export default function FAQSection() {
         
         {/* --- LEFT SIDE: Sticky Header & Intro --- */}
         <div className="w-full lg:w-[40%] lg:sticky lg:top-32">
-          <span className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl tracking-wide mb-2 block`}>
-            GOT QUESTIONS?
+          <img src="/q_a.png" alt="Travel Goals Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
+          <span className={`${caveat.className} text-3xl md:text-4xl text-[#fe6e00] block mb-2 tracking-normal`}>
+            Got Questions?
           </span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] leading-tight mb-6">
+          <h2 className="headingCSS text-3xl md:text-5xl font-extrabold text-[#135D66] leading-tight mb-6">
             Frequently Asked <br /> Questions
           </h2>
-          <p className="text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-md">
+          <p className="descCSS text-gray-500 text-sm md:text-base leading-relaxed mb-8 max-w-md">
             Planning an African adventure involves a lot of details. Here are answers to the most common questions we get about our Tanzania safari tours and Kilimanjaro expeditions.
           </p>
 
           {/* Contact Support Mini-Card */}
           <div className="bg-[#F6FBFB] border border-[#135D66]/10 rounded-2xl p-6 flex items-start gap-4 shadow-sm inline-flex">
-            <div className="w-12 h-12 rounded-full bg-[#135D66] text-white flex items-center justify-center shrink-0">
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="w-16 h-16 rounded-full bg-[#135D66] text-white flex items-center justify-center shrink-0">
+              {/* <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-              </svg>
+              </svg> */}
+              <img src="/help.png" alt="Travel Goals Icon" className="w-12 h-12 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
             </div>
             <div>
-              <h4 className="text-[#135D66] font-bold mb-1">Still need help?</h4>
-              <p className="text-gray-500 text-xs md:text-sm mb-3">Our travel experts are here 24/7.</p>
-              <a href={getLocalizedUrl("/contact")} className="text-[#E59A1D] font-bold text-sm hover:underline flex items-center gap-1">
+              <h4 className="descCSS text-[#135D66] font-bold mb-1">Still need help?</h4>
+              <p className="descCSS text-gray-500 text-xs md:text-sm mb-3">Our travel experts are here 24/7.</p>
+              <a href={getLocalizedUrl("/contact")} className="descCSS text-[#fe6e00] font-bold text-sm hover:underline flex items-center gap-1">
                 Contact Us 
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -108,12 +110,12 @@ export default function FAQSection() {
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none"
                 >
-                  <h3 className={`font-bold text-lg md:text-xl pr-6 transition-colors duration-300 ${isActive ? "text-[#135D66]" : "text-gray-800"}`}>
+                  <h3 className={`headingCSS font-bold text-lg md:text-xl pr-6 transition-colors duration-300 ${isActive ? "text-[#135D66]" : "text-gray-800"}`}>
                     {faq.question}
                   </h3>
                   
                   {/* Plus/Minus Icon */}
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isActive ? "bg-[#135D66] text-[#E59A1D]" : "bg-gray-100 text-gray-500"}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isActive ? "bg-[#135D66] text-[#fe6e00]" : "bg-gray-100 text-gray-500"}`}>
                     <svg
                       className={`w-5 h-5 transform transition-transform duration-300 ${isActive ? "rotate-180" : "rotate-0"}`}
                       fill="none"
@@ -137,7 +139,7 @@ export default function FAQSection() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <p className="px-6 md:px-8 pb-6 md:pb-8 pt-0 text-gray-600 text-sm md:text-base leading-relaxed">
+                    <p className="descCSS px-6 md:px-8 pb-6 md:pb-8 pt-0 text-gray-600 text-sm md:text-base leading-relaxed">
                       {faq.answer}
                     </p>
                   </div>

@@ -284,7 +284,7 @@ function LocationEditorForm() {
               Clear Translation
             </button>
           )}
-          <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold rounded-lg transition-all">
+          <button type="submit" disabled={isSaving} className="px-8 py-3 bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold rounded-lg transition-all">
             {isSaving ? "Saving..." : (activeLang !== 'en' ? `Save ${activeLang.toUpperCase()}` : "Save Location")}
           </button>
         </div>
@@ -335,7 +335,7 @@ function LocationEditorForm() {
               </select>
             ) : (
               <div className="text-sm font-bold text-gray-500 p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center">
-                <span className="mr-2 text-[#E59A1D]">Managed in English Tab:</span> {formData.category}
+                <span className="mr-2 text-[#fe6e00]">Managed in English Tab:</span> {formData.category}
               </div>
             )}
           </div>
@@ -367,7 +367,7 @@ function LocationEditorForm() {
                 value={formData.youtubeVideoUrl} onChange={e => setFormData({...formData, youtubeVideoUrl: e.target.value})} 
               />
             ) : (
-              <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-3 rounded-lg border border-orange-100 flex items-center">
+              <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-3 rounded-lg border border-orange-100 flex items-center">
                 Video is shared across all languages and managed in the English tab.
               </div>
             )}
@@ -381,7 +381,7 @@ function LocationEditorForm() {
             {activeLang === 'en' ? (
               <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'bannerImage')} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700 bg-white" />
             ) : (
-              <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+              <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
             )}
             {formData.bannerImage && (
               <div className="mt-3 relative w-full h-32 rounded-xl overflow-hidden border border-gray-200">
@@ -395,7 +395,7 @@ function LocationEditorForm() {
             {activeLang === 'en' ? (
               <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, 'heroImage')} className="w-full border border-gray-300 p-2 rounded-xl text-gray-700 bg-white" />
             ) : (
-              <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
+              <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-2 rounded-lg">Managed in English Tab</div>
             )}
             {formData.heroImage && (
               <div className="mt-3 relative w-full h-32 rounded-xl overflow-hidden border border-gray-200">
@@ -416,7 +416,7 @@ function LocationEditorForm() {
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
         <div className="flex justify-between items-center border-b border-gray-100 pb-3">
           <h3 className="font-bold text-[#135D66] text-lg">Search Engine Optimization</h3>
-          {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
+          {activeLang !== 'en' && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
         </div>
 
         {/* Per-language: metaTitle, metaDescription, metaKeywords */}
@@ -524,7 +524,7 @@ function LocationEditorForm() {
             </div>
           </>
         ) : (
-          <div className="text-xs font-bold text-[#E59A1D] bg-orange-50 p-3 rounded-lg border border-orange-100">
+          <div className="text-xs font-bold text-[#fe6e00] bg-orange-50 p-3 rounded-lg border border-orange-100">
             OG, Twitter, Canonical, Robots, and Structured Data are global and managed in the English tab.
           </div>
         )}
@@ -554,7 +554,7 @@ function LocationEditorForm() {
               </span>
             </div>
           ) : (
-            <span className="text-sm font-bold text-[#E59A1D]">Visibility Managed in English Tab</span>
+            <span className="text-sm font-bold text-[#fe6e00]">Visibility Managed in English Tab</span>
           )}
         </label>
       </div>
