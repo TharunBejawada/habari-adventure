@@ -291,17 +291,26 @@ function LocationEditorForm() {
       </div>
 
       <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
-        {SUPPORTED_LANGUAGES.map(lang => (
-          <button
-            key={lang.code} type="button" onClick={() => handleLanguageSwitch(lang.code)}
-            className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 ${
-              activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-            }`}
-          >
-            <span className="mr-2">{lang.flag}</span> {lang.name}
-          </button>
-        ))}
-      </div>
+  {SUPPORTED_LANGUAGES.map(lang => (
+    <button
+      key={lang.code} 
+      type="button" 
+      onClick={() => handleLanguageSwitch(lang.code)}
+      className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
+        activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+      }`}
+    >
+      <img 
+        src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
+        srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
+        width="20" 
+        alt={lang.name}
+        className="mr-2 inline-block rounded-sm"
+      />
+      {lang.name}
+    </button>
+  ))}
+</div>
 
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
         
