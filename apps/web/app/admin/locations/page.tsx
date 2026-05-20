@@ -78,7 +78,7 @@ export default function LocationsAdminPage() {
           <h1 className="text-2xl md:text-3xl font-extrabold text-[#135D66]">Manage Locations</h1>
           <p className="text-gray-500 font-medium mt-1">Create and edit destination landing pages.</p>
         </div>
-        <Link href="/admin/locations/editor" className="px-6 py-3 bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
+        <Link href="/admin/locations/editor" className="px-6 py-3 bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" /></svg>
           Add Location
         </Link>
@@ -165,7 +165,7 @@ export default function LocationsAdminPage() {
                     <td className="p-4 text-right pr-6">
                       <div className="flex justify-end gap-2">
                         {/* We MUST encode the slug here to ensure slashes in the path are handled safely in the URL parameters */}
-                        <Link href={`/admin/locations/editor?slug=${encodeURIComponent(loc.slug)}`} className="p-2 text-gray-400 hover:text-[#E59A1D] hover:bg-orange-50 rounded-lg transition-colors">Edit</Link>
+                        <Link href={`/admin/locations/editor?slug=${encodeURIComponent(loc.slug)}`} className="p-2 text-gray-400 hover:text-[#fe6e00] hover:bg-orange-50 rounded-lg transition-colors">Edit</Link>
                         <button onClick={() => handleDelete(loc.id, loc.title)} disabled={isDeleting === loc.id} className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">Delete</button>
                       </div>
                     </td>

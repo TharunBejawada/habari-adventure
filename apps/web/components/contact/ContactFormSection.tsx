@@ -121,7 +121,7 @@ export default function ContactFormSection() {
     isCaptchaVerified;
 
   return (
-    <section ref={sectionRef} className="w-full py-20 lg:py-32 bg-white relative overflow-hidden z-10">
+    <section ref={sectionRef} className="headingCSS w-full py-20 lg:py-32 bg-white relative overflow-hidden z-10">
       
       {/* --- CUSTOM CSS ANIMATIONS --- */}
       <style dangerouslySetInnerHTML={{
@@ -151,7 +151,7 @@ export default function ContactFormSection() {
         <div className={`w-full lg:w-[45%] flex flex-col pt-4 opacity-0 ${isVisible ? 'animate-fade-left-scroll' : ''}`}>
           
           <h2 className="text-4xl font-extrabold text-[#135D66] mb-2">
-            Contact Us <span className="text-[#E59A1D]">Detail</span>
+            Contact Us <span className="text-[#fe6e00]">Detail</span>
           </h2>
           <p className="text-gray-500 text-sm md:text-base mb-10 leading-relaxed max-w-md">
             Habari Adventure is a locally operated, certified tour operator in Tanzania. Our friendly team is always here to chat and plan your perfect trip.
@@ -173,12 +173,12 @@ export default function ContactFormSection() {
 
             {/* Email Card */}
             <a href="mailto:habariadventure@gmail.com" className="flex items-center gap-6 group cursor-pointer hover:scale-[1.02] transition-transform">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#D48A96] text-white flex items-center justify-center text-xl md:text-2xl shadow-md group-hover:scale-110 group-hover:bg-[#E59A1D] transition-all duration-300">
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#D48A96] text-white flex items-center justify-center text-xl md:text-2xl shadow-md group-hover:scale-110 group-hover:bg-[#fe6e00] transition-all duration-300">
                 <FaEnvelope />
               </div>
               <div>
                 <span className="block text-gray-500 text-sm font-medium mb-1">Email</span>
-                <span className="block text-[#135D66] font-extrabold text-lg md:text-xl break-all group-hover:text-[#E59A1D] transition-colors">habariadventure@gmail.com</span>
+                <span className="block text-[#135D66] font-extrabold text-lg md:text-xl break-all group-hover:text-[#fe6e00] transition-colors">habariadventure@gmail.com</span>
               </div>
             </a>
 
@@ -201,7 +201,7 @@ export default function ContactFormSection() {
               <FaWhatsapp className="text-[#25D366] text-xl" /> Prefer to talk now?
             </h4>
             <p className="text-sm text-gray-600 leading-relaxed mb-3">
-              For the fastest response, <a href="https://wa.me/255762992308" target="_blank" rel="noopener noreferrer" className="text-[#25D366] font-bold hover:underline">WhatsApp us</a> at <strong>+255 762 992 308</strong>. If you can, please include:
+              For the fastest response, <a href="https://wa.me/255762992308" target="_blank" rel="noopener noreferrer" className="text-[#25D366] font-bold hover:underline">WhatsApp</a> us at <strong>+255 762 992 308</strong>. If you can, please include:
             </p>
             <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside ml-1">
               <li>Month of travel</li>
@@ -224,7 +224,7 @@ export default function ContactFormSection() {
           <div className="bg-[#135D66] rounded-[40px] p-8 md:p-12 shadow-xl border border-orange-50">
             
             <h3 className="text-3xl font-extrabold text-gray-200 mb-2">
-              Get a <span className="text-[#E59A1D]">Trip Quote</span>
+              Get a <span className="text-[#fe6e00]">Trip Quote</span>
             </h3>
             <p className="text-gray-200 text-sm mb-8">
               Share a few details and we’ll recommend the best sequence and routes for you.
@@ -237,12 +237,12 @@ export default function ContactFormSection() {
                 <input 
                   type="text" name="firstName" placeholder="First Name *" required
                   value={formData.firstName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
                 <input 
                   type="text" name="lastName" placeholder="Last Name (Optional)"
                   value={formData.lastName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
               </div>
 
@@ -251,12 +251,18 @@ export default function ContactFormSection() {
                 <input 
                   type="email" name="email" placeholder="Email *" required
                   value={formData.email} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
                 <input 
                   type="tel" name="phone" placeholder="WhatsApp / Phone (Optional)"
                   value={formData.phone} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                  onKeyDown={(e) => {
+                    // Allow navigation/control keys, plus numbers and standard phone symbols (+ - ( ) space)
+                    if (!/^[0-9+\-() ]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
               </div>
 
@@ -271,13 +277,25 @@ export default function ContactFormSection() {
                     type="month" name="monthYear" required
                     min={minMonth}
                     value={formData.monthYear} onChange={handleInputChange}
-                    className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700 bg-white"
+                    onKeyDown={(e) => {
+                      // Allow only numbers and hyphens for fallback browsers (YYYY-MM format)
+                      if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700 bg-white"
                   />
                 </div>
                 <input 
                   type="number" name="length" min="1" placeholder="Total Trip Length (days) *" required
                   value={formData.length} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700"
+                  onKeyDown={(e) => {
+                    // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.')
+                    if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
                 />
               </div>
 
@@ -286,7 +304,7 @@ export default function ContactFormSection() {
                 <select 
                   name="groupSize" required
                   value={formData.groupSize} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-500 appearance-none bg-white cursor-pointer"
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-500 appearance-none bg-white cursor-pointer"
                 >
                   <option value="" disabled>Group Size *</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
@@ -298,7 +316,7 @@ export default function ContactFormSection() {
                 <select 
                   name="include" required
                   value={formData.include} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-500 appearance-none bg-white cursor-pointer"
+                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-500 appearance-none bg-white cursor-pointer"
                 >
                   <option value="" disabled>What do you want to include? *</option>
                   <option value="kilimanjaro">Kilimanjaro Only</option>
@@ -315,7 +333,7 @@ export default function ContactFormSection() {
                 <textarea 
                   name="message" placeholder="Message (must-see experiences, constraints) *" rows={4} required
                   value={formData.message} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#E59A1D] focus:ring-1 focus:ring-[#E59A1D] transition-colors text-sm text-gray-700 resize-none"
+                  className="bg-white w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700 resize-none"
                 ></textarea>
               </div>
 
@@ -341,7 +359,7 @@ export default function ContactFormSection() {
                   disabled={!isFormValid || isSubmitting}
                   className={`font-bold text-lg py-4 px-10 rounded-full transition-all shadow-lg w-full md:w-auto flex items-center justify-center gap-2
                     ${isFormValid && !isSubmitting
-                      ? "bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] hover:-translate-y-1 shadow-[#98D80D]/20 cursor-pointer" 
+                      ? "bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white hover:-translate-y-1 shadow-[#fe6e00]/20 cursor-pointer" 
                       : "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                     }
                   `}

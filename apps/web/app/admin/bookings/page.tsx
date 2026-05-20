@@ -161,7 +161,7 @@ export default function AdminBookingsPage() {
                     <td className="p-4 text-right">
                       <button
                         onClick={() => setSelectedBooking(booking)}
-                        className="text-[#135D66] hover:text-[#E59A1D] font-bold text-sm transition-colors"
+                        className="text-[#135D66] hover:text-[#fe6e00] font-bold text-sm transition-colors"
                       >
                         View Details
                       </button>
@@ -246,7 +246,7 @@ export default function AdminBookingsPage() {
                   {selectedBooking.departureDate ? (
                     <div>
                       <span className="block text-xs text-gray-500 mb-1">Fixed Departure Date</span>
-                      <span className="font-bold text-[#E59A1D]">{selectedBooking.departureDate}</span>
+                      <span className="font-bold text-[#fe6e00]">{selectedBooking.departureDate}</span>
                     </div>
                   ) : selectedBooking.monthYear && (
                     <div>

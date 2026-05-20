@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from "../lib/languages";
 
@@ -8,6 +8,20 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   
   // Extract the current language from the URL (e.g., "/fr/packages" -> "fr")
   const currentLangCode = pathname.split('/')[1];
@@ -118,16 +132,24 @@ export default function LanguageSwitcher() {
   };
 
   return (
-    <div className="relative inline-block text-left">
+    <div ref={dropdownRef} className="relative inline-block text-left">
       {/* DROPDOWN BUTTON */}
       <button 
         type="button" 
         onClick={() => setIsOpen(!isOpen)}
         className="inline-flex justify-center items-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#135D66]"
       >
-        <span className="mr-2 text-lg">{activeLang?.flag}</span>
+        {activeLang && (
+          <img 
+            src={`https://flagcdn.com/w20/${activeLang.countryCode}.png`} 
+            srcSet={`https://flagcdn.com/w40/${activeLang.countryCode}.png 2x`}
+            width="20" 
+            alt={activeLang.name}
+            className="mr-2 inline-block rounded-sm"
+          />
+        )}
         {activeLang?.code.toUpperCase()}
-        <svg className="-mr-1 ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <svg className={`-mr-1 ml-2 h-5 w-5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="currentColor">
           <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
         </svg>
       </button>
@@ -144,7 +166,13 @@ export default function LanguageSwitcher() {
                   activeLang?.code === lang.code ? 'bg-[#E9F4F5] text-[#135D66] font-bold' : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
-                <span className="mr-3 text-lg">{lang.flag}</span>
+                <img 
+                  src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
+                  srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
+                  width="20" 
+                  alt={lang.name}
+                  className="mr-3 inline-block rounded-sm"
+                />
                 {lang.name}
               </button>
             ))}

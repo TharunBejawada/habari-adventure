@@ -1,12 +1,12 @@
+// lib/languages.ts
 export const SUPPORTED_LANGUAGES = [
-  { code: 'en', name: 'English (Default)', flag: '🇬🇧' },
-  { code: 'fr', name: 'French', flag: '🇫🇷' },
-  { code: 'es', name: 'Spanish', flag: '🇪🇸' }
+  { code: 'en', name: 'English (Default)', countryCode: 'gb' }, // 'gb' for UK flag
+  { code: 'fr', name: 'French', countryCode: 'fr' },
+  { code: 'es', name: 'Spanish', countryCode: 'es' }
 ];
 
 export const DEFAULT_LANGUAGE = 'en';
 
-// Helper function to use later in your user-facing UI navigation
 export const isSupportedLanguage = (code: string) => {
   return SUPPORTED_LANGUAGES.some(lang => lang.code === code);
 };

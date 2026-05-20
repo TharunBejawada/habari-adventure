@@ -332,7 +332,7 @@
 //       {/* --- BANNER IMAGE SECTION --- */}
 //       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
 //         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-//           <svg className="w-5 h-5 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
+//           <svg className="w-5 h-5 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
 //           Blog Banner Image
 //         </h3>
         
@@ -544,7 +544,7 @@
 //               <span className="text-sm font-bold text-gray-700">Visibility</span>
 //               <label className="relative inline-flex items-center cursor-pointer">
 //                 <input type="checkbox" className="sr-only peer" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} />
-//                 <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#98D80D]"></div>
+//                 <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#fe6e00]"></div>
 //                 <span className={`ml-3 text-sm font-bold ${isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{isPublished ? 'Published' : 'Draft'}</span>
 //               </label>
 //             </div>
@@ -1053,22 +1053,31 @@ function EditorForm() {
 
       {/* LANGUAGE TABS */}
       <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
-        {SUPPORTED_LANGUAGES.map(lang => (
-          <button
-            key={lang.code} type="button" onClick={() => handleLanguageSwitch(lang.code)}
-            className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 ${
-              activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-            }`}
-          >
-            <span className="mr-2">{lang.flag}</span> {lang.name}
-          </button>
-        ))}
-      </div>
+  {SUPPORTED_LANGUAGES.map(lang => (
+    <button
+      key={lang.code} 
+      type="button" 
+      onClick={() => handleLanguageSwitch(lang.code)}
+      className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
+        activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+      }`}
+    >
+      <img 
+        src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
+        srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
+        width="20" 
+        alt={lang.name}
+        className="mr-2 inline-block rounded-sm"
+      />
+      {lang.name}
+    </button>
+  ))}
+</div>
 
       {/* --- BANNER IMAGE SECTION --- */}
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm relative">
         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
+          <svg className="w-5 h-5 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v12a2 2 0 002 2z" /></svg>
           Blog Banner Image
         </h3>
         
@@ -1076,7 +1085,7 @@ function EditorForm() {
           {/* Protect image upload if not English */}
           {activeLang !== 'en' && (
             <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
-              <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#E59A1D] border border-orange-100 text-sm">Image Upload Managed in English Tab</span>
+              <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#fe6e00] border border-orange-100 text-sm">Image Upload Managed in English Tab</span>
             </div>
           )}
 
@@ -1120,7 +1129,7 @@ function EditorForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
               {activeLang !== 'en' && (
                 <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-xl">
-                  <span className="bg-white px-3 py-1 rounded shadow-sm font-bold text-[#E59A1D] text-xs">Author Managed in English Tab</span>
+                  <span className="bg-white px-3 py-1 rounded shadow-sm font-bold text-[#fe6e00] text-xs">Author Managed in English Tab</span>
                 </div>
               )}
               <div>
@@ -1195,7 +1204,7 @@ function EditorForm() {
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6 relative">
             {activeLang !== 'en' && (
               <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl">
-                 <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#E59A1D] border border-orange-100 text-sm text-center">Publishing Settings Managed <br/> in English Tab</span>
+                 <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#fe6e00] border border-orange-100 text-sm text-center">Publishing Settings Managed <br/> in English Tab</span>
               </div>
             )}
             <h3 className="font-bold text-gray-900 text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
@@ -1204,7 +1213,7 @@ function EditorForm() {
               <span className="text-sm font-bold text-gray-700">Visibility</span>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} disabled={activeLang !== 'en'} />
-                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-[#98D80D]"></div>
+                <div className="w-12 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 peer-checked:bg-[#fe6e00]"></div>
                 <span className={`ml-3 text-sm font-bold ${isPublished ? 'text-[#135D66]' : 'text-gray-500'}`}>{isPublished ? 'Published' : 'Draft'}</span>
               </label>
             </div>
@@ -1223,7 +1232,7 @@ function EditorForm() {
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
             <div className="flex justify-between items-center mb-5 border-b border-gray-100 pb-3">
               <h3 className="font-bold text-gray-900 text-lg">Tags</h3>
-              {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Translatable</span>}
+              {activeLang !== 'en' && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Translatable</span>}
             </div>
             
             <div className="flex gap-2 mb-5">
@@ -1247,7 +1256,7 @@ function EditorForm() {
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
             <div className="flex justify-between items-center border-b border-gray-100 pb-3">
               <h3 className="font-bold text-gray-900 text-lg">Search Engine Optimization</h3>
-              {activeLang !== 'en' && <span className="text-xs font-bold text-[#E59A1D] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
+              {activeLang !== 'en' && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
             </div>
             
             <div>

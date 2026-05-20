@@ -115,8 +115,8 @@ export default function UpcomingDatesAdminPage() {
     setFormData({
       packageId: d.packageId,
       title: d.title || "",
-      startDate: new Date(d.startDate).toISOString().split('T')[0] as string,
-      endDate: new Date(d.endDate).toISOString().split('T')[0] as string,
+      startDate: d.startDate.split('T')[0],
+      endDate: d.endDate.split('T')[0],
       price: d.price.toString(),
       totalSeats: d.totalSeats,
       availableSeats: d.availableSeats,
@@ -273,7 +273,7 @@ export default function UpcomingDatesAdminPage() {
               </label>
             </div>
 
-            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full py-3.5 bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md mt-4">
+            <button type="submit" disabled={isSaving || !formData.packageId || !formLocation} className="w-full py-3.5 bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-md mt-4">
               {isSaving ? "Saving..." : (editingId ? "Update Departure" : "Add Departure Date")}
             </button>
           </form>
@@ -323,11 +323,11 @@ export default function UpcomingDatesAdminPage() {
                     </div>
                     
                     <p className="font-bold text-gray-900">
-                      {new Date(d.startDate).toLocaleDateString()} — {new Date(d.endDate).toLocaleDateString()}
-                    </p>
+  {new Date(d.startDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })} — {new Date(d.endDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' })}
+</p>
                     <p className="text-xs text-gray-500 font-medium mt-1">
                       {d.title && <span className="font-medium mr-2 text-gray-800">"{d.title}"</span>}
-                      <span className="text-[#E59A1D] font-bold">${d.price}</span> • {d.availableSeats}/{d.totalSeats} seats available
+                      <span className="text-[#fe6e00] font-bold">${d.price}</span> • {d.availableSeats}/{d.totalSeats} seats available
                     </p>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
@@ -337,7 +337,7 @@ export default function UpcomingDatesAdminPage() {
                     }`}>
                       {d.status}
                     </span>
-                    <button onClick={() => handleEdit(d)} className="text-[#E59A1D] hover:text-orange-600 text-xs font-bold bg-orange-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
+                    <button onClick={() => handleEdit(d)} className="text-[#fe6e00] hover:text-orange-600 text-xs font-bold bg-orange-50 px-3 py-1.5 rounded-lg transition-colors">Edit</button>
                     <button onClick={() => handleDelete(d.id)} className="text-red-400 hover:text-red-600 text-xs font-bold bg-red-50 px-3 py-1.5 rounded-lg transition-colors">Delete</button>
                   </div>
                 </div>

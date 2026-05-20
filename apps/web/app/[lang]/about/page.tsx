@@ -131,14 +131,25 @@ export default function AboutUsPage() {
           </div>
         </div> */}
 
-        <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#98D80D] mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-            Discover <span className={`${caveat.className} text-[#E59A1D] font-normal`}>Our Story</span>
+        {/* <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
+          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+            Discover <span className={`${caveat.className} text-[#fe6e00] font-normal`}>Our Story</span>
           </h1>
           <p className="animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
             Learn about our mission, our deep passion for Tanzania, and the dedicated, locally-owned team that makes your ultimate adventure possible.
           </p>
-        </div>
+        </div> */}
+        <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
+  <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+    <span className="text-[0.85em]">Discover</span>{' '}
+    <span className={`${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>
+      Our Story
+    </span>
+  </h1>
+  <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+    Learn about our mission, our deep passion for Tanzania, and the dedicated, locally-owned team that makes your ultimate adventure possible.
+  </p>
+</div>
       </section>
 
       {/* ========================================== */}
@@ -154,10 +165,10 @@ export default function AboutUsPage() {
               
               {/* Title Section (Now on the left, above images) */}
               <div className="mb-12 lg:pr-8">
-                <span className={`${caveat.className} text-[#E59A1D] text-3xl block mb-2`}>
+                <span className={`${caveat.className} text-[#fe6e00] text-3xl block mb-2`}>
                   About Our Company
                 </span>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-[#135D66] leading-tight uppercase">
+                <h2 className="headingCSS text-4xl md:text-5xl font-extrabold text-[#135D66] leading-tight uppercase">
                   We are Habari Adventure Touring Support Company.
                 </h2>
               </div>
@@ -192,7 +203,7 @@ export default function AboutUsPage() {
 
                 {/* Floating Experience Badge */}
                 <div className="absolute z-30 bottom-0 left-8 sm:-bottom-8 sm:left-1/2 sm:-translate-x-1/2 bg-white px-8 py-6 rounded-3xl shadow-[0px_20px_40px_rgba(19,93,102,0.15)] flex items-center gap-4 border border-gray-50">
-                  <h2 className="font-extrabold text-5xl md:text-6xl text-[#E59A1D] drop-shadow-sm">13+</h2>
+                  <h2 className="font-extrabold text-5xl md:text-6xl text-[#fe6e00] drop-shadow-sm">13+</h2>
                   <span className="text-gray-800 font-bold text-lg leading-tight uppercase tracking-wide">Years of <br/>Experience</span>
                 </div>
               </div>
@@ -200,7 +211,7 @@ export default function AboutUsPage() {
 
             {/* --- RIGHT: CONTENT (PARAGRAPHS & QUOTE) --- */}
             <div className="w-full lg:w-1/2 lg:pt-4">
-              <div className="mb-10">
+              <div className="descCSS mb-10">
                 <p className="text-gray-600 text-lg leading-relaxed mb-6">
                   Established in 2012 as a locally-owned company by Stan Wilfred. He started this company at the age of 18 while in college and worked as a porter for 2 years as he pursued his passion for the outdoors, travel, and entrepreneurship.
                 </p>
@@ -218,7 +229,7 @@ export default function AboutUsPage() {
 
                 {/* Highlight Quote Box */}
                 <div className="bg-[#F0F9FA] p-6 md:p-8 rounded-r-3xl shadow-sm">
-                  <h4 className="font-extrabold text-[#135D66] text-xl mb-3">Why did we start the company?</h4>
+                  <h4 className="headingCSS font-extrabold text-[#135D66] text-xl mb-3">Why did we start the company?</h4>
                   {/* <p className="text-gray-700 italic text-lg leading-relaxed">
                     "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
                   </p> */}
@@ -239,19 +250,19 @@ export default function AboutUsPage() {
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
               <div>
-                <h3 className="text-2xl font-extrabold text-gray-900 mb-3">100% Local & Fair</h3>
-                <p className="text-gray-600 leading-relaxed">We have the best camping logistics, the best guides and porters as well as a big variety of tours. We take care of your individual needs and wishes and provide the best quality to create an amazing time in Tanzania.</p>
+                <h3 className="headingCSS text-2xl font-extrabold text-gray-900 mb-3">100% Local & Fair</h3>
+                <p className="descCSS text-gray-600 leading-relaxed">We have the best camping logistics, the best guides and porters as well as a big variety of tours. We take care of your individual needs and wishes and provide the best quality to create an amazing time in Tanzania.</p>
               </div>
             </div>
 
             {/* Feature 2 */}
             <div className="flex flex-col sm:flex-row items-start gap-6 p-8 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-lg transition-all duration-300">
-              <div className="w-16 h-16 shrink-0 bg-[#Fdf5e8] rounded-full flex items-center justify-center text-[#E59A1D]">
+              <div className="w-16 h-16 shrink-0 bg-[#Fdf5e8] rounded-full flex items-center justify-center text-[#fe6e00]">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
               </div>
               <div>
-                <h3 className="text-2xl font-extrabold text-gray-900 mb-3">Our Vision</h3>
-                <p className="text-gray-600 leading-relaxed">To become the leading company in all tourism activities by offering the best quality and individual tours to create an amazing and happy time for our customers.</p>
+                <h3 className="headingCSS text-2xl font-extrabold text-gray-900 mb-3">Our Vision</h3>
+                <p className="descCSS text-gray-600 leading-relaxed">To become the leading company in all tourism activities by offering the best quality and individual tours to create an amazing and happy time for our customers.</p>
               </div>
             </div>
 
@@ -268,7 +279,7 @@ export default function AboutUsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 divide-y md:divide-y-0 md:divide-x divide-white/20">
             <div className="text-center md:pt-0 pt-6 first:pt-0">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
               <h3 className="text-5xl font-black text-white mb-2">
                 <AnimatedCounter target={1730} duration={2500} />+
@@ -278,7 +289,7 @@ export default function AboutUsPage() {
             
             <div className="text-center pt-8 md:pt-0">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
               </div>
               <h3 className="text-5xl font-black text-white mb-2">
                 <AnimatedCounter target={88} duration={2000} />
@@ -288,7 +299,7 @@ export default function AboutUsPage() {
             
             <div className="text-center pt-8 md:pt-0">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#E59A1D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
               </div>
               <h3 className="text-5xl font-black text-white mb-2">
                 <AnimatedCounter target={180} duration={2200} />
@@ -306,9 +317,9 @@ export default function AboutUsPage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
           
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className={`${caveat.className} text-[#E59A1D] text-3xl block mb-2`}>What drives us</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#135D66] mb-6">OUR GOALS & VALUES</h2>
-            <p className="text-gray-600 text-lg">
+            <span className={`${caveat.className} text-[#fe6e00] text-3xl block mb-2`}>What drives us</span>
+            <h2 className="headingCSS text-4xl md:text-5xl font-extrabold text-[#135D66] mb-6">Our Goals & Values</h2>
+            <p className="descCSS text-gray-600 text-lg">
               We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming.
             </p>
           </div>
@@ -316,7 +327,7 @@ export default function AboutUsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Goals */}
             <div className="bg-[#F0F9FA] rounded-[40px] p-10 md:p-14 border border-[#135D66]/10">
-              <h3 className="text-3xl font-extrabold text-[#135D66] mb-8 border-b border-[#135D66]/20 pb-4">Our Goals</h3>
+              <h3 className="headingCSStext-3xl font-extrabold text-[#135D66] mb-8 border-b border-[#135D66]/20 pb-4">Our Goals</h3>
               <ul className="space-y-4">
                 {[
                   "Create your unforgettable adventure",
@@ -328,16 +339,16 @@ export default function AboutUsPage() {
                   "Provide equitable working conditions to our employees"
                 ].map((goal, idx) => (
                   <li key={idx} className="flex items-start gap-4">
-                    <FaCheckCircle className="text-[#E59A1D] mt-1 shrink-0 text-xl" />
-                    <span className="text-gray-800 font-medium text-lg">{goal}</span>
+                    <FaCheckCircle className="text-[#fe6e00] mt-1 shrink-0 text-xl" />
+                    <span className="descCSS text-gray-800 font-medium text-lg">{goal}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Values */}
-            <div className="bg-white rounded-[40px] p-10 md:p-14 border border-gray-100 shadow-[0px_20px_40px_rgba(0,0,0,0.04)]">
-              <h3 className="text-3xl font-extrabold text-[#135D66] mb-8 border-b border-gray-200 pb-4">Our Values</h3>
+            <div className="bg-[#F0F9FA] rounded-[40px] p-10 md:p-14 border border-[#135D66]/10">
+              <h3 className="headingCSS text-3xl font-extrabold text-[#135D66] mb-8 border-b border-[#135D66]/20 pb-4">Our Values</h3>
               <ul className="space-y-4">
                 {[
                   "Honesty and integrity",
@@ -350,10 +361,11 @@ export default function AboutUsPage() {
                   "Made by Tanzanians"
                 ].map((value, idx) => (
                   <li key={idx} className="flex items-start gap-4">
-                    <div className="w-6 h-6 rounded-full bg-[#135D66]/10 flex items-center justify-center shrink-0 mt-0.5">
+                    {/* <div className="w-6 h-6 rounded-full bg-[#135D66]/10 flex items-center justify-center shrink-0 mt-0.5">
                       <div className="w-2.5 h-2.5 rounded-full bg-[#135D66]"></div>
-                    </div>
-                    <span className="text-gray-800 font-medium text-lg">{value}</span>
+                    </div> */}
+                    <FaCheckCircle className="text-[#fe6e00] mt-1 shrink-0 text-xl" />
+                    <span className="descCSS text-gray-800 font-medium text-lg">{value}</span>
                   </li>
                 ))}
               </ul>
@@ -370,8 +382,8 @@ export default function AboutUsPage() {
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
           
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <span className={`${caveat.className} text-[#E59A1D] text-3xl block mb-2`}>Here's what they have to say</span>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-[#135D66]">WHY CHOOSE US?</h2>
+            <span className={`${caveat.className} text-[#fe6e00] text-3xl block mb-2`}>Here's what they have to say</span>
+            <h2 className="headingCSS text-4xl md:text-5xl font-extrabold text-[#135D66]">Why Choose Us?</h2>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-16 items-center">
@@ -413,7 +425,7 @@ export default function AboutUsPage() {
                 <a href="https://www.bookmundi.com/companies/habari-adventure/c2300" className="bg-white px-8 py-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-6 w-full max-w-[300px] hover:-translate-y-1 transition-transform">
                   <Image src="/bookmundi-logo.png" alt="Bookmundi" width={50} height={50} unoptimized className="object-contain" />
                   <div>
-                    <div className="flex text-[#E59A1D] text-sm mb-1">
+                    <div className="flex text-[#fe6e00] text-sm mb-1">
                       <FaStar/><FaStar/><FaStar/><FaStar/><FaStar/>
                     </div>
                     <p className="font-bold text-gray-900">Bookmundi</p>
@@ -424,7 +436,7 @@ export default function AboutUsPage() {
                 <a href="https://maps.app.goo.gl/FEywkHZTxTBr7dCZ6" className="bg-white px-8 py-5 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-6 w-full max-w-[300px] hover:-translate-y-1 transition-transform">
                   <Image src="/google-reviews-logo.png" alt="Google Reviews" width={50} height={50} unoptimized className="object-contain" />
                   <div>
-                    <div className="flex text-[#E59A1D] text-sm mb-1">
+                    <div className="flex text-[#fe6e00] text-sm mb-1">
                       <FaStar/><FaStar/><FaStar/><FaStar/><FaStar/>
                     </div>
                     <p className="font-bold text-gray-900">Google Reviews</p>
@@ -448,8 +460,8 @@ export default function AboutUsPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-center sm:items-end mb-16 gap-6">
               <div className="text-center sm:text-left">
-                <span className={`${caveat.className} text-[#E59A1D] text-3xl block mb-2`}>One Dream, One Team</span>
-                <h2 className="text-4xl md:text-5xl font-extrabold text-[#135D66] uppercase">Meet Our Crew</h2>
+                <span className={`${caveat.className} text-[#fe6e00] text-3xl block mb-2`}>One Dream, One Team</span>
+                <h2 className="headingCSS text-4xl md:text-5xl font-extrabold text-[#135D66]">Meet Our Crew</h2>
               </div>
               <Link 
                 href="/crew" 
@@ -478,7 +490,7 @@ export default function AboutUsPage() {
                   
                   {/* Member Details */}
                   <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <p className="text-xs font-medium text-[#E59A1D] uppercase tracking-wider mb-1 drop-shadow-md">
+                    <p className="text-xs font-medium text-[#fe6e00] uppercase tracking-wider mb-1 drop-shadow-md">
                       {member.designation}
                     </p>
                     <h4 className="text-xl font-extrabold text-white drop-shadow-md">

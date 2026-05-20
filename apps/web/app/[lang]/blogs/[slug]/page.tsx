@@ -167,7 +167,7 @@
 //           .blog-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1.5rem; }
 //           .blog-content li { margin-bottom: 0.5rem; padding-left: 0.5rem; }
 //           .blog-content img { border-radius: 1rem; margin: 2rem 0; max-width: 100%; height: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-//           .blog-content a { color: #E59A1D; text-decoration: underline; font-weight: 600; }
+//           .blog-content a { color: #fe6e00; text-decoration: underline; font-weight: 600; }
 //           .blog-content pre, .blog-content code { white-space: pre-wrap; max-width: 100%; overflow-x: auto; }
           
 //           /* Custom Blockquote */
@@ -176,7 +176,7 @@
 //             padding: 1.5rem 2rem 1.5rem 4rem;
 //             margin: 2.5rem 0;
 //             background: #F9FAFB;
-//             border-left: 4px solid #E59A1D;
+//             border-left: 4px solid #fe6e00;
 //             font-size: 1.15rem;
 //             font-style: italic;
 //             font-weight: 600;
@@ -189,7 +189,7 @@
 //             left: 0.5rem;
 //             top: -0.5rem;
 //             font-size: 5rem;
-//             color: #E59A1D;
+//             color: #fe6e00;
 //             font-family: Georgia, serif;
 //             line-height: 1;
 //             opacity: 0.8;
@@ -228,7 +228,7 @@
 //             <span className="text-gray-300">/</span>
 //             <span>{formatFullDate(blog.publishedAt)}</span>
 //             <span className="text-gray-300">/</span>
-//             <span className="text-[#E59A1D]">{blog.category || "General"}</span>
+//             <span className="text-[#fe6e00]">{blog.category || "General"}</span>
 //           </div>
 
 //           {/* 3. Title */}
@@ -265,16 +265,16 @@
 //             {/* Social Share Buttons */}
 //             <div className="flex items-center gap-3">
 //               <span className="font-extrabold text-[#135D66] mr-2">Share:</span>
-//               <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+//               <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
 //                 <FaFacebookF />
 //               </button>
-//               <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blog.title}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+//               <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blog.title}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
 //                 <FaTwitter />
 //               </button>
-//               <button onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+//               <button onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
 //                 <FaLinkedinIn />
 //               </button>
-//               <button onClick={copyToClipboard} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+//               <button onClick={copyToClipboard} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
 //                 <FaLink />
 //               </button>
 //             </div>
@@ -286,10 +286,10 @@
 //             {/* Previous Post (Older) */}
 //             {prevPost ? (
 //               <Link href={`/blogs/${prevPost.slug}`} className="group flex flex-col items-start max-w-[45%] text-left">
-//                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
+//                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
 //                   <span>←</span> Previous Post
 //                 </span>
-//                 <span className="text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#E59A1D] transition-colors">
+//                 <span className="text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#fe6e00] transition-colors">
 //                   {prevPost.title}
 //                 </span>
 //               </Link>
@@ -298,10 +298,10 @@
 //             {/* Next Post (Newer) */}
 //             {nextPost ? (
 //               <Link href={`/blogs/${nextPost.slug}`} className="group flex flex-col items-end max-w-[45%] text-right">
-//                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
+//                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
 //                   Next Post <span>→</span>
 //                 </span>
-//                 <span className="text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#E59A1D] transition-colors">
+//                 <span className="text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#fe6e00] transition-colors">
 //                   {nextPost.title}
 //                 </span>
 //               </Link>
@@ -332,7 +332,7 @@
 
 //           {/* RECENT POSTS WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Recent Posts
 //             </h3>
 //             <div className="space-y-0">
@@ -347,7 +347,7 @@
 //                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>
 //                       </div>
 //                       {/* Title */}
-//                       <h4 className="font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors leading-tight text-sm line-clamp-2">
+//                       <h4 className="font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors leading-tight text-sm line-clamp-2">
 //                         {post.title}
 //                       </h4>
 //                     </Link>
@@ -364,7 +364,7 @@
 
 //           {/* TOP DESTINATIONS / CATEGORIES WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Top Destinations
 //             </h3>
 //             <div className="space-y-4">
@@ -374,7 +374,7 @@
 //                   href="/blogs"
 //                   className="w-full flex justify-between items-center group py-1"
 //                 >
-//                   <span className="font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors">{cat.category}</span>
+//                   <span className="font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors">{cat.category}</span>
 //                   <span className="text-gray-400 font-medium text-sm">( {cat.count.toString().padStart(2, '0')} Listing )</span>
 //                 </Link>
 //               ))}
@@ -384,7 +384,7 @@
 
 //           {/* POPULAR TAGS WIDGET */}
 //           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+//             <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
 //               Popular Tags
 //             </h3>
 //             <div className="flex flex-wrap gap-3">
@@ -592,10 +592,10 @@ export default function BlogPostPage() {
           .blog-content ol { list-style-type: decimal; margin-left: 1.5rem; margin-bottom: 1.5rem; }
           .blog-content li { margin-bottom: 0.5rem; padding-left: 0.5rem; }
           .blog-content img { border-radius: 1rem; margin: 2rem 0; max-width: 100%; height: auto; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-          .blog-content a { color: #E59A1D; text-decoration: underline; font-weight: 600; }
+          .blog-content a { color: #fe6e00; text-decoration: underline; font-weight: 600; }
           .blog-content pre, .blog-content code { white-space: pre-wrap; max-width: 100%; overflow-x: auto; }
-          .blog-content blockquote { position: relative; padding: 1.5rem 2rem 1.5rem 4rem; margin: 2.5rem 0; background: #F9FAFB; border-left: 4px solid #E59A1D; font-size: 1.15rem; font-style: italic; font-weight: 600; color: #135D66; border-radius: 0 1rem 1rem 0; }
-          .blog-content blockquote::before { content: "\\201C"; position: absolute; left: 0.5rem; top: -0.5rem; font-size: 5rem; color: #E59A1D; font-family: Georgia, serif; line-height: 1; opacity: 0.8; }
+          .blog-content blockquote { position: relative; padding: 1.5rem 2rem 1.5rem 4rem; margin: 2.5rem 0; background: #F9FAFB; border-left: 4px solid #fe6e00; font-size: 1.15rem; font-style: italic; font-weight: 600; color: #135D66; border-radius: 0 1rem 1rem 0; }
+          .blog-content blockquote::before { content: "\\201C"; position: absolute; left: 0.5rem; top: -0.5rem; font-size: 5rem; color: #fe6e00; font-family: Georgia, serif; line-height: 1; opacity: 0.8; }
         `
       }} />
 
@@ -628,7 +628,7 @@ export default function BlogPostPage() {
             <span>{formatFullDate(blog.publishedAt)}</span>
             <span className="text-gray-300">/</span>
             {/* Added notranslate */}
-            <span className="notranslate text-[#E59A1D]">{blog.category || "General"}</span>
+            <span className="notranslate text-[#fe6e00]">{blog.category || "General"}</span>
           </div>
 
           {/* Added notranslate */}
@@ -698,16 +698,16 @@ export default function BlogPostPage() {
 
             <div className="flex items-center gap-3">
               <span className="font-extrabold text-[#135D66] mr-2">Share:</span>
-              <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+              <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
                 <FaFacebookF />
               </button>
-              <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blog.title}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+              <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${window.location.href}&text=${blog.title}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
                 <FaTwitter />
               </button>
-              <button onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+              <button onClick={() => window.open(`https://www.linkedin.com/shareArticle?mini=true&url=${window.location.href}`, '_blank')} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
                 <FaLinkedinIn />
               </button>
-              <button onClick={copyToClipboard} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#E59A1D] hover:-translate-y-1 transition-all shadow-md">
+              <button onClick={copyToClipboard} className="w-10 h-10 rounded-full bg-[#135D66] text-white flex items-center justify-center hover:bg-[#fe6e00] hover:-translate-y-1 transition-all shadow-md">
                 <FaLink />
               </button>
             </div>
@@ -718,11 +718,11 @@ export default function BlogPostPage() {
             {prevPost ? (
               // Updated link with dynamic lang
               <Link href={`/${lang}/blogs/${toSlug(prevPost.slug || prevPost.canonicalSlug || "")}`} className="group flex flex-col items-start max-w-[45%] text-left">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
                   <span>←</span> Previous Post
                 </span>
                 {/* Added notranslate */}
-                <span className="notranslate text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#E59A1D] transition-colors">
+                <span className="notranslate text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#fe6e00] transition-colors">
                   {prevPost.title}
                 </span>
               </Link>
@@ -731,11 +731,11 @@ export default function BlogPostPage() {
             {nextPost ? (
               // Updated link with dynamic lang
               <Link href={`/${lang}/blogs/${toSlug(nextPost.slug || nextPost.canonicalSlug || "")}`} className="group flex flex-col items-end max-w-[45%] text-right">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#E59A1D] transition-colors flex items-center gap-2">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
                   Next Post <span>→</span>
                 </span>
                 {/* Added notranslate */}
-                <span className="notranslate text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#E59A1D] transition-colors">
+                <span className="notranslate text-sm md:text-base font-bold text-[#135D66] line-clamp-2 leading-snug group-hover:text-[#fe6e00] transition-colors">
                   {nextPost.title}
                 </span>
               </Link>
@@ -764,7 +764,7 @@ export default function BlogPostPage() {
           </form>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Recent Posts
             </h3>
             <div className="space-y-0">
@@ -779,7 +779,7 @@ export default function BlogPostPage() {
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>
                       </div>
                       {/* Added notranslate */}
-                      <h4 className="notranslate font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors leading-tight text-sm line-clamp-2">
+                      <h4 className="notranslate font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors leading-tight text-sm line-clamp-2">
                         {post.title}
                       </h4>
                     </Link>
@@ -794,7 +794,7 @@ export default function BlogPostPage() {
           </div>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Top Categories
             </h3>
             <div className="space-y-4">
@@ -805,7 +805,7 @@ export default function BlogPostPage() {
                   className="w-full flex justify-between items-center group py-1"
                 >
                   {/* Added notranslate */}
-                  <span className="notranslate font-bold text-[#135D66] group-hover:text-[#E59A1D] transition-colors">{cat.category}</span>
+                  <span className="notranslate font-bold text-[#135D66] group-hover:text-[#fe6e00] transition-colors">{cat.category}</span>
                   <span className="text-gray-400 font-medium text-sm">( {cat.count.toString().padStart(2, '0')} )</span>
                 </Link>
               ))}
@@ -814,7 +814,7 @@ export default function BlogPostPage() {
           </div>
 
           <div className="bg-white p-8 rounded-[30px] border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#E59A1D] pl-3 mb-6 leading-none">
+            <h3 className="text-xl font-extrabold text-[#135D66] border-l-4 border-[#fe6e00] pl-3 mb-6 leading-none">
               Popular Tags
             </h3>
             <div className="flex flex-wrap gap-3">

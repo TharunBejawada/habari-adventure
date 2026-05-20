@@ -90,7 +90,7 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
             <h3 className="text-2xl font-bold text-gray-900">
               {initialData.departureDate ? "Book Departure" : "Request a Quote"}
             </h3>
-            {initialData.packageName && <p className="text-sm font-bold text-[#98D80D] mt-1">{initialData.packageName}</p>}
+            {initialData.packageName && <p className="text-sm font-bold text-[#fe6e00] mt-1">{initialData.packageName}</p>}
           </div>
           <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors">✕</button>
         </div>
@@ -133,7 +133,18 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">Mobile Number</label>
-                  <input type="tel" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                  <input 
+                    type="tel" 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" 
+                    value={formData.phone} 
+                    onChange={e => setFormData({...formData, phone: e.target.value})} 
+                    onKeyDown={(e) => {
+                      // Allow numbers and standard phone symbols (+ - ( ) space), plus navigation keys
+                      if (!/^[0-9+\-() ]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                        e.preventDefault();
+                      }
+                    }}
+                  />
                 </div>
               </div>
 
@@ -142,11 +153,35 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Month & Year</label>
-                    <input type="month" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" value={formData.monthYear} onChange={e => setFormData({...formData, monthYear: e.target.value})} />
+                    <input 
+                      type="month" 
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" 
+                      value={formData.monthYear} 
+                      onChange={e => setFormData({...formData, monthYear: e.target.value})} 
+                      onKeyDown={(e) => {
+                        // Allow only numbers and hyphens (YYYY-MM format fallback), plus navigation keys
+                        if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Total Trip Days</label>
-                    <input type="number" min="1" placeholder="e.g. 8" className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" value={formData.length} onChange={e => setFormData({...formData, length: e.target.value})} />
+                    <input 
+                      type="number" 
+                      min="1" 
+                      placeholder="e.g. 8" 
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white transition-colors" 
+                      value={formData.length} 
+                      onChange={e => setFormData({...formData, length: e.target.value})} 
+                      onKeyDown={(e) => {
+                        // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.'), plus navigation keys
+                        if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               )}
@@ -157,7 +192,7 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
               </div>
 
               <div className="pt-4">
-                <button type="submit" disabled={isSubmitting} className="w-full bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold py-4 rounded-xl uppercase tracking-widest transition-all">
+                <button type="submit" disabled={isSubmitting} className="w-full bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold py-4 rounded-xl uppercase tracking-widest transition-all">
                   {isSubmitting ? "Submitting..." : "Submit Inquiry"}
                 </button>
               </div>

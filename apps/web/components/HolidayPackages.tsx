@@ -11,6 +11,9 @@ export default function HolidayPackages() {
   const [activeFilter, setActiveFilter] = useState("All Packages");
   const [packages, setPackages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // --- NEW: Carousel Pagination State ---
+  const [currentPage, setCurrentPage] = useState(0);
   const { getLocalizedUrl } = useLocalizedUrl();
   
   // Reference for the scrolling carousel
@@ -66,6 +69,8 @@ export default function HolidayPackages() {
   });
 
   // --- CAROUSEL SCROLL LOGIC ---
+  const totalPages = Math.ceil(filteredPackages.length / 3);
+
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const scrollAmount = scrollRef.current.clientWidth; // Scroll by exactly one container width
@@ -76,26 +81,53 @@ export default function HolidayPackages() {
     }
   };
 
+  const scrollToPage = (pageIndex: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: pageIndex * scrollRef.current.clientWidth,
+        behavior: "smooth"
+      });
+      setCurrentPage(pageIndex);
+    }
+  };
+
+  // Sync dots when user manually swipes/scrolls
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollLeft = scrollRef.current.scrollLeft;
+      const clientWidth = scrollRef.current.clientWidth;
+      const newPage = Math.round(scrollLeft / clientWidth);
+      if (newPage !== currentPage) {
+        setCurrentPage(newPage);
+      }
+    }
+  };
+
+  // Reset pagination when filter changes
+  useEffect(() => {
+    setCurrentPage(0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+    }
+  }, [activeFilter]);
+
   return (
     <section className="w-full py-8 lg:py-20 bg-[#F6FBFB] relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto w-[96%] px-4 sm:px-6">
         
         {/* --- SECTION HEADER --- */}
         <div className="text-center mb-12 flex flex-col items-center">
-          <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] tracking-tight mb-4">
-            Explore Our <span className="text-[#E59A1D]">Adventures</span>
+          <h2 className="headingCSS text-3xl md:text-5xl font-extrabold text-[#135D66] tracking-tight mb-4">
+            Explore Our <span className="text-[#fe6e00]">Adventures</span>
           </h2>
           
-          <p className="text-center text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+          <p className="descCSS text-center text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
             From thrilling wildlife safaris in the Serengeti to conquering the peaks of Kilimanjaro, find the perfect itinerary tailored to your travel style.
           </p>
 
           {/* Dotted Airplane Graphic */}
-          <div className="mt-8 mb-4 opacity-40">
-            <svg width="250" height="40" viewBox="0 0 250 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 20 Q 125 -10, 240 30" stroke="#135D66" strokeWidth="2" strokeDasharray="6 6" fill="none" />
-              <path d="M235 25 L 245 30 L 235 35 Z" fill="#135D66" transform="rotate(-15 240 30)" />
-            </svg>
+          <div className="-mt-7">
+              <Image src="/Title-Separator.png" alt="Image" className="w-117.5" width="470" height="70" loading="lazy" />
           </div>
         </div>
 
@@ -103,7 +135,7 @@ export default function HolidayPackages() {
         <div className="bg-[#E9F4F5] rounded-[30px] p-6 md:p-10 relative shadow-inner">
           
           {/* Filters */}
-          <div className="flex flex-wrap justify-center items-center gap-4 mb-10">
+          <div className="headingCSS flex flex-wrap justify-center items-center gap-4 mb-10">
             {filters.map((filter) => (
               <button
                 key={filter}
@@ -124,7 +156,7 @@ export default function HolidayPackages() {
               <div className="w-12 h-12 border-4 border-gray-200 border-t-[#135D66] rounded-full animate-spin"></div>
             </div>
           ) : filteredPackages.length === 0 ? (
-            <div className="text-center py-20 text-gray-500 font-medium bg-white rounded-2xl">
+            <div className="headingCSS text-center py-20 text-gray-500 font-medium bg-white rounded-2xl">
               No packages found for this category.
             </div>
           ) : (
@@ -143,6 +175,7 @@ export default function HolidayPackages() {
               {/* Cards Scroll Container */}
               <div 
                 ref={scrollRef}
+                onScroll={handleScroll}
                 className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar scroll-smooth"
               >
                 {filteredPackages.map((pkg, idx) => {
@@ -158,7 +191,7 @@ export default function HolidayPackages() {
                         <Image 
                           src={pkg.bannerImage}
                           alt={pkg.title} 
-                           fill sizes="100vw" unoptimized className="object-cover" priority 
+                          fill sizes="100vw" unoptimized className="object-cover" priority 
                         />
                       </div>
                       
@@ -166,17 +199,17 @@ export default function HolidayPackages() {
                       <div className="p-6 flex flex-col flex-1">
                         
                         {/* Subtitle / Category line */}
-                        <p className="text-sm text-gray-500 font-medium mb-2">
+                        <p className="descCSS text-sm text-gray-500 font-medium mb-2">
                           {pkg.badgeText}
                         </p>
                         
                         {/* Title */}
-                        <h3 className="text-xl font-bold text-gray-900 leading-snug mb-6 flex-1">
+                        <h3 className="headingCSS text-xl font-bold text-gray-900 leading-snug mb-6 flex-1">
                           {pkg.title}
                         </h3>
 
                         {/* Price & Action Row */}
-                        <div className="flex items-end justify-between mt-auto pt-2">
+                        <div className="descCSS flex items-end justify-between mt-auto pt-2">
                           <div className="flex flex-col">
                             <span className="text-sm text-gray-500 mb-0.5">Starts from</span>
                             <span className="text-2xl font-extrabold text-black leading-none mb-1">
@@ -187,7 +220,7 @@ export default function HolidayPackages() {
                           
                           <Link 
                             href={getLocalizedUrl(`/${pkg.slug || ""}`)} 
-                            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full font-bold text-sm transition-colors bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66]"
+                            className="inline-flex items-center justify-center px-6 py-2.5 rounded-full font-bold text-sm transition-colors bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white"
                           >
                             View Trip
                           </Link>
@@ -207,6 +240,22 @@ export default function HolidayPackages() {
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 </button>
+              )}
+
+              {/* --- PAGINATION DOTS --- */}
+              {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2.5 mt-4">
+                  {Array.from({ length: totalPages }).map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => scrollToPage(idx)}
+                      className={`h-3 rounded-full transition-all duration-300 ${
+                        currentPage === idx ? "w-8 bg-[#fe6e00]" : "w-3 bg-gray-300 hover:bg-gray-400"
+                      }`}
+                      aria-label={`Go to page ${idx + 1}`}
+                    />
+                  ))}
+                </div>
               )}
 
             </div>

@@ -76,7 +76,7 @@ export default function OurCrewPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#fe6e00] rounded-full animate-spin mb-6"></div>
       </div>
     );
   }
@@ -122,13 +122,13 @@ export default function OurCrewPage() {
         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl mb-2 block tracking-wide`}>
+          <span className={`${caveat.className} text-[#fe6e00] text-3xl md:text-4xl mb-2 block tracking-wide`}>
             Meet the Experts
           </span>
-          <h1 className="text-white text-5xl md:text-7xl font-extrabold uppercase tracking-tight mb-6 drop-shadow-xl">
+          <h1 className="headingCSS text-white text-5xl md:text-7xl font-extrabold uppercase tracking-tight mb-6 drop-shadow-xl">
             Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">Crew</span>
           </h1>
-          <p className="text-gray-200 text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed">
+          <p className="descCSS text-gray-200 text-lg md:text-xl font-medium max-w-2xl mx-auto drop-shadow-md leading-relaxed">
             The heart and soul of Habari Adventure. Our passionate guides, chefs, and porters are dedicated to making your journey safe, successful, and unforgettable.
           </p>
         </div>
@@ -162,7 +162,7 @@ export default function OurCrewPage() {
                     >
                       {/* Active Dot Indicator */}
                       {activeSection === team.id && (
-                        <div className="absolute left-[-5px] top-1/2 -translate-y-1/2 w-3 h-3 bg-[#E59A1D] rounded-full border-2 border-white shadow-sm z-10"></div>
+                        <div className="absolute left-[-5px] top-1/2 -translate-y-1/2 w-3 h-3 bg-[#fe6e00] rounded-full border-2 border-white shadow-sm z-10"></div>
                       )}
                       {team.name}
                     </button>
@@ -187,10 +187,10 @@ export default function OurCrewPage() {
                 
                 {/* Team Header - Animated */}
                 <div className="reveal-on-scroll mb-12 border-b border-gray-200 pb-6 flex flex-col items-start">
-                  <h2 className="text-4xl font-extrabold text-[#135D66] uppercase tracking-tight">
+                  <h2 className="headingCSS text-4xl font-extrabold text-[#135D66] uppercase tracking-tight">
                     {team.name}
                   </h2>
-                  <div className="w-20 h-1 bg-[#E59A1D] mt-4 rounded-full"></div>
+                  <div className="w-20 h-1 bg-[#fe6e00] mt-4 rounded-full"></div>
                 </div>
 
                 {/* Members Grid */}
@@ -217,10 +217,10 @@ export default function OurCrewPage() {
                         
                         {/* Name inside the image for a sleeker look */}
                         <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                          <p className="text-xs font-bold text-[#E59A1D] uppercase tracking-wider mb-1 drop-shadow-md">
+                          <p className="headingCSS text-xs font-bold text-[#fe6e00] uppercase tracking-wider mb-1 drop-shadow-md">
                             {member.designation}
                           </p>
-                          <h3 className="text-2xl font-extrabold text-white drop-shadow-md">
+                          <h3 className="headingCSS text-2xl font-extrabold text-white drop-shadow-md">
                             {member.name}
                           </h3>
                         </div>
@@ -229,7 +229,7 @@ export default function OurCrewPage() {
                       {/* Member Bio Content */}
                       <div className="p-6 md:p-8 flex flex-col flex-grow bg-white">
                         <div 
-                          className="text-gray-600 text-sm leading-relaxed flex-grow whitespace-normal [&>p]:mb-3 last:[&>p]:mb-0 [&>ul]:list-disc [&>ul]:ml-4 [&>ol]:list-decimal [&>ol]:ml-4" 
+                          className="descCSS text-gray-600 text-sm leading-relaxed flex-grow whitespace-normal [&>p]:mb-3 last:[&>p]:mb-0 [&>ul]:list-disc [&>ul]:ml-4 [&>ol]:list-decimal [&>ol]:ml-4" 
                           dangerouslySetInnerHTML={{ __html: (member.description || "").replace(/&nbsp;/g, ' ') }}
                         ></div>
                       </div>
@@ -271,13 +271,13 @@ export default function OurCrewPage() {
           </div>
 
           <div className="relative z-10 max-w-4xl mx-auto px-6 sm:px-12 text-center p-8 md:p-16 rounded-3xl">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white uppercase tracking-tight mb-4 drop-shadow-lg">
-              The Backbone of <span className={`${caveat.className} text-[#E59A1D] font-normal tracking-normal`}>Habari</span>
+            <h2 className="headingCSS text-4xl md:text-5xl font-extrabold text-white uppercase tracking-tight mb-4 drop-shadow-lg">
+              The Backbone of <span className={`${caveat.className} text-[#fe6e00] font-normal tracking-normal`}>Habari Adventure</span>
             </h2>
             <div className="w-24 h-1 bg-[#135D66] mx-auto rounded-full mb-10 shadow-lg"></div>
             
             <div 
-              className="text-gray-100 text-base md:text-lg font-medium leading-relaxed md:leading-loose whitespace-normal [&>p]:mb-6 last:[&>p]:mb-0 drop-shadow-md"
+              className="descCSS text-gray-100 text-base md:text-lg font-medium leading-relaxed md:leading-loose whitespace-normal [&>p]:mb-6 last:[&>p]:mb-0 drop-shadow-md"
               dangerouslySetInnerHTML={{ __html: (settings.porterDescription || "").replace(/&nbsp;/g, ' ') }}
             ></div>
           </div>

@@ -45,15 +45,15 @@ export default function ContactLocation() {
       <div className={`max-w-[1300px] mx-auto w-[96%] px-4 sm:px-6 flex flex-col items-center text-center opacity-0 ${isVisible ? 'animate-fade-in-up-scroll' : ''}`}>
         
         {/* Accent & Title */}
-        <span className={`${caveat.className} text-[#E59A1D] text-3xl md:text-4xl tracking-wide mb-2 block`}>
+        <span className={`${caveat.className} text-[#fe6e00] text-3xl md:text-4xl tracking-wide mb-2 block`}>
           Find Us Here
         </span>
-        <h2 className="text-3xl md:text-5xl font-extrabold text-[#135D66] mb-6">
+        <h2 className="headingCSS text-3xl md:text-5xl font-extrabold text-[#135D66] mb-6">
           Office & Location
         </h2>
         
         {/* Description */}
-        <p className="text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed mb-12">
+        <p className="descCSS text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed mb-12">
           We are based in Moshi–Kilimanjaro, Tanzania. If you’re already in Tanzania, contact us to arrange a briefing before your trip!
         </p>
 

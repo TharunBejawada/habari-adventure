@@ -107,7 +107,7 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto w-full lg:w-[96%] flex flex-col lg:flex-row justify-between gap-12 lg:gap-8 relative z-10">
         
         {/* LEFT COLUMN: Logo, Info, and Socials */}
-        <div className="w-full lg:w-[28%] space-y-6">
+        <div className="w-full lg:w-[18%] space-y-6">
           <Link href={getLocalizedUrl("/")}>
             <Image 
               src="/logo-black.png" 
@@ -119,7 +119,7 @@ export default function Footer() {
             />
           </Link>
           
-          <p className="text-sm leading-relaxed font-medium text-[#135D66]/80 lg:pr-4">
+          <p className="descCSS text-sm leading-relaxed font-medium text-[#135D66]/80 lg:pr-4">
             {settings.websiteInfo || "Travlla is a multi-award-winning strategy and content creation agency that specializes in travel marketing."}
           </p>
           
@@ -131,7 +131,7 @@ export default function Footer() {
                 target="_blank" 
                 rel="noreferrer" 
                 title={social.name}
-                className="w-10 h-10 rounded-full bg-[#135D66] border-2 border-[#E59A1D] flex items-center justify-center text-white hover:bg-[#E59A1D] hover:border-[#135D66] hover:-translate-y-1 transition-all duration-300"
+                className="w-10 h-10 rounded-full bg-[#135D66] border-2 border-[#fe6e00] flex items-center justify-center text-white hover:bg-[#fe6e00] hover:border-[#135D66] hover:-translate-y-1 transition-all duration-300"
               >
                 {getSocialIcon(social.name)}
               </a>
@@ -140,14 +140,14 @@ export default function Footer() {
         </div>
 
         {/* MIDDLE COLUMNS: Dynamic CMS Columns */}
-        <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:justify-around gap-8 lg:gap-6">
+        <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:flex lg:justify-around gap-8 lg:gap-6">
           {settings.footerColumns?.map((col: FooterColumn, cIdx: number) => (
             <div key={cIdx} className="space-y-4 lg:space-y-6">
-              <h4 className="font-bold text-lg">{col.title}</h4>
+              <h4 className="headingCSS font-bold text-lg">{col.title}</h4>
               <ul className="space-y-2 lg:space-y-3">
                 {col.links.map((link, lIdx) => (
                   <li key={lIdx}>
-                    <Link href={getLocalizedUrl(link.url)} className="text-sm font-medium text-[#135D66]/80 hover:text-[#98D80D] transition-colors inline-block py-1 lg:py-0">
+                    <Link href={getLocalizedUrl(link.url)} className="descCSS text-sm font-medium text-[#135D66]/80 hover:text-[#fe6e00] transition-colors inline-block py-1 lg:py-0">
                       {link.name}
                     </Link>
                   </li>
@@ -158,7 +158,7 @@ export default function Footer() {
         </div>
 
         {/* RIGHT COLUMN: Contact Info */}
-        <div className="w-full lg:w-[25%] space-y-4 lg:space-y-6 pt-4 lg:pt-0 border-t border-[#135D66]/10 lg:border-t-0">
+        <div className="headingCSS w-full lg:w-[25%] space-y-4 lg:space-y-6 pt-4 lg:pt-0 border-t border-[#135D66]/10 lg:border-t-0">
           
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-[#E8EFEF] flex items-center justify-center shrink-0">
@@ -185,13 +185,13 @@ export default function Footer() {
 
       {/* --- BOTTOM BAR: COPYRIGHT & ADMIN LOGIN --- */}
       <div className="max-w-[1400px] mx-auto w-full lg:w-[96%] mt-12 pt-6 border-t border-[#135D66]/10 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
-        <p className="text-sm font-medium text-[#135D66]/80 text-center md:text-left">
+        <p className="headingCSS text-sm font-medium text-[#135D66]/80 text-center md:text-left">
           &copy; {new Date().getFullYear()} Habari Adventure All Rights Reserved.
         </p>
         
         {/* <Link 
           href="/admin/login" 
-          className="text-sm font-medium text-[#135D66]/50 hover:text-[#E59A1D] transition-colors flex items-center gap-1.5 group"
+          className="text-sm font-medium text-[#135D66]/50 hover:text-[#fe6e00] transition-colors flex items-center gap-1.5 group"
           title="Admin Dashboard Login"
         >
           <svg className="w-4 h-4 group-hover:animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">

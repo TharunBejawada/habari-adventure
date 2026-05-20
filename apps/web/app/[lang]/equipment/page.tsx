@@ -95,7 +95,7 @@ export default function OurEquipmentPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className="text-[#98D80D] font-bold text-sm uppercase tracking-widest mb-4 block">
+          <span className="text-[#fe6e00] font-bold text-sm uppercase tracking-widest mb-4 block">
             Quality & Comfort
           </span>
           <h1 className="text-white text-5xl md:text-6xl font-extrabold uppercase tracking-tight mb-4 drop-shadow-lg">
@@ -107,7 +107,7 @@ export default function OurEquipmentPage() {
           
           {/* CAVEAT / DISCLAIMER */}
           <div className="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm border border-white/10 px-4 py-2 rounded-full mt-4">
-            <svg className="w-4 h-4 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <svg className="w-4 h-4 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             <p className="text-sm text-gray-300 font-medium">
               High-quality branded equipment became an authentication mark of Habari Adventure.
             </p>
@@ -134,7 +134,7 @@ export default function OurEquipmentPage() {
                       onClick={() => scrollToSection(item.id)}
                       className={`text-sm font-medium transition-all w-full text-left py-2 ${
                         activeSection === item.id 
-                          ? "text-[#98D80D] font-bold border-l-2 border-[#98D80D] pl-4" 
+                          ? "text-[#fe6e00] font-bold border-l-2 border-[#fe6e00] pl-4" 
                           : "text-gray-500 hover:text-gray-900 pl-4 border-l-2 border-transparent"
                       }`}
                     >
@@ -147,7 +147,7 @@ export default function OurEquipmentPage() {
               <div className="mt-12 bg-gray-50 p-6 rounded-2xl border border-gray-100">
                 <h5 className="font-bold text-gray-900 mb-2">Gear Rentals</h5>
                 <p className="text-sm text-gray-600 mb-4">We provide rental options for sleeping bags and more at our Moshi office.</p>
-                <Link href="/contact" className="text-sm font-bold text-[#98D80D] hover:underline transition-colors">
+                <Link href="/contact" className="text-sm font-bold text-[#fe6e00] hover:underline transition-colors">
                   Inquire about rentals ↗
                 </Link>
               </div>
@@ -159,7 +159,7 @@ export default function OurEquipmentPage() {
             
             {/* Overview */}
             <div id="overview" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Overview</h2>
+              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Overview</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   Habari Adventure provided an excellent equipment for both Wildlife Safari and Kilimanjaro Adventure with high quality branded. All our equipment is from the Branded equipment company and they are spacious, comfortable and provide good insulation against wind on the upper slopes of Mount Kilimanjaro.
@@ -172,7 +172,7 @@ export default function OurEquipmentPage() {
 
             {/* Mountain Tents */}
             <div id="mountain-tents" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Mountain Tents</h2>
+              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Mountain Tents</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   We do provide both sleeping and dining tents. Therefore, you will sleep and eat in different tent.
@@ -185,19 +185,19 @@ export default function OurEquipmentPage() {
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 my-6 shadow-sm">
                   <ul className="list-none pl-0 m-0 space-y-3">
                     <li className="flex items-start gap-3">
-                      <span className="text-[#98D80D] mt-1">✓</span>
+                      <span className="text-[#fe6e00] mt-1">✓</span>
                       <span>Normally using <strong>Mountain hardware</strong>, these tents are spacious enough to put a camp cot inside.</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-[#98D80D] mt-1">✓</span>
+                      <span className="text-[#fe6e00] mt-1">✓</span>
                       <span>Each two / three-person sized tent will comfortably house two climbers and their gear.</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-[#98D80D] mt-1">✓</span>
+                      <span className="text-[#fe6e00] mt-1">✓</span>
                       <span>The interior floor space is <strong>48 square feet</strong>, with a large vestibule, dual doors, and internal mesh pockets.</span>
                     </li>
                     <li className="flex items-start gap-3">
-                      <span className="text-[#98D80D] mt-1">✓</span>
+                      <span className="text-[#fe6e00] mt-1">✓</span>
                       <span>Fully waterproof tent with fully taped seams and welded corners.</span>
                     </li>
                   </ul>
@@ -215,7 +215,7 @@ export default function OurEquipmentPage() {
 
             {/* Sleep Systems */}
             <div id="sleep-systems" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Sleep Systems</h2>
+              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Sleep Systems</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 {/* Mattress */}
@@ -246,9 +246,9 @@ export default function OurEquipmentPage() {
               </div>
 
               {/* Callout */}
-              <div className="mt-8 bg-[#111827] p-6 rounded-2xl border-l-4 border-[#98D80D] shadow-md">
+              <div className="mt-8 bg-[#111827] p-6 rounded-2xl border-l-4 border-[#fe6e00] shadow-md">
                 <p className="text-white font-medium m-0">
-                  <strong className="text-[#98D80D] uppercase tracking-wider text-sm mr-2">Note:</strong> 
+                  <strong className="text-[#fe6e00] uppercase tracking-wider text-sm mr-2">Note:</strong> 
                   All of our rental sleeping bags are washed after every use and rented for only a short period before they are removed from the rental inventory.
                 </p>
               </div>
@@ -256,7 +256,7 @@ export default function OurEquipmentPage() {
 
             {/* Private Toilets */}
             <div id="private-toilets" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Private Toilets</h2>
+              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Private Toilets</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6">
                 <p>
                   On Mt. Kilimanjaro there are "long drop" public toilets at every campsite. We provide private toilet tents for our clients on all of our climbs for an extra charge of <strong>120$</strong>.
@@ -269,7 +269,7 @@ export default function OurEquipmentPage() {
 
             {/* Safari Vehicles */}
             <div id="safari-vehicles" className="reveal-on-scroll scroll-mt-32">
-              <h2 className="text-3xl font-extrabold text-[#98D80D] mb-6">Our Safari Vehicles</h2>
+              <h2 className="text-3xl font-extrabold text-[#fe6e00] mb-6">Our Safari Vehicles</h2>
               <div className="prose prose-lg text-gray-600 max-w-none space-y-6 mb-10">
                 <p>
                   A quality safari car is a must for an enjoyable safari. We have an excellent safari fleet of immaculately maintained Land Cruisers produced in <strong>2016-2022</strong> that we use. Our open-sided 4x4 Land Cruisers with tiered seating which are used during game drives allow you to feel closer to the wildlife and nature. Each vehicle is fitted with a fridge for refreshment drinks, Wi-Fi and power sockets. Convertible pop-up roof opens a panoramic 360° view and protects from the elements.
@@ -286,7 +286,7 @@ export default function OurEquipmentPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">Pop up roof</h4>
@@ -296,7 +296,7 @@ export default function OurEquipmentPage() {
                 </div>
 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">Large Window</h4>
@@ -306,7 +306,7 @@ export default function OurEquipmentPage() {
                 </div>
 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">Wildlife Maps</h4>
@@ -316,7 +316,7 @@ export default function OurEquipmentPage() {
                 </div>
 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">Refrigerator</h4>
@@ -326,7 +326,7 @@ export default function OurEquipmentPage() {
                 </div>
 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">Power inventors</h4>
@@ -336,7 +336,7 @@ export default function OurEquipmentPage() {
                 </div>
 
                 <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-[#98D80D]/10 text-[#98D80D] flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#fe6e00]/10 text-[#fe6e00] flex items-center justify-center mb-4">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                   </div>
                   <h4 className="text-lg font-bold text-gray-900 mb-2">First Aid kit</h4>

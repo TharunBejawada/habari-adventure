@@ -140,8 +140,8 @@ export default function PackageLandingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white pt-32 pb-40">
-        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#98D80D] rounded-full animate-spin mb-6"></div>
-        <p className="text-[#98D80D] font-bold text-xl animate-pulse">Preparing your adventure...</p>
+        <div className="w-16 h-16 border-4 border-gray-100 border-t-[#fe6e00] rounded-full animate-spin mb-6"></div>
+        <p className="headingCSS text-[#fe6e00] font-bold text-xl animate-pulse">Preparing your adventure...</p>
       </div>
     );
   }
@@ -152,9 +152,9 @@ export default function PackageLandingPage() {
         <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
           <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
-        <h1 className="text-4xl font-extrabold text-[#135D66] mb-4">Adventure Not Found</h1>
-        <p className="text-gray-600 text-lg mb-8 max-w-md">We couldn't find this package. It may have been moved, deleted, or is currently saved as a draft.</p>
-        <Link href={`/${lang}`} className="bg-[#E59A1D] hover:bg-[#c98616] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
+        <h1 className="headingCSS text-4xl font-extrabold text-[#135D66] mb-4">Adventure Not Found</h1>
+        <p className="descCSS text-gray-600 text-lg mb-8 max-w-md">We couldn't find this package. It may have been moved, deleted, or is currently saved as a draft.</p>
+        <Link href={`/${lang}`} className="bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
           Explore Other Destinations
         </Link>
       </div>
@@ -191,7 +191,7 @@ export default function PackageLandingPage() {
       {/* ========================================== */}
       {/* 1. HERO SECTION                            */}
       {/* ========================================== */}
-      <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[120px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
+      <section className="relative w-full min-h-[70vh] flex flex-col justify-center -mt-[150px] pt-[120px] pb-16 overflow-hidden bg-[#0a0f16]">
         {pkg.bannerImage ? (
           <div className="absolute inset-0 z-0">
             <Image src={pkg.bannerImage} alt={pkg.title} fill sizes="100vw" unoptimized className="object-cover" priority />
@@ -205,27 +205,27 @@ export default function PackageLandingPage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 pt-16">
           <div className="max-w-2xl reveal-on-scroll is-visible overflow-hidden">
             
-            <h1 className="notranslate text-white text-5xl sm:text-6xl font-extrabold uppercase tracking-tight mb-2 drop-shadow-lg break-words">
+            <h1 className="headingCSS notranslate text-white text-5xl sm:text-6xl font-extrabold uppercase tracking-tight mb-2 drop-shadow-lg break-words">
               {pkg.title}
             </h1>
             
             {pkg.badgeText && (
-              <h3 className="text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
-                {/* <span className="text-[#98D80D]">Kilimanjaro's</span>  */}
+              <h3 className="headingCSS text-2xl sm:text-3xl font-bold mb-6 drop-shadow-md text-white break-words">
+                {/* <span className="text-[#fe6e00]">Kilimanjaro's</span>  */}
                 {/* <span className="notranslate">{pkg.badgeText.replace("Kilimanjaro's ", "").replace("Kilimnjaro's ", "")}</span> */}
-                <span className="notranslate text-[#98D80D]">{pkg.badgeText}</span>
+                <span className="notranslate text-[#fe6e00]">{pkg.badgeText}</span>
               </h3>
             )}
 
             <div 
-              className="notranslate text-gray-200 text-lg font-medium mb-10 leading-relaxed drop-shadow-md rte-content max-w-full"
-              dangerouslySetInnerHTML={{ __html: pkg.description }} 
+              className="descCSS notranslate text-gray-200 text-lg font-medium mb-10 leading-relaxed drop-shadow-md rte-content max-w-full"
+              dangerouslySetInnerHTML={{ __html: pkg.description?.replace(/&nbsp;/g, ' ') || "" }} 
             />
 
             <div className="flex flex-wrap items-center gap-4">
               <button 
                 onClick={() => { document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="bg-[#98D80D] hover:bg-[#d41538] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
+                className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
               >
                 See Dates & Prices
               </button>
@@ -248,12 +248,12 @@ export default function PackageLandingPage() {
           <div className="max-w-7xl mx-auto px-6 sm:px-12 flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
             
             <div className="w-full lg:w-3/5 reveal-on-scroll">
-              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
+              <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
                 {pkg.quickFacts.heading}
               </h2>
               <div 
-                className="notranslate text-gray-600 text-lg mb-10 rte-content" 
-                dangerouslySetInnerHTML={{ __html: pkg.quickFacts.description }} 
+                className="descCSS notranslate text-gray-600 text-lg mb-10 rte-content" 
+                dangerouslySetInnerHTML={{ __html: pkg.quickFacts.description?.replace(/&nbsp;/g, ' ') || "" }} 
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
@@ -265,18 +265,25 @@ export default function PackageLandingPage() {
                       </div>
                     )}
                     <div>
-                      <h4 className="notranslate font-bold text-[#98D80D] text-lg mb-1">{fact.title}</h4>
-                      <p className="notranslate text-gray-800 font-medium text-sm sm:text-base leading-snug">{fact.desc}</p>
+                      <h4 className="headingCSS font-bold text-[#fe6e00] text-lg mb-1">{fact.title}</h4>
+                      <p className="descCSS notranslate text-gray-800 font-medium text-sm sm:text-base leading-snug">{fact.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {pkg.quickFacts.image && (
+            {/* {pkg.quickFacts.image && (
               <div className="w-full lg:w-2/5 flex justify-center lg:justify-end reveal-on-scroll delay-200">
                 <div className="relative w-full max-w-[400px] h-[450px]">
                   <Image src={pkg.quickFacts.image} alt="Quick Facts Illustration" fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized className="object-contain" />
+                </div>
+              </div>
+            )} */}
+            {pkg.quickFacts.image && (
+              <div className="w-full lg:w-2/5 flex justify-start self-stretch reveal-on-scroll delay-200">
+                <div className="relative w-full h-full min-h-[350px] lg:min-h-full">
+                  <Image src={pkg.quickFacts.image} alt="Quick Facts Illustration" fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized className="object-contain object-left-top rounded-2xl" />
                 </div>
               </div>
             )}
@@ -292,38 +299,52 @@ export default function PackageLandingPage() {
         <section className="py-12 lg:py-20 bg-white border-b border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 sm:px-12">
             
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal-on-scroll">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-4 reveal-on-scroll">
               <div>
-                <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
+                <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
                   {pkg.whyChoose.heading}
                 </h2>
-                <div className="notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description }} />
+                <div className="descCSS notranslate text-gray-600 text-lg rte-content max-w-2xl" dangerouslySetInnerHTML={{ __html: pkg.whyChoose.description?.replace(/&nbsp;/g, ' ') || "" }} />
               </div>
-              
-              {hasCompareTable && (
-                <button onClick={() => setIsCompareModalOpen(true)} className="bg-[#111827] hover:bg-black text-white font-bold py-3.5 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
+            </div>
+            
+            {hasCompareTable && (
+                <button onClick={() => setIsCompareModalOpen(true)} className="bg-[#111827] hover:bg-black mb-8 text-white font-bold py-3.5 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
                   Compare with other routes
                 </button>
               )}
-            </div>
 
             <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
               <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-10">
                 {pkg.whyChoose.items?.map((item: any, idx: number) => (
                   <div key={idx} className={`reveal-on-scroll delay-${(idx % 3) * 100}`}>
-                    <h4 className="notranslate text-xl font-bold text-[#98D80D] mb-2">{item.title}</h4>
-                    <p className="notranslate text-gray-700 leading-relaxed text-lg">{item.desc}</p>
+                    <h4 className="headingCSS text-xl font-bold text-[#fe6e00] mb-2">{item.title}</h4>
+                    <p className="descCSS notranslate text-gray-700 leading-relaxed text-lg">{item.desc}</p>
                   </div>
                 ))}
               </div>
 
-              {pkg.whyChoose.image && (
+              {/* {pkg.whyChoose.image && (
                 <div className="w-full lg:w-1/2 reveal-on-scroll delay-200">
                   <div className="relative w-full h-[250px] md:h-[350px] rounded-3xl overflow-hidden">
                     <Image src={pkg.whyChoose.image} alt="Elevation Profile" fill sizes="(max-width: 768px) 100vw, 50vw" unoptimized className="object-contain p-4 md:p-8" />
                   </div>
                 </div>
-              )}
+              )} */}
+              {pkg.whyChoose.image && (
+              <div className="w-full lg:w-1/2 flex justify-start self-stretch reveal-on-scroll delay-200">
+                <div className="relative w-full h-full min-h-[350px] rounded-3xl overflow-hidden">
+                  <Image 
+                    src={pkg.whyChoose.image} 
+                    alt="Elevation Profile" 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 50vw" 
+                    unoptimized 
+                    className="object-contain object-left-top" 
+                  />
+                </div>
+              </div>
+            )}
             </div>
 
           </div>
@@ -339,10 +360,10 @@ export default function PackageLandingPage() {
             
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 reveal-on-scroll">
               <div>
-                <h2 className="notranslate text-4xl font-extrabold text-gray-900 mb-4">
+                <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
                   {pkg.itineraryMeta?.heading || "Itinerary"}
                 </h2>
-                <div className="notranslate text-gray-600 text-lg rte-content max-w-3xl" dangerouslySetInnerHTML={{ __html: pkg.itineraryMeta?.description || "" }} />
+                <div className="descCSS notranslate text-gray-600 text-lg rte-content max-w-3xl" dangerouslySetInnerHTML={{ __html: pkg.itineraryMeta?.description?.replace(/&nbsp;/g, ' ') || "" }} />
               </div>
 
               {activeVariant?.documentPdf && (
@@ -358,7 +379,7 @@ export default function PackageLandingPage() {
               <div className="relative flex items-center mb-12 reveal-on-scroll group">
                 
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('left')} className="absolute left-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -ml-4 text-gray-600 hover:text-[#fe6e00] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
                   </button>
                 )}
@@ -370,7 +391,7 @@ export default function PackageLandingPage() {
                       onClick={() => setActiveVariantIdx(idx)}
                       className={`notranslate px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 whitespace-nowrap shrink-0 ${
                         activeVariantIdx === idx 
-                          ? "bg-[#98D80D] text-white shadow-lg" 
+                          ? "bg-[#fe6e00] text-white shadow-lg" 
                           : "bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:text-gray-900"
                       }`}
                     >
@@ -380,7 +401,7 @@ export default function PackageLandingPage() {
                 </div>
 
                 {pkg.itineraries.length > 3 && (
-                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#98D80D] transition-colors focus:outline-none hidden md:flex">
+                  <button onClick={() => scrollTabs('right')} className="absolute right-0 z-10 w-10 h-10 flex items-center justify-center bg-white shadow-md border border-gray-100 rounded-full -mr-4 text-gray-600 hover:text-[#fe6e00] transition-colors focus:outline-none hidden md:flex">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                   </button>
                 )}
@@ -409,19 +430,19 @@ export default function PackageLandingPage() {
                   {activeVariant?.days.map((day: any, idx: number) => (
                     <div key={idx} className={`relative pl-8 md:pl-12 reveal-on-scroll delay-${(idx % 5) * 100}`}>
                       <div className="absolute left-[7px] top-3 bottom-[-40px] w-[2px] bg-gray-200 last:hidden"></div>
-                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#98D80D] rounded-full z-10"></div>
+                      <div className="absolute left-0 top-1.5 w-[16px] h-[16px] bg-[#F9FAFB] border-4 border-[#fe6e00] rounded-full z-10"></div>
 
                       <div>
                         <div className="flex flex-wrap items-baseline gap-3 mb-2">
-                          <span className="notranslate text-[#98D80D] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
+                          <span className="notranslate text-[#fe6e00] font-bold text-sm uppercase tracking-widest">{day.dayNumber}</span>
                           <h4 className="notranslate text-gray-900 font-bold text-lg md:text-xl uppercase tracking-wide">{day.heading}</h4>
                         </div>
                         
-                        <div className="notranslate text-gray-600 rte-content max-w-none mb-4" dangerouslySetInnerHTML={{ __html: day.description }} />
+                        <div className="notranslate text-gray-600 rte-content max-w-none mb-4" dangerouslySetInnerHTML={{ __html: day.description?.replace(/&nbsp;/g, ' ') || "" }} />
                         
                         {day.timeTaken && (
                           <div className="flex items-center gap-2 text-gray-500 text-sm font-medium">
-                            <svg className="w-4 h-4 text-[#98D80D]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <svg className="w-4 h-4 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             <span className="notranslate">{day.timeTaken}</span>
                           </div>
                         )}
@@ -483,10 +504,10 @@ export default function PackageLandingPage() {
           <div className="max-w-7xl mx-auto px-6 sm:px-12">
             
             <div className="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
-              <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
-                Pricing & <span className="text-[#98D80D]">Group Sizes</span>
+              <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
+                Pricing & <span className="text-[#fe6e00]">Group Sizes</span>
               </h2>
-              <p className="text-gray-600 text-lg">
+              <p className="descCSS text-gray-600 text-lg">
                 Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!
               </p>
             </div>
@@ -553,11 +574,11 @@ export default function PackageLandingPage() {
             <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
               <button 
                 onClick={() => openBooking("")}
-                className="bg-[#98D80D] hover:bg-[#86C00B] text-[#135D66] font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#98D80D]/30"
+                className="bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
               >
                 Book This Trip Now
               </button>
-              <p className="text-gray-400 text-sm font-medium mt-4">Want to customize this trip? Contact us for a bespoke quote.</p>
+              <p className="text-gray-500 text-sm font-medium mt-4">Want to customize this trip? <Link href={`/${lang}/contact`} className="text-[#135D66] hover:text-[#fe6e00] hover:underline font-bold transition-colors">Contact us for a bespoke quote.</Link></p>
             </div>
 
           </div>
@@ -568,7 +589,8 @@ export default function PackageLandingPage() {
       {/* NEW: Passed the onBook prop so UpcomingDates can trigger the modal */}
       <UpcomingDates onBook={(date: string) => openBooking("", date)} />
       <PreparationGuide />
-      <RelatedAdventures currentCategory={pkg.category} />
+      {/* <RelatedAdventures currentCategory={pkg.category} /> */}
+      <RelatedAdventures currentCategory={pkg.category} currentPackageTitle={pkg.title} />
       <Testimonials />
       <WhyChooseHabari />
       <NextJourneyCTA />
@@ -577,7 +599,7 @@ export default function PackageLandingPage() {
       {/* COMPARISON MODAL                           */}
       {/* ========================================== */}
       {isCompareModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-101 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsCompareModalOpen(false)}></div>
           <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden z-10 animate-fade-in">
             <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50">
@@ -589,7 +611,7 @@ export default function PackageLandingPage() {
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="pb-4 font-bold text-gray-900 w-1/3">Feature</th>
-                    <th className="notranslate pb-4 font-extrabold text-[#98D80D] w-1/3 text-lg">{pkg.title}</th>
+                    <th className="notranslate pb-4 font-extrabold text-[#fe6e00] w-1/3 text-lg">{pkg.title}</th>
                     <th className="pb-4 font-bold text-gray-500 w-1/3 text-lg">Other Routes</th>
                   </tr>
                 </thead>
