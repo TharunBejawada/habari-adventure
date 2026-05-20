@@ -340,6 +340,13 @@ function PackageEditorForm() {
   };
 
   const addTab = () => setItineraries([...itineraries, { tabName: "New Variant", image: "", documentPdf: "", days: [] }]);
+  
+  const removeTab = (tabIndex: number) => {
+    if (window.confirm("Are you sure you want to delete this entire variant?")) {
+      setItineraries(itineraries.filter((_, i) => i !== tabIndex));
+    }
+  };
+
   const updateTabField = (index: number, field: string, value: string) => {
     const newItin = [...itineraries];
     newItin[index][field] = value;
@@ -772,7 +779,14 @@ function PackageEditorForm() {
 
               {itineraries.map((tab, tabIdx) => (
                 <div key={tabIdx} className="p-6 bg-gray-50 border border-gray-200 rounded-xl space-y-6 shadow-inner relative">
-                  
+                  {/* NEW DELETE BUTTON */}
+                  <button 
+                    type="button" 
+                    onClick={() => removeTab(tabIdx)} 
+                    className="absolute top-4 right-4 text-red-600 hover:text-red-800 font-bold bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg text-xs transition-colors shadow-sm"
+                  >
+                    Delete Variant Tab
+                  </button>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="md:col-span-2 flex gap-4 items-center">
                       <span className="font-bold text-gray-700">Tab Name:</span>

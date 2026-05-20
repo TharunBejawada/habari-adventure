@@ -68,7 +68,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
           <p className="descCSS text-gray-600 text-lg mb-6">
             We are currently organizing our next group departures for this route.
           </p>
-          <Link href={`/${lang}/contact`} className="bg-[#fe6e00] hover:bg-[#fe6e00] text-[#135D66] font-bold py-3 px-8 rounded-full transition-all shadow-md">
+          <Link href={`/${lang}/contact`} className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3 px-8 rounded-full transition-all shadow-md">
             Request Private Dates
           </Link>
         </div>

@@ -140,7 +140,7 @@ export default function Hero() {
           />
         </div> */}
         {/* Local Video Background (hero.mp4) */}
-        <div className="absolute inset-0 z-0 bg-black/30 opacity-50">
+        <div className="absolute inset-0 z-0 overlay">
           <video 
             autoPlay 
             loop 

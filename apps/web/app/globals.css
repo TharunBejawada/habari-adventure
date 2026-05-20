@@ -49,6 +49,23 @@
   font-family: 'Segoe UI', sans-serif !important;
 }
 
+ .overlay {
+    background-color: rgba(0, 0, 0, 0.8)
+  }
+
+  @media (prefers-color-scheme: light) {
+    .overlay {
+        background: rgba(0, 0, 0, 0.8); 
+    }
+}
+
+/* For Dark Mode */
+@media (prefers-color-scheme: dark) {
+    .overlay {
+        background: rgba(0, 0, 0, 0.5);
+    }
+}
+
   h1 {
     font-size: 48px !important;
     font-weight: 700 !important;
