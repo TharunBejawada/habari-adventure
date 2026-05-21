@@ -196,7 +196,7 @@ ${formData.message}`;
         `
       }} />
 
-      <section className="py-16 lg:py-24 bg-[#F6FBFB] border-b border-gray-100 reveal-on-scroll">
+      <section className="py-16 lg:py-24 bg-[#f9fafb] border-b border-gray-100 reveal-on-scroll">
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
           
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">

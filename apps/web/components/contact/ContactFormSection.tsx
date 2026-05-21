@@ -78,9 +78,9 @@ export default function ContactFormSection() {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        monthYear: formData.monthYear,
-        length: formData.length,
-        groupSize: formData.groupSize,
+        // monthYear: formData.monthYear,
+        // length: formData.length,
+        // groupSize: formData.groupSize,
         // Safely map the specific inclusion dropdown to the top of the message
         message: `[Interested in: ${formData.include}]\n\n${formData.message}`
       };
@@ -113,10 +113,10 @@ export default function ContactFormSection() {
   const isFormValid = 
     formData.firstName.trim() !== "" &&
     formData.email.trim() !== "" &&
-    formData.monthYear.trim() !== "" &&
-    formData.length.trim() !== "" &&
-    formData.groupSize.trim() !== "" &&
-    formData.include.trim() !== "" &&
+    // formData.monthYear.trim() !== "" &&
+    // formData.length.trim() !== "" &&
+    // formData.groupSize.trim() !== "" &&
+    // formData.include.trim() !== "" &&
     formData.message.trim() !== "" &&
     isCaptchaVerified;
 
@@ -237,12 +237,12 @@ export default function ContactFormSection() {
                 <input 
                   type="text" name="firstName" placeholder="First Name *" required
                   value={formData.firstName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
                 <input 
                   type="text" name="lastName" placeholder="Last Name (Optional)"
                   value={formData.lastName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
               </div>
 
@@ -251,7 +251,7 @@ export default function ContactFormSection() {
                 <input 
                   type="email" name="email" placeholder="Email *" required
                   value={formData.email} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
                 <input 
                   type="tel" name="phone" placeholder="WhatsApp / Phone (Optional)"
@@ -262,14 +262,14 @@ export default function ContactFormSection() {
                       e.preventDefault();
                     }
                   }}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
               </div>
 
               {/* Row 3: Month/Year & Trip Length */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="relative">
-                  {/* Floating label fallback for Month input since placeholders behave weirdly on native date pickers */}
+                  
                   <span className="absolute -top-2 left-6 bg-[#FFF9F0] px-1 text-xs font-bold text-gray-500">
                     Month & Year of Travel *
                   </span>
@@ -278,7 +278,7 @@ export default function ContactFormSection() {
                     min={minMonth}
                     value={formData.monthYear} onChange={handleInputChange}
                     onKeyDown={(e) => {
-                      // Allow only numbers and hyphens for fallback browsers (YYYY-MM format)
+                      
                       if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                         e.preventDefault();
                       }
@@ -290,7 +290,7 @@ export default function ContactFormSection() {
                   type="number" name="length" min="1" placeholder="Total Trip Length (days) *" required
                   value={formData.length} onChange={handleInputChange}
                   onKeyDown={(e) => {
-                    // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.')
+                   
                     if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                       e.preventDefault();
                     }
@@ -299,7 +299,7 @@ export default function ContactFormSection() {
                 />
               </div>
 
-              {/* Row 4: Group Size & Inclusions */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <select 
                   name="groupSize" required
@@ -326,14 +326,14 @@ export default function ContactFormSection() {
                   <option value="safari-zanzibar">Safari + Zanzibar</option>
                   <option value="all">Combined (Kili + Safari + Zanzibar)</option>
                 </select>
-              </div>
+              </div> */}
 
               {/* Row 5: Message */}
               <div>
                 <textarea 
                   name="message" placeholder="Message (must-see experiences, constraints) *" rows={4} required
                   value={formData.message} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700 resize-none"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700 resize-none"
                 ></textarea>
               </div>
 

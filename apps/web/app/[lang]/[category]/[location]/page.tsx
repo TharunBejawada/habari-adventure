@@ -450,7 +450,7 @@ export default function LocationLandingPage() {
                       
                       <div className="p-6 flex flex-col flex-grow">
                         {/* NEW: notranslate class added */}
-                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#fe6e00] transition-colors">{pkg.title}</h3>
+                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 transition-colors">{pkg.title}</h3>
                         
                         {pkg.badgeText && (
                           /* NEW: notranslate class added */

@@ -77,7 +77,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
   }
 
   return (
-    <section className="py-16 lg:py-24 bg-white border-b border-gray-100 reveal-on-scroll">
+    <section className="py-16 lg:py-24 bg-[#f9fafb] border-b border-gray-100 reveal-on-scroll">
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         
         <div className="mb-10">

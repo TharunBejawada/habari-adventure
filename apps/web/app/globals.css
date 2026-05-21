@@ -50,19 +50,18 @@
 }
 
  .overlay {
-    background-color: rgba(0, 0, 0, 0.8)
+    background-color: rgba(0, 0, 0, 0.5)
   }
 
   @media (prefers-color-scheme: light) {
     .overlay {
-        background: rgba(0, 0, 0, 0.8); 
+        background: rgba(0, 0, 0, 0.5); 
     }
 }
 
-/* For Dark Mode */
 @media (prefers-color-scheme: dark) {
     .overlay {
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.3);
     }
 }
 
