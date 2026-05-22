@@ -172,6 +172,7 @@ export const getPackages = async (req: Request, res: Response) => {
         location: true,
         isPublished: true,
         bannerImage: true,
+        filters: true,
         createdAt: true,
         translations:
           lang && lang !== "en" ? { where: { languageCode: lang } } : false,
@@ -272,6 +273,7 @@ export const updatePackage = async (req: Request, res: Response) => {
           whyChoose: data.whyChoose,
           itineraryMeta: data.itineraryMeta,
           itineraries: data.itineraries,
+          filters: data.filters,
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
           metaKeywords: data.metaKeywords,
@@ -287,6 +289,7 @@ export const updatePackage = async (req: Request, res: Response) => {
           whyChoose: data.whyChoose,
           itineraryMeta: data.itineraryMeta,
           itineraries: data.itineraries,
+          filters: data.filters,
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
           metaKeywords: data.metaKeywords,

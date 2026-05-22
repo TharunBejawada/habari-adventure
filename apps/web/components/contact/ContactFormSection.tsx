@@ -13,6 +13,10 @@ export default function ContactFormSection() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // NEW: State for the Success Modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
   const sectionRef = useRef<HTMLElement>(null);
 
   // Form State Updated for Client Feedback
@@ -71,7 +75,7 @@ export default function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
-      // NEW: Adapt the payload for the Universal Booking API
+      // Adapt the payload for the Universal Booking API
       const payload = {
         bookingType: "Contact", // Tag it explicitly
         firstName: formData.firstName,
@@ -91,12 +95,20 @@ export default function ContactFormSection() {
       });
 
       if (ok) {
-        alert("Quote request sent successfully! We will get back to you shortly.");
+        // NEW: Show Success Modal instead of Alert
+        setShowSuccessModal(true);
+        
         // Clear the form on success
         setFormData({
           firstName: "", lastName: "", email: "", phone: "",
           monthYear: "", length: "", groupSize: "", include: "", message: ""
         });
+        
+        // Auto-close modal after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+        }, 3000);
+        
         // Optional: Reset captcha here if you have a ref to it
       } else {
         alert("Something went wrong. Please try again.");
@@ -139,6 +151,13 @@ export default function ContactFormSection() {
           }
           .animate-fade-right-scroll {
             animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+          @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          .animate-fade-in-modal {
+            animation: fadeInModal 0.3s ease-out forwards;
           }
         `
       }} />
@@ -380,6 +399,35 @@ export default function ContactFormSection() {
         </div>
 
       </div>
+
+      {/* NEW: SUCCESS MODAL */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setShowSuccessModal(false)}
+          ></div>
+          
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden z-10 animate-fade-in-modal flex flex-col p-6">
+            <button 
+              onClick={() => setShowSuccessModal(false)} 
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            >
+              ✕
+            </button>
+            <div className="text-center py-8">
+              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Received!</h2>
+              <p className="text-gray-600">Our team will get back to you shortly.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }

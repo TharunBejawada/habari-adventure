@@ -10,6 +10,7 @@ import locationRoutes from "./locationRoutes";
 import upcomingDateRoutes from "./upcomingDateRoutes"
 import pricingRoutes from "./pricingRoutes";
 import statRoutes from "./statRoutes";
+import galleryRoutes from "./galleryRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
@@ -43,6 +44,8 @@ router.use("/upcoming-dates", upcomingDateRoutes);
 router.use("/pricing", pricingRoutes);
 
 router.use("/stats", statRoutes);
+
+router.use("/gallery", galleryRoutes);
 
 router.post("/upload", upload.single("asset"), uploadFile);
 
