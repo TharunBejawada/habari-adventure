@@ -125,7 +125,6 @@ export default function LocationLandingPage() {
   const availableFilters = useMemo(() => {
     if (packages.length === 0) return [];
 
-    // Step A: Gather all actual used filters from the loaded packages
     const usedFiltersMap: Record<string, Set<string>> = {};
     let pkgCategory = "";
 
@@ -134,31 +133,31 @@ export default function LocationLandingPage() {
       const pkgFilters = pkg.filters || {};
       
       Object.entries(pkgFilters).forEach(([key, val]) => {
-        if (typeof val === 'string' && val.trim() !== '') {
-          if (!usedFiltersMap[key]) usedFiltersMap[key] = new Set();
-          usedFiltersMap[key].add(val);
-        }
+        // CHANGED: Defensively handle the value as an array (since it might be a string from old data, or an array now)
+        const valuesArray = Array.isArray(val) ? val : [val];
+        
+        valuesArray.forEach(v => {
+          if (typeof v === 'string' && v.trim() !== '') {
+            if (!usedFiltersMap[key]) usedFiltersMap[key] = new Set();
+            usedFiltersMap[key].add(v);
+          }
+        });
       });
     });
 
-    // Step B: Get the predefined structure for this category (to maintain correct ordering)
     const predefinedTemplate = PACKAGE_FILTERS[pkgCategory] || {};
     const finalFilters: { category: string; options: string[] }[] = [];
 
-    // Step C: Map over predefined categories first
     Object.entries(predefinedTemplate).forEach(([filterKey, predefinedOptions]) => {
       if (usedFiltersMap[filterKey]) {
-        // Only keep options that are both predefined AND actually present in a package
         const validOptions = predefinedOptions.filter(opt => usedFiltersMap[filterKey]?.has(opt));
         if (validOptions.length > 0) {
           finalFilters.push({ category: filterKey, options: validOptions });
         }
-        // Remove from our used map so we know what's left
         delete usedFiltersMap[filterKey];
       }
     });
 
-    // Step D: Append any remaining dynamic filters that weren't in our predefined list
     Object.entries(usedFiltersMap).forEach(([filterKey, usedOptionsSet]) => {
       if (usedOptionsSet.size > 0) {
         finalFilters.push({ category: filterKey, options: Array.from(usedOptionsSet) });
@@ -183,7 +182,14 @@ export default function LocationLandingPage() {
 
       return Object.entries(activeFilters).every(([filterCategory, selectedValues]) => {
         if (selectedValues.length === 0) return true; 
-        return selectedValues.includes(pkgFilters[filterCategory]);
+        
+        // CHANGED: Ensure the package's filter values for this category are treated as an array
+        const pkgFilterValues = Array.isArray(pkgFilters[filterCategory]) 
+          ? pkgFilters[filterCategory] 
+          : [pkgFilters[filterCategory]].filter(Boolean);
+
+        // Check if ANY of the package's filter values match ANY of the selected values
+        return pkgFilterValues.some((v: string) => selectedValues.includes(v));
       });
     });
   }, [packages, activeFilters, searchQuery]);

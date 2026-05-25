@@ -161,7 +161,7 @@ function PackageEditorForm() {
     category: "",
     location: "",
     isPublished: false,
-    filters: {} as Record<string, string>, // NEW: Filter State
+    filters: {} as Record<string, string[]>, // CHANGED: Now an array of strings per key
     metaTitle: "", metaDescription: "", metaKeywords: "",
     // Extended SEO
     canonicalUrl: "",
@@ -210,9 +210,15 @@ function PackageEditorForm() {
           if (ok && data) {
             const p = data;
 
-            // Safely slice off the first two segments (category/location) instead of aggressively popping
             const slugParts = (p.slug || "").split('/');
             const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
+
+            // DEFENSIVELY PARSE EXISTING FILTERS INTO ARRAYS
+            const rawFilters = p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {};
+            const safeFilters: Record<string, string[]> = {};
+            Object.keys(rawFilters).forEach(k => { 
+              safeFilters[k] = Array.isArray(rawFilters[k]) ? rawFilters[k] : [rawFilters[k]]; 
+            });
 
             setCoreInfo({
               id: p.id || "",
@@ -224,7 +230,7 @@ function PackageEditorForm() {
               category: p.category || "",
               location: p.location || "",
               isPublished: p.isPublished || false,
-              filters: p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {},
+              filters: safeFilters,
               metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
               canonicalUrl: p.canonicalUrl || "",
               ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
@@ -240,7 +246,7 @@ function PackageEditorForm() {
             const currentPayload = {
               title: p.title, slug: p.slug, description: p.description, 
               quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: p.filters
+              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
             };
             setSnapshot(JSON.stringify(currentPayload));
           }
@@ -290,6 +296,13 @@ function PackageEditorForm() {
         const slugParts = (p.slug || "").split('/');
         const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
 
+        // DEFENSIVELY PARSE EXISTING FILTERS INTO ARRAYS
+        const rawFilters = p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {};
+        const safeFilters: Record<string, string[]> = {};
+        Object.keys(rawFilters).forEach(k => { 
+          safeFilters[k] = Array.isArray(rawFilters[k]) ? rawFilters[k] : [rawFilters[k]]; 
+        });
+
         setCoreInfo({
           id: p.id || "",
           title: p.title || "",
@@ -300,7 +313,7 @@ function PackageEditorForm() {
           category: p.category || "",
           location: p.location || "",
           isPublished: p.isPublished || false,
-          filters: p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {},
+          filters: safeFilters,
           metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
           canonicalUrl: p.canonicalUrl || "",
           ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
@@ -316,7 +329,7 @@ function PackageEditorForm() {
         const currentPayload = {
           title: p.title, slug: p.slug, description: p.description, 
           quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: p.filters
+          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
         };
         setSnapshot(JSON.stringify(currentPayload));
       }
@@ -976,32 +989,62 @@ function PackageEditorForm() {
               <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Package Filters</h3>
               
               {/* List selected filters */}
-              {Object.entries(coreInfo.filters).map(([key, value]) => (
-                <div key={key} className="flex gap-3 items-center mb-3">
-                  <div className="w-1/3 text-sm font-bold text-gray-700 truncate" title={key}>{key}</div>
-                  <select 
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-[#135D66] bg-gray-50 focus:bg-white"
-                    value={value}
-                    onChange={e => setCoreInfo({...coreInfo, filters: {...coreInfo.filters, [key]: e.target.value}})}
-                  >
-                    <option value="" disabled hidden>Select {key}</option>
-                    {PACKAGE_FILTERS[coreInfo.category]?.[key]?.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      const newFilters = {...coreInfo.filters};
-                      delete newFilters[key];
-                      setCoreInfo({...coreInfo, filters: newFilters});
-                    }} 
-                    className="text-red-500 hover:text-red-700 font-bold px-2 flex-shrink-0"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+              {Object.entries(coreInfo.filters).map(([key, values]) => {
+                const availableOptions = (PACKAGE_FILTERS[coreInfo.category]?.[key] || []).filter(opt => !values.includes(opt));
+                
+                return (
+                  <div key={key} className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-bold text-gray-700">{key}</div>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newFilters = {...coreInfo.filters};
+                          delete newFilters[key];
+                          setCoreInfo({...coreInfo, filters: newFilters});
+                        }} 
+                        className="text-red-500 hover:text-red-700 font-bold text-xs"
+                      >
+                        Remove Filter
+                      </button>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {values.map(val => (
+                        <span key={val} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-bold rounded-lg shadow-sm">
+                          {val}
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              const newFilters = { ...coreInfo.filters };
+                              newFilters[key] = (newFilters[key] || []).filter(v => v !== val);
+                              setCoreInfo({ ...coreInfo, filters: newFilters });
+                            }}
+                            className="text-gray-400 hover:text-red-500 font-bold"
+                          >×</button>
+                        </span>
+                      ))}
+                    </div>
+
+                    {availableOptions.length > 0 && (
+                      <select 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-[#135D66] bg-white"
+                        value=""
+                        onChange={e => {
+                          const newFilters = { ...coreInfo.filters };
+                          newFilters[key] = [...(newFilters[key] || []), e.target.value];
+                          setCoreInfo({ ...coreInfo, filters: newFilters });
+                        }}
+                      >
+                        <option value="" disabled hidden>+ Add option to {key}</option>
+                        {availableOptions.map(opt => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Add new filter dropdown */}
               {Object.keys(PACKAGE_FILTERS[coreInfo.category] || {}).filter(k => !coreInfo.filters.hasOwnProperty(k)).length > 0 && (
@@ -1009,7 +1052,7 @@ function PackageEditorForm() {
                   <select 
                     className="w-full px-3 py-2 border border-dashed border-gray-300 rounded-lg text-sm outline-none text-gray-500 focus:border-[#135D66] cursor-pointer bg-white"
                     value=""
-                    onChange={e => setCoreInfo({...coreInfo, filters: {...coreInfo.filters, [e.target.value]: ""}})}
+                    onChange={e => setCoreInfo({...coreInfo, filters: {...coreInfo.filters, [e.target.value]: []}})}
                   >
                     <option value="" disabled hidden>+ Add a filter...</option>
                     {Object.keys(PACKAGE_FILTERS[coreInfo.category] || {})

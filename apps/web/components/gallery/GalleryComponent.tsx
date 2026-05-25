@@ -18,6 +18,9 @@ export default function GalleryComponent() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
 
+  // --- NEW: LIGHTBOX STATE ---
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [currentVideoPage, setCurrentVideoPage] = useState(0);
   const videoScrollRef = useRef<HTMLDivElement>(null);
@@ -73,15 +76,13 @@ export default function GalleryComponent() {
             Best Memorable <span className="text-[#fe6e00]">Gallery!</span>
           </h2>
           <div className="flex items-center justify-center gap-3 text-gray-400">
-            {/* <span className="w-8 border-t border-gray-300"></span> */}
             <p className="descCSS text-sm md:text-base text-gray-500 font-medium">
               Destinations worth exploring! Here are a few popular spots
             </p>
-            {/* <span className="w-8 border-t border-gray-300"></span> */}
           </div>
           <div className="-mt-10">
-                <Image src="/Title-Separator.png" alt="Image" className="w-117.5" width="470" height="70" loading="lazy" />
-        </div>
+            <Image src="/Title-Separator.png" alt="Image" className="w-117.5" width="470" height="70" loading="lazy" />
+          </div>
         </div>
 
         {/* --- 2. FILTERS --- */}
@@ -126,7 +127,21 @@ export default function GalleryComponent() {
                 />
                 
                 {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between">
+                  {/* NEW: Expand Icon (Top Right) */}
+                  <div className="p-4 flex justify-end">
+                    <button
+                      onClick={() => setLightboxImage(img.url)}
+                      className="bg-white/90 hover:bg-white text-gray-900 p-2.5 shadow-lg transition-colors cursor-pointer transform -translate-y-2 group-hover:translate-y-0 duration-300"
+                      title="View Fullscreen"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth={2.5} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {/* Title Info */}
                   <div className="p-5 w-full">
                     <p className="text-white font-bold text-lg drop-shadow-md truncate">
                       {img.title || img.category || "Beautiful Destination"}
@@ -249,6 +264,7 @@ export default function GalleryComponent() {
         )}
 
       </div>
+      
       {/* Hide default scrollbar but retain swipe/scroll capabilities */}
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -256,6 +272,38 @@ export default function GalleryComponent() {
           .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         `
       }} />
+
+      {/* --- NEW: LIGHTBOX MODAL --- */}
+      {lightboxImage && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          {/* Dimmed background click closes modal */}
+          <div 
+            className="absolute inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
+            onClick={() => setLightboxImage(null)}
+          ></div>
+          
+          {/* Close Button */}
+          <button 
+            onClick={() => setLightboxImage(null)}
+            className="absolute top-6 right-6 md:top-8 md:right-8 bg-white/10 hover:bg-white text-white hover:text-black p-3 transition-colors z-10 shadow-lg"
+            aria-label="Close"
+          >
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Fullscreen Image Container */}
+          <div className="relative z-10 max-w-7xl w-full h-full flex items-center justify-center pointer-events-none">
+            <img 
+              src={lightboxImage} 
+              alt="Fullscreen Gallery View" 
+              className="max-w-full max-h-full object-contain pointer-events-auto shadow-2xl animate-fade-in"
+            />
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }
