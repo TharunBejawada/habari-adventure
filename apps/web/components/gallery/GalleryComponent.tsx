@@ -116,6 +116,7 @@ export default function GalleryComponent() {
             {images.map((img) => (
               <div 
                 key={img.id} 
+                onClick={() => setLightboxImage(img.url)}
                 className="break-inside-avoid relative rounded-[24px] overflow-hidden group shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500"
               >
                 {/* We use standard <img> here instead of Next Image to let the browser auto-calculate height for true masonry */}
@@ -174,7 +175,7 @@ export default function GalleryComponent() {
             <div 
               ref={videoScrollRef}
               onScroll={handleVideoScroll}
-              className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar scroll-smooth"
+              className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 hide-scrollbar scroll-smooth justify-center"
             >
               {videos.map((vid) => {
                 const videoId = getYouTubeId(vid.url);
