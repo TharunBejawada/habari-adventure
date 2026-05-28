@@ -180,7 +180,7 @@ export default function ContactFormSection() {
           <div className="flex flex-col gap-8 mb-12">
             
             {/* Phone/WhatsApp Card */}
-            <a href="tel:+255762992308" className="flex items-center gap-6 group cursor-pointer hover:scale-[1.02] transition-transform">
+            <a href="https://wa.me/255762992308" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 group cursor-pointer hover:scale-[1.02] transition-transform">
               <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#4A8E9A] text-white flex items-center justify-center text-xl md:text-2xl shadow-md group-hover:scale-110 group-hover:bg-[#25D366] transition-all duration-300">
                 <FaPhoneAlt />
               </div>
@@ -191,7 +191,7 @@ export default function ContactFormSection() {
             </a>
 
             {/* Email Card */}
-            <a href="mailto:habariadventure@gmail.com" className="flex items-center gap-6 group cursor-pointer hover:scale-[1.02] transition-transform">
+            <a href="mailto:habariadventure@gmail.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-6 group cursor-pointer hover:scale-[1.02] transition-transform">
               <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#D48A96] text-white flex items-center justify-center text-xl md:text-2xl shadow-md group-hover:scale-110 group-hover:bg-[#fe6e00] transition-all duration-300">
                 <FaEnvelope />
               </div>

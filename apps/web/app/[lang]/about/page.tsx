@@ -260,7 +260,7 @@ export default function AboutUsPage() {
       {/* 3. STATS BANNER                            */}
       {/* ========================================== */}
       {stats.length > 0 && (
-        <section className="bg-[#135D66] py-16 relative overflow-hidden">
+        <section className="notranslate bg-[#135D66] py-16 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 sm:px-12 relative z-10">
             <div className={`grid grid-cols-1 md:grid-cols-${stats.length > 4 ? 4 : stats.length} gap-10 divide-y md:divide-y-0 md:divide-x divide-white/20`}>
               {stats.map((stat, idx) => (
