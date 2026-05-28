@@ -628,7 +628,7 @@ export default function PackageLandingPage() {
               </table>
             </div>
             <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
-              <button onClick={() => setIsCompareModalOpen(false)} className="bg-[#111827] hover:bg-black text-white font-bold py-3 px-8 rounded-full transition-colors">Close Comparison</button>
+              <button onClick={() => setIsCompareModalOpen(false)} className="cursor-pointer bg-[#111827] hover:bg-black text-white font-bold py-3 px-8 rounded-full transition-colors">Close Comparison</button>
             </div>
           </div>
         </div>

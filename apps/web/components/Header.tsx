@@ -21,6 +21,7 @@ interface SubItemOverride {
   title:  string;
   url:    string;
   hidden: boolean;
+  itemType?: "location" | "package" | "custom";
 }
 interface NavConfigItem {
   id?:    string;
@@ -64,31 +65,43 @@ function buildMenuItems(
         if (!cat) return [];
 
         const overrides    = item.subItemOverrides ?? [];
-        const overrideMap  = new Map(overrides.map(o => [o.slug, o]));
+        const overrideMap  = new Map(
+          overrides.filter(o => o.itemType !== "custom").map(o => [o.slug, o]),
+        );
         const dbSlugs      = new Set(cat.items.map(i => i.slug));
         const autoPopulate = item.autoPopulate !== false;
 
-        const orderedSlugs: string[] = autoPopulate
-          ? [
-              ...overrides.map(o => o.slug).filter(s => dbSlugs.has(s)),
-              ...cat.items.map(i => i.slug).filter(s => !overrideMap.has(s)),
-            ]
-          : overrides.map(o => o.slug).filter(s => dbSlugs.has(s));
-
         const seen     = new Set<string>();
         const subItems: HeaderSubItem[] = [];
-
-        for (const slug of orderedSlugs) {
-          if (seen.has(slug)) continue;
+        const pushLocation = (slug: string) => {
+          if (seen.has(slug)) return;
           seen.add(slug);
           const ov = overrideMap.get(slug);
-          if (ov?.hidden) continue;
+          if (ov?.hidden) return;
           const dbItem = cat.items.find(i => i.slug === slug);
-          if (!dbItem) continue;
+          if (!dbItem) return;
           subItems.push({
             name: ov?.title?.trim() || dbItem.title,
             url:  ov?.url?.trim()   || `/${dbItem.slug}`,
           });
+        };
+
+        for (const ov of overrides) {
+          if (ov.hidden) continue;
+          if (ov.itemType === "custom") {
+            subItems.push({
+              name: ov.title?.trim() || "Untitled",
+              url:  ov.url?.trim() || "#",
+            });
+            continue;
+          }
+          if (dbSlugs.has(ov.slug)) pushLocation(ov.slug);
+        }
+
+        if (autoPopulate) {
+          for (const dbItem of cat.items) {
+            pushLocation(dbItem.slug);
+          }
         }
 
         if (subItems.length === 0) return [];

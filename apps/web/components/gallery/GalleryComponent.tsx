@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { apiFetch } from "../../lib/apiClient"; // Adjust path as needed
 
@@ -18,8 +18,9 @@ export default function GalleryComponent() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- NEW: LIGHTBOX STATE ---
-  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  // --- LIGHTBOX (SLIDER) STATE ---
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   const [playingVideo, setPlayingVideo] = useState<string | null>(null);
   const [currentVideoPage, setCurrentVideoPage] = useState(0);
@@ -65,6 +66,77 @@ export default function GalleryComponent() {
   const images = items.filter(
     (item) => item.type === "IMAGE" && (activeFilter === "All" || item.category === activeFilter)
   );
+
+  // --- LIGHTBOX HANDLERS ---
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
+  const showPrev = useCallback(() => {
+    setLightboxIndex((i) => {
+      if (i === null || images.length === 0) return i;
+      return (i - 1 + images.length) % images.length;
+    });
+  }, [images.length]);
+  const showNext = useCallback(() => {
+    setLightboxIndex((i) => {
+      if (i === null || images.length === 0) return i;
+      return (i + 1) % images.length;
+    });
+  }, [images.length]);
+
+  // Close the lightbox if the active filter removes the current image.
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    if (lightboxIndex < 0 || lightboxIndex >= images.length) setLightboxIndex(null);
+  }, [activeFilter, images.length, lightboxIndex]);
+
+  // Body scroll lock + keyboard navigation while the lightbox is open.
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") showPrev();
+      else if (e.key === "ArrowRight") showNext();
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxIndex, closeLightbox, showPrev, showNext]);
+
+  // Preload neighbour images for instant transitions.
+  useEffect(() => {
+    if (lightboxIndex === null || images.length < 2) return;
+    const preload = (url: string | undefined) => {
+      if (!url) return;
+      const img = new window.Image();
+      img.src = url;
+    };
+    preload(images[(lightboxIndex + 1) % images.length]?.url);
+    preload(images[(lightboxIndex - 1 + images.length) % images.length]?.url);
+  }, [lightboxIndex, images]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const start = touchStartXRef.current;
+    touchStartXRef.current = null;
+    if (start === null) return;
+    const end = e.changedTouches[0]?.clientX ?? start;
+    const delta = end - start;
+    if (Math.abs(delta) < 50) return;
+    if (delta < 0) showNext();
+    else showPrev();
+  };
+
+  const currentLightboxImage =
+    lightboxIndex !== null && lightboxIndex >= 0 && lightboxIndex < images.length
+      ? images[lightboxIndex]
+      : null;
 
   return (
     <section className="w-full py-12 md:py-20 bg-[#FDFEFE] overflow-hidden">
@@ -113,10 +185,10 @@ export default function GalleryComponent() {
           </div>
         ) : (
           <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
-            {images.map((img) => (
+            {images.map((img, idx) => (
               <div 
                 key={img.id} 
-                onClick={() => setLightboxImage(img.url)}
+                onClick={() => setLightboxIndex(idx)}
                 className="break-inside-avoid relative rounded-[24px] overflow-hidden group shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-500"
               >
                 {/* We use standard <img> here instead of Next Image to let the browser auto-calculate height for true masonry */}
@@ -132,7 +204,10 @@ export default function GalleryComponent() {
                   {/* NEW: Expand Icon (Top Right) */}
                   <div className="p-4 flex justify-end">
                     <button
-                      onClick={() => setLightboxImage(img.url)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setLightboxIndex(idx);
+                      }}
                       className="bg-white/90 hover:bg-white text-gray-900 p-2.5 shadow-lg transition-colors cursor-pointer transform -translate-y-2 group-hover:translate-y-0 duration-300"
                       title="View Fullscreen"
                     >
@@ -274,18 +349,32 @@ export default function GalleryComponent() {
         `
       }} />
 
-      {/* --- NEW: LIGHTBOX MODAL --- */}
-      {lightboxImage && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+      {/* --- LIGHTBOX SLIDER MODAL --- */}
+      {currentLightboxImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Gallery image viewer"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Dimmed background click closes modal */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/75 backdrop-blur-sm transition-opacity"
-            onClick={() => setLightboxImage(null)}
+            onClick={closeLightbox}
           ></div>
-          
+
+          {/* Counter */}
+          {images.length > 1 && (
+            <div className="absolute top-6 left-6 md:top-8 md:left-8 bg-white/10 text-white px-3 py-1.5 text-sm font-medium z-10 shadow-lg backdrop-blur-sm">
+              {(lightboxIndex ?? 0) + 1} / {images.length}
+            </div>
+          )}
+
           {/* Close Button */}
-          <button 
-            onClick={() => setLightboxImage(null)}
+          <button
+            onClick={closeLightbox}
             className="absolute top-6 right-6 md:top-8 md:right-8 bg-white/10 hover:bg-white text-white hover:text-black p-3 transition-colors z-10 shadow-lg"
             aria-label="Close"
           >
@@ -293,12 +382,45 @@ export default function GalleryComponent() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          
+
+          {/* Prev Button */}
+          {images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                showPrev();
+              }}
+              className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-3 transition-colors z-10 shadow-lg"
+              aria-label="Previous image"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Next Button */}
+          {images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                showNext();
+              }}
+              className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white text-white hover:text-black p-3 transition-colors z-10 shadow-lg"
+              aria-label="Next image"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
           {/* Fullscreen Image Container */}
           <div className="relative z-10 max-w-7xl w-full h-full flex items-center justify-center pointer-events-none">
-            <img 
-              src={lightboxImage} 
-              alt="Fullscreen Gallery View" 
+            <img
+              key={currentLightboxImage.id}
+              src={currentLightboxImage.url}
+              alt={currentLightboxImage.title || "Fullscreen Gallery View"}
               className="max-w-full max-h-full object-contain pointer-events-auto shadow-2xl animate-fade-in"
             />
           </div>

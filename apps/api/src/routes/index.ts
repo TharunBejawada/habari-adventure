@@ -14,7 +14,7 @@ import galleryRoutes from "./galleryRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
-import { getNavigation } from "../controllers/navigationController";
+import { getNavigation, getMenuTree } from "../controllers/navigationController";
 import { requireAuth, requireAdmin } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -56,6 +56,7 @@ router.get("/settings", getSettings);
 router.put("/settings", requireAuth, requireAdmin, updateSettings);
 
 // Public route: returns published locations grouped by category for the nav builder
+router.get("/navigation/menu-tree", getMenuTree);
 router.get("/navigation", getNavigation);
 
 // --- 2. Package & Location Routes ---
