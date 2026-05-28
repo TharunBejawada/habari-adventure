@@ -25,7 +25,7 @@ export default function PreparationGuide() {
   };
 
   return (
-    <section className="py-4 lg:py-12 bg-[#fafafa] overflow-hidden">
+    <section className="py-4 lg:py-12 bg-white overflow-hidden">
       <motion.div 
         className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20"
         initial="hidden"

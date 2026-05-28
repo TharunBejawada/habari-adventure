@@ -10,6 +10,44 @@ import { SUPPORTED_LANGUAGES } from "../../../../lib/languages";
 import { apiFetch, getAdminToken } from "../../../../lib/apiClient";
 import { toSlug, normalizeSlugPath } from "../../../../lib/slugify";
 
+// ==========================================
+// CENTRALIZED PACKAGE FILTERS CONFIGURATION
+// ==========================================
+export const PACKAGE_FILTERS: Record<string, Record<string, string[]>> = {
+  "Climbing": {
+    "Duration": ["5 Days", "6 Days", "7 Days", "8 Days", "9+ Days"],
+    "Route": ["Machame", "Lemosho", "Marangu", "Rongai", "Northern Circuit", "Umbwe"],
+    "Difficulty": ["Moderate", "Challenging", "Advanced"],
+    "Acclimatization": ["Standard", "Good", "Excellent", "Best"],
+    "Scenery": ["Most Scenic", "Remote Wilderness", "Shira Plateau", "Glacier Views"],
+    "Crowd Level": ["Quiet", "Balanced", "Popular"],
+    "Travel Style": ["Private", "Group Departure", "Value", "Premium", "First-Time Friendly"]
+  },
+  "Safari": {
+    "Duration": ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"],
+    "Destination": ["Serengeti", "Ngorongoro", "Tarangire", "Lake Manyara", "Maasai Mara"],
+    "Experience": ["Classic Safari", "Big Five", "Migration", "Calving Season", "Honeymoon", "Short Safari"],
+    "Season": ["Great Migration", "Calving Season", "Dry Season", "Green Season", "Year-Round"],
+    "Style": ["Private", "Group", "Luxury", "Budget", "Family", "Honeymoon"],
+    "Comfort": ["Budget", "Mid-Range", "Luxury", "Premium"]
+  },
+  "Destinations": {
+    "Duration": ["4 Days", "5 Days", "7 Days"],
+    "Experience": ["Beach Relaxation", "Stone Town & Culture", "Snorkeling", "Spice Tour", "Romantic Escape"],
+    "Beach Style": ["Quiet Beach", "Lively Beach", "Romantic Beach", "Family-Friendly Beach"],
+    "Travel Style": ["Private Trip", "Honeymoon", "Family Holiday", "Budget Friendly", "Luxury Escape"],
+    "Comfort Level": ["Budget", "Mid-Range", "Luxury", "Premium"],
+    "Traveler Type": ["Couples", "Families", "Solo Travelers", "Friends / Small Groups", "Honeymooners"]
+  },
+  "Day Trips": {
+    "Activity Type": ["Safari", "Hiking", "Culture", "Waterfall", "Hot Springs", "Nature"],
+    "Experience": ["Wildlife", "Adventure", "Relaxation", "Culture", "Scenic Nature", "Family Friendly"],
+    "Fitness Level": ["Easy", "Moderate", "Active"],
+    "Location": ["Moshi Area", "Arusha Area", "Kilimanjaro Area", "Materuni", "Chemka"],
+    "Traveler Type": ["Families", "Couples", "Solo Travelers", "Friends / Small Groups", "First-Time Visitors"]
+  }
+};
+
 // Dynamically import ReactQuill to prevent SSR crashes
 const ReactQuill = dynamic(() => import("react-quill-new"), { 
   ssr: false,
@@ -123,6 +161,7 @@ function PackageEditorForm() {
     category: "",
     location: "",
     isPublished: false,
+    filters: {} as Record<string, string[]>, // CHANGED: Now an array of strings per key
     metaTitle: "", metaDescription: "", metaKeywords: "",
     // Extended SEO
     canonicalUrl: "",
@@ -171,9 +210,15 @@ function PackageEditorForm() {
           if (ok && data) {
             const p = data;
 
-            // FIX: Safely slice off the first two segments (category/location) instead of aggressively popping
             const slugParts = (p.slug || "").split('/');
             const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
+
+            // DEFENSIVELY PARSE EXISTING FILTERS INTO ARRAYS
+            const rawFilters = p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {};
+            const safeFilters: Record<string, string[]> = {};
+            Object.keys(rawFilters).forEach(k => { 
+              safeFilters[k] = Array.isArray(rawFilters[k]) ? rawFilters[k] : [rawFilters[k]]; 
+            });
 
             setCoreInfo({
               id: p.id || "",
@@ -185,6 +230,7 @@ function PackageEditorForm() {
               category: p.category || "",
               location: p.location || "",
               isPublished: p.isPublished || false,
+              filters: safeFilters,
               metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
               canonicalUrl: p.canonicalUrl || "",
               ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
@@ -200,7 +246,7 @@ function PackageEditorForm() {
             const currentPayload = {
               title: p.title, slug: p.slug, description: p.description, 
               quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries
+              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
             };
             setSnapshot(JSON.stringify(currentPayload));
           }
@@ -247,9 +293,15 @@ function PackageEditorForm() {
       if (ok && data) {
         const p = data;
 
-        // FIX: Safely slice off the first two segments (category/location)
         const slugParts = (p.slug || "").split('/');
         const loadedSlug = slugParts.length > 2 ? slugParts.slice(2).join('/') : (slugParts.pop() || "");
+
+        // DEFENSIVELY PARSE EXISTING FILTERS INTO ARRAYS
+        const rawFilters = p.filters ? (typeof p.filters === 'string' ? JSON.parse(p.filters) : p.filters) : {};
+        const safeFilters: Record<string, string[]> = {};
+        Object.keys(rawFilters).forEach(k => { 
+          safeFilters[k] = Array.isArray(rawFilters[k]) ? rawFilters[k] : [rawFilters[k]]; 
+        });
 
         setCoreInfo({
           id: p.id || "",
@@ -261,6 +313,7 @@ function PackageEditorForm() {
           category: p.category || "",
           location: p.location || "",
           isPublished: p.isPublished || false,
+          filters: safeFilters,
           metaTitle: p.metaTitle || "", metaDescription: p.metaDescription || "", metaKeywords: p.metaKeywords || "",
           canonicalUrl: p.canonicalUrl || "",
           ogTitle: p.ogTitle || "", ogDescription: p.ogDescription || "", ogImage: p.ogImage || "",
@@ -276,7 +329,7 @@ function PackageEditorForm() {
         const currentPayload = {
           title: p.title, slug: p.slug, description: p.description, 
           quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries
+          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
         };
         setSnapshot(JSON.stringify(currentPayload));
       }
@@ -386,11 +439,9 @@ function PackageEditorForm() {
     if (!coreInfo.category) { alert("Please select a Category before saving."); return; }
     if (!coreInfo.location) { alert("Please select a Location before saving."); return; }
 
-    // Normalize the user-entered package slug segment (e.g. "8 Days Route" → "8-days-route")
     const pkgSegment = toSlug(coreInfo.slug) || coreInfo.slug;
     let fullSlugToSave = pkgSegment;
     if (selectedLocSlug && !selectedLocSlug.includes("[")) {
-      // Normalize the full path so any residual bad location slugs are cleaned up
       fullSlugToSave = normalizeSlugPath(`${selectedLocSlug}/${pkgSegment}`);
     }
     fullSlugToSave = fullSlugToSave.replace(/^\/+/, '');
@@ -401,7 +452,7 @@ function PackageEditorForm() {
       if (activeLang !== 'en') {
         const currentDataToSave = {
           title: coreInfo.title, slug: fullSlugToSave, description: coreInfo.description, 
-          quickFacts, whyChoose, itineraryMeta, itineraries
+          quickFacts, whyChoose, itineraryMeta, itineraries, filters: coreInfo.filters
         };
         
         if (JSON.stringify(currentDataToSave) === snapshot) {
@@ -411,7 +462,6 @@ function PackageEditorForm() {
         }
       }
 
-      // Parse structuredData JSON if provided; ignore if invalid
       let parsedStructuredData: object | null = null;
       if (coreInfo.structuredData?.trim()) {
         try { parsedStructuredData = JSON.parse(coreInfo.structuredData); } catch { /* keep null */ }
@@ -449,7 +499,7 @@ function PackageEditorForm() {
           alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
           const currentPayload = {
             title: payload.title, slug: payload.slug, description: payload.description,
-            quickFacts, whyChoose, itineraryMeta, itineraries
+            quickFacts, whyChoose, itineraryMeta, itineraries, filters: payload.filters
           };
           setSnapshot(JSON.stringify(currentPayload));
         }
@@ -518,26 +568,26 @@ function PackageEditorForm() {
       </div>
 
       <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
-  {SUPPORTED_LANGUAGES.map(lang => (
-    <button
-      key={lang.code} 
-      type="button" 
-      onClick={() => handleLanguageSwitch(lang.code)}
-      className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
-        activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-      }`}
-    >
-      <img 
-        src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
-        srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
-        width="20" 
-        alt={lang.name}
-        className="mr-2 inline-block rounded-sm"
-      />
-      {lang.name}
-    </button>
-  ))}
-</div>
+        {SUPPORTED_LANGUAGES.map(lang => (
+          <button
+            key={lang.code} 
+            type="button" 
+            onClick={() => handleLanguageSwitch(lang.code)}
+            className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
+              activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <img 
+              src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
+              srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
+              width="20" 
+              alt={lang.name}
+              className="mr-2 inline-block rounded-sm"
+            />
+            {lang.name}
+          </button>
+        ))}
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         
@@ -895,7 +945,7 @@ function PackageEditorForm() {
                   !coreInfo.category ? 'text-gray-400 border-red-300 bg-red-50' : 'text-gray-900 border-gray-300 bg-white focus:border-[#135D66]'
                 }`} 
                 value={coreInfo.category} 
-                onChange={e => setCoreInfo({...coreInfo, category: e.target.value, location: ""})}
+                onChange={e => setCoreInfo({...coreInfo, category: e.target.value, location: "", filters: {}})}
               >
                 <option value="" disabled hidden>Select a Category</option>
                 <option value="Climbing" className="text-gray-900">Climbing</option>
@@ -927,6 +977,97 @@ function PackageEditorForm() {
               </select>
             </div>
           </div>
+
+          {/* Package Filters (Dynamic based on Category) */}
+          {coreInfo.category && PACKAGE_FILTERS[coreInfo.category] && (
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6 relative">
+              {activeLang !== 'en' && (
+                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl">
+                   <span className="bg-white px-4 py-2 rounded-lg shadow-sm font-bold text-[#fe6e00] border border-orange-100 text-sm">Managed in English Tab</span>
+                </div>
+              )}
+              <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Package Filters</h3>
+              
+              {/* List selected filters */}
+              {Object.entries(coreInfo.filters).map(([key, values]) => {
+                const availableOptions = (PACKAGE_FILTERS[coreInfo.category]?.[key] || []).filter(opt => !values.includes(opt));
+                
+                return (
+                  <div key={key} className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <div className="text-sm font-bold text-gray-700">{key}</div>
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          const newFilters = {...coreInfo.filters};
+                          delete newFilters[key];
+                          setCoreInfo({...coreInfo, filters: newFilters});
+                        }} 
+                        className="text-red-500 hover:text-red-700 font-bold text-xs"
+                      >
+                        Remove Filter
+                      </button>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      {values.map(val => (
+                        <span key={val} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-xs font-bold rounded-lg shadow-sm">
+                          {val}
+                          <button 
+                            type="button" 
+                            onClick={() => {
+                              const newFilters = { ...coreInfo.filters };
+                              newFilters[key] = (newFilters[key] || []).filter(v => v !== val);
+                              setCoreInfo({ ...coreInfo, filters: newFilters });
+                            }}
+                            className="text-gray-400 hover:text-red-500 font-bold"
+                          >×</button>
+                        </span>
+                      ))}
+                    </div>
+
+                    {availableOptions.length > 0 && (
+                      <select 
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:border-[#135D66] bg-white"
+                        value=""
+                        onChange={e => {
+                          const newFilters = { ...coreInfo.filters };
+                          newFilters[key] = [...(newFilters[key] || []), e.target.value];
+                          setCoreInfo({ ...coreInfo, filters: newFilters });
+                        }}
+                      >
+                        <option value="" disabled hidden>+ Add option to {key}</option>
+                        {availableOptions.map(opt => (
+                          <option key={opt} value={opt}>{opt}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Add new filter dropdown */}
+              {Object.keys(PACKAGE_FILTERS[coreInfo.category] || {}).filter(k => !coreInfo.filters.hasOwnProperty(k)).length > 0 && (
+                <div className="pt-2 border-t border-gray-100">
+                  <select 
+                    className="w-full px-3 py-2 border border-dashed border-gray-300 rounded-lg text-sm outline-none text-gray-500 focus:border-[#135D66] cursor-pointer bg-white"
+                    value=""
+                    onChange={e => setCoreInfo({...coreInfo, filters: {...coreInfo.filters, [e.target.value]: []}})}
+                  >
+                    <option value="" disabled hidden>+ Add a filter...</option>
+                    {Object.keys(PACKAGE_FILTERS[coreInfo.category] || {})
+                      .filter(k => !coreInfo.filters.hasOwnProperty(k))
+                      .map(k => (
+                        <option key={k} value={k}>{k}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {Object.keys(PACKAGE_FILTERS[coreInfo.category] || {}).filter(k => !coreInfo.filters.hasOwnProperty(k)).length === 0 && (
+                <p className="text-xs text-center text-gray-400 pt-2 border-t border-gray-100">All available filters added.</p>
+              )}
+            </div>
+          )}
 
           {/* SEO Metadata */}
           <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">

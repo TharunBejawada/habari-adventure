@@ -11,29 +11,43 @@ import { Caveat } from "next/font/google";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
-// --- STATIC FILTER DEFINITION ---
-const STATIC_FILTERS = [
-  {
-    category: "Duration",
-    options: ["1-5 Days", "6-7 Days", "8+ Days"]
+// ==========================================
+// CENTRALIZED PACKAGE FILTERS CONFIGURATION
+// ==========================================
+const PACKAGE_FILTERS: Record<string, Record<string, string[]>> = {
+  "Climbing": {
+    "Duration": ["5 Days", "6 Days", "7 Days", "8 Days", "9+ Days"],
+    "Route": ["Machame", "Lemosho", "Marangu", "Rongai", "Northern Circuit", "Umbwe"],
+    "Difficulty": ["Moderate", "Challenging", "Advanced"],
+    "Acclimatization": ["Standard", "Good", "Excellent", "Best"],
+    "Scenery": ["Most Scenic", "Remote Wilderness", "Shira Plateau", "Glacier Views"],
+    "Crowd Level": ["Quiet", "Balanced", "Popular"],
+    "Travel Style": ["Private", "Group Departure", "Value", "Premium", "First-Time Friendly"]
   },
-  {
-    category: "Distance",
-    options: ["Under 50 km", "50 - 80 km", "Over 80 km"]
+  "Safari": {
+    "Duration": ["1 Day", "2 Days", "3 Days", "4 Days", "5+ Days"],
+    "Destination": ["Serengeti", "Ngorongoro", "Tarangire", "Lake Manyara", "Maasai Mara"],
+    "Experience": ["Classic Safari", "Big Five", "Migration", "Calving Season", "Honeymoon", "Short Safari"],
+    "Season": ["Great Migration", "Calving Season", "Dry Season", "Green Season", "Year-Round"],
+    "Style": ["Private", "Group", "Luxury", "Budget", "Family", "Honeymoon"],
+    "Comfort": ["Budget", "Mid-Range", "Luxury", "Premium"]
   },
-  {
-    category: "Max Altitude",
-    options: ["Under 4,000m", "4,000m - 5,000m", "Over 5,000m"]
+  "Destinations": {
+    "Duration": ["4 Days", "5 Days", "7 Days"],
+    "Experience": ["Beach Relaxation", "Stone Town & Culture", "Snorkeling", "Spice Tour", "Romantic Escape"],
+    "Beach Style": ["Quiet Beach", "Lively Beach", "Romantic Beach", "Family-Friendly Beach"],
+    "Travel Style": ["Private Trip", "Honeymoon", "Family Holiday", "Budget Friendly", "Luxury Escape"],
+    "Comfort Level": ["Budget", "Mid-Range", "Luxury", "Premium"],
+    "Traveler Type": ["Couples", "Families", "Solo Travelers", "Friends / Small Groups", "Honeymooners"]
   },
-  {
-    category: "Best Seasons",
-    options: ["Jan-Mar", "Apr-May", "Jun-Oct", "Nov-Dec"]
-  },
-  {
-    category: "Difficulty",
-    options: ["Easy", "Moderate", "Challenging", "Extreme"]
+  "Day Trips": {
+    "Activity Type": ["Safari", "Hiking", "Culture", "Waterfall", "Hot Springs", "Nature"],
+    "Experience": ["Wildlife", "Adventure", "Relaxation", "Culture", "Scenic Nature", "Family Friendly"],
+    "Fitness Level": ["Easy", "Moderate", "Active"],
+    "Location": ["Moshi Area", "Arusha Area", "Kilimanjaro Area", "Materuni", "Chemka"],
+    "Traveler Type": ["Families", "Couples", "Solo Travelers", "Friends / Small Groups", "First-Time Visitors"]
   }
-];
+};
 
 // Helper to extract YouTube ID for iframe embed
 const getYouTubeEmbedUrl = (url: string) => {
@@ -46,14 +60,9 @@ const getYouTubeEmbedUrl = (url: string) => {
 export default function LocationLandingPage() {
   const params = useParams();
   
-  // Extract the language from the URL (defaulting to 'en')
   const lang = (params.lang as string) || "en";
-  
-  // FIX: Safely reconstruct the full database slug since /destinations/ was removed
   const categoryParam = params.category as string;
   const locationParam = params.location as string;
-  
-  // If the route is /[lang]/[category]/[location], combine them (e.g., "safari/serengeti")
   const fullDbSlug = categoryParam ? `${categoryParam}/${locationParam}` : locationParam;
 
   const [packages, setPackages] = useState<any[]>([]);
@@ -66,7 +75,6 @@ export default function LocationLandingPage() {
   const itemsPerPage = 6;
   const [activeFilters, setActiveFilters] = useState<Record<string, string[]>>({});
 
-  // Clear __localeEntity when navigating away from a location page
   useEffect(() => {
     return () => {
       if (typeof window !== 'undefined') {
@@ -75,7 +83,7 @@ export default function LocationLandingPage() {
     };
   }, []);
 
-  // --- 1. FETCH DATA (CHAINED) ---
+  // --- 1. FETCH DATA ---
   useEffect(() => {
     setIsLoading(true);
     const encodedSlug = fullDbSlug.split("/").map(encodeURIComponent).join("/");
@@ -84,11 +92,6 @@ export default function LocationLandingPage() {
       if (locResult.ok && locResult.data) {
         setLocationData(locResult.data);
 
-        // Expose canonical slug for LanguageSwitcher cross-language navigation.
-        // locResult.data.canonicalSlug is the English Location slug (set by applyTranslationLocation
-        // before translation overwrites it). It may be the full path ("destinations/gorilla-hike")
-        // or just the terminal segment ("gorilla-hike"). We always reconstruct the full path so the
-        // switcher can navigate to the correct nested URL without collapsing the category segment.
         if (typeof window !== 'undefined') {
           const rawCanonical = locResult.data.canonicalSlug || locationParam;
           const fullCanonicalSlug = rawCanonical.includes('/')
@@ -96,8 +99,6 @@ export default function LocationLandingPage() {
             : `${categoryParam}/${rawCanonical}`;
           (window as any).__localeEntity = { canonicalSlug: fullCanonicalSlug };
 
-          // Normalize URL: if the API returned a localized slug that differs from what
-          // the URL currently shows, update the address bar silently.
           const rawLocalized = locResult.data.slug || locationParam;
           const fullLocalizedSlug = rawLocalized.includes('/')
             ? rawLocalized
@@ -107,12 +108,6 @@ export default function LocationLandingPage() {
           }
         }
 
-        // Use the canonical (English) title for the location-to-package query.
-        // locResult.data.canonicalTitle is the original English title preserved by the API
-        // before any translation is applied. This prevents French/Spanish translated titles
-        // (e.g. "Kilimandjaro") from failing to match the English-only Package.location field.
-        // We ALSO pass the canonical location slug as a fallback so that packages are found
-        // even if the title matching fails for any reason.
         const canonicalTitle = locResult.data.canonicalTitle || locResult.data.title;
         const packResult = await apiFetch(
           `/packages/location/${encodeURIComponent(canonicalTitle)}?locationSlug=${encodeURIComponent(fullDbSlug)}&lang=${lang}`
@@ -124,57 +119,77 @@ export default function LocationLandingPage() {
       setIsLoading(false);
     };
     load().catch(() => setIsLoading(false));
-  }, [fullDbSlug, lang]);
+  }, [fullDbSlug, lang, categoryParam, locationParam]);
 
-  // --- 2. SMART PARSING FOR RANGES ---
-  const checkRangeFilter = (category: string, selectedValues: string[], factDesc: string) => {
-    const text = factDesc.toLowerCase().replace(/,/g, '');
-    const numbers = text.match(/\d+/g)?.map(Number) || [];
-    const maxNum = numbers.length > 0 ? Math.max(...numbers) : 0;
+  // --- 2. EXTRACT DYNAMIC FILTERS & MERGE WITH STATIC DEFINITIONS ---
+  const availableFilters = useMemo(() => {
+    if (packages.length === 0) return [];
 
-    return selectedValues.some(val => {
-      // Numerical Range Checks
-      if (category === "Duration") {
-        if (val === "1-5 Days") return maxNum >= 1 && maxNum <= 5;
-        if (val === "6-7 Days") return maxNum >= 6 && maxNum <= 7;
-        if (val === "8+ Days") return maxNum >= 8;
-      }
-      if (category === "Distance") {
-        if (val === "Under 50 km") return maxNum > 0 && maxNum < 50;
-        if (val === "50 - 80 km") return maxNum >= 50 && maxNum <= 80;
-        if (val === "Over 80 km") return maxNum > 80;
-      }
-      if (category === "Max Altitude") {
-        if (val === "Under 4,000m") return maxNum > 0 && maxNum < 4000;
-        if (val === "4,000m - 5,000m") return maxNum >= 4000 && maxNum <= 5000;
-        if (val === "Over 5,000m") return maxNum > 5000;
-      }
+    const usedFiltersMap: Record<string, Set<string>> = {};
+    let pkgCategory = "";
+
+    packages.forEach(pkg => {
+      if (!pkgCategory && pkg.category) pkgCategory = pkg.category;
+      const pkgFilters = pkg.filters || {};
       
-      // String Inclusion Checks
-      return text.includes(val.toLowerCase());
+      Object.entries(pkgFilters).forEach(([key, val]) => {
+        // CHANGED: Defensively handle the value as an array (since it might be a string from old data, or an array now)
+        const valuesArray = Array.isArray(val) ? val : [val];
+        
+        valuesArray.forEach(v => {
+          if (typeof v === 'string' && v.trim() !== '') {
+            if (!usedFiltersMap[key]) usedFiltersMap[key] = new Set();
+            usedFiltersMap[key].add(v);
+          }
+        });
+      });
     });
-  };
+
+    const predefinedTemplate = PACKAGE_FILTERS[pkgCategory] || {};
+    const finalFilters: { category: string; options: string[] }[] = [];
+
+    Object.entries(predefinedTemplate).forEach(([filterKey, predefinedOptions]) => {
+      if (usedFiltersMap[filterKey]) {
+        const validOptions = predefinedOptions.filter(opt => usedFiltersMap[filterKey]?.has(opt));
+        if (validOptions.length > 0) {
+          finalFilters.push({ category: filterKey, options: validOptions });
+        }
+        delete usedFiltersMap[filterKey];
+      }
+    });
+
+    Object.entries(usedFiltersMap).forEach(([filterKey, usedOptionsSet]) => {
+      if (usedOptionsSet.size > 0) {
+        finalFilters.push({ category: filterKey, options: Array.from(usedOptionsSet) });
+      }
+    });
+
+    return finalFilters;
+  }, [packages]);
 
   // --- 3. APPLY SEARCH & FILTERS TO PACKAGES ---
   const filteredPackages = useMemo(() => {
     return packages.filter(pkg => {
-      // A. Text Search Check
       const searchMatch = searchQuery.trim() === "" || 
         pkg.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
         (pkg.description && pkg.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
       if (!searchMatch) return false;
 
-      // B. Static Filter Checks
       if (Object.keys(activeFilters).length === 0) return true;
+
+      const pkgFilters = pkg.filters || {};
 
       return Object.entries(activeFilters).every(([filterCategory, selectedValues]) => {
         if (selectedValues.length === 0) return true; 
         
-        const packageFact = pkg.quickFacts?.items?.find((f: any) => f.title === filterCategory);
-        if (!packageFact) return false; 
+        // CHANGED: Ensure the package's filter values for this category are treated as an array
+        const pkgFilterValues = Array.isArray(pkgFilters[filterCategory]) 
+          ? pkgFilters[filterCategory] 
+          : [pkgFilters[filterCategory]].filter(Boolean);
 
-        return checkRangeFilter(filterCategory, selectedValues, packageFact.desc);
+        // Check if ANY of the package's filter values match ANY of the selected values
+        return pkgFilterValues.some((v: string) => selectedValues.includes(v));
       });
     });
   }, [packages, activeFilters, searchQuery]);
@@ -222,7 +237,6 @@ export default function LocationLandingPage() {
     );
   }
 
-  // Formatting Location Title for Hero (Using the DB title with a safe fallback)
   const fallbackTitle = locationParam ? locationParam.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Destination";
   const displayTitle = locationData?.title || fallbackTitle;
 
@@ -282,11 +296,10 @@ export default function LocationLandingPage() {
 
         <div className="max-w-[1000px] mx-auto w-[96%] relative z-20 flex flex-col items-center text-center px-4">
           <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-            {/* NEW: notranslate class added so Google doesn't translate the proper noun destination */}
             <span className="text-[0.85em]">Explore</span>{' '}<span className={`notranslate ${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>{displayTitle}</span>
           </h1>
           <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
-            Discover our curated selection of routes and adventures designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
+            Discover our curated selection of routes and adventures <br /> designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
           </p>
         </div>
       </section>
@@ -303,7 +316,8 @@ export default function LocationLandingPage() {
                 {locationData.youtubeVideoUrl ? (
                   <iframe 
                     className="absolute inset-0 w-full h-full object-cover"
-                    src={getYouTubeEmbedUrl(locationData.youtubeVideoUrl) || ""}
+                    // src={getYouTubeEmbedUrl(locationData.youtubeVideoUrl) || ""}
+                    src={`${getYouTubeEmbedUrl(locationData.youtubeVideoUrl)}${getYouTubeEmbedUrl(locationData.youtubeVideoUrl)?.includes('?') ? '&' : '?'}rel=0`}
                     title={`${locationData.title || displayTitle} Video`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowFullScreen
@@ -315,18 +329,17 @@ export default function LocationLandingPage() {
             )}
 
             <div className={`min-w-0 w-full ${(locationData.bannerImage || locationData.youtubeVideoUrl) ? 'lg:w-1/2' : 'w-full'} p-8 md:p-12 flex flex-col justify-center`}>
-              {/* NEW: notranslate added to the dynamic location title */}
               <h2 className="notranslate headingCSS text-3xl font-extrabold text-[#135D66] mb-4 truncate">
                 {locationData.title || displayTitle}
               </h2>
               
-              {/* NEW: notranslate added to the rich text overview content */}
               <div 
                 className="descCSS notranslate text-gray-600 text-sm md:text-base leading-relaxed space-y-3 break-words [&_img]:max-w-full [&_img]:h-auto [&_iframe]:max-w-full"
                 dangerouslySetInnerHTML={{ 
                   __html: locationData.overviewText
                     .replace(/<ul>/g, '<ul style="list-style-type: disc; padding-left: 1.5rem;">')
                     .replace(/<ol>/g, '<ol style="list-style-type: decimal; padding-left: 1.5rem;">') 
+                    .replace(/&nbsp;/g, ' ') || ""
                 }}
               />
             </div>
@@ -341,56 +354,58 @@ export default function LocationLandingPage() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 flex flex-col lg:flex-row gap-10">
           
-          {/* --- LEFT SIDEBAR: STATIC FILTERS --- */}
-          <div className="w-full lg:w-1/4 shrink-0">
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-32">
-              <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
-                <h3 className="font-extrabold text-xl text-[#135D66]">Filters</h3>
-                {Object.keys(activeFilters).length > 0 && (
-                  <button 
-                    onClick={() => { setActiveFilters({}); setCurrentPage(1); }}
-                    className="text-xs font-bold text-[#fe6e00] hover:underline"
-                  >
-                    Clear All
-                  </button>
-                )}
-              </div>
+          {/* --- LEFT SIDEBAR: DYNAMIC FILTERS (Only show if filters exist) --- */}
+          {availableFilters.length > 0 && (
+            <div className="w-full lg:w-1/4 shrink-0">
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm sticky top-32">
+                <div className="flex items-center justify-between mb-6 border-b border-gray-100 pb-4">
+                  <h3 className="font-extrabold text-xl text-[#135D66]">Filters</h3>
+                  {Object.keys(activeFilters).length > 0 && (
+                    <button 
+                      onClick={() => { setActiveFilters({}); setCurrentPage(1); }}
+                      className="text-xs font-bold text-[#fe6e00] hover:underline"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
 
-              <div className="space-y-8">
-                {STATIC_FILTERS.map((filterGroup) => (
-                  <div key={filterGroup.category}>
-                    <h4 className="font-bold text-gray-900 mb-3">{filterGroup.category}</h4>
-                    <div className="space-y-2">
-                      {filterGroup.options.map((optionValue, idx) => {
-                        const isChecked = activeFilters[filterGroup.category]?.includes(optionValue) || false;
-                        return (
-                          <label key={idx} className="flex items-center gap-3 cursor-pointer group">
-                            <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isChecked ? 'bg-[#135D66] border-[#135D66]' : 'border-gray-300 group-hover:border-[#135D66]'}`}>
-                              {isChecked && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
-                            </div>
-                            
-                            <input 
-                              type="checkbox" 
-                              className="hidden" 
-                              checked={isChecked} 
-                              onChange={() => toggleFilter(filterGroup.category, optionValue)} 
-                            />
-                            
-                            <span className={`text-sm ${isChecked ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>
-                              {optionValue}
-                            </span>
-                          </label>
-                        );
-                      })}
+                <div className="space-y-8">
+                  {availableFilters.map((filterGroup) => (
+                    <div key={filterGroup.category}>
+                      <h4 className="font-bold text-gray-900 mb-3">{filterGroup.category}</h4>
+                      <div className="space-y-2">
+                        {filterGroup.options.map((optionValue, idx) => {
+                          const isChecked = activeFilters[filterGroup.category]?.includes(optionValue) || false;
+                          return (
+                            <label key={idx} className="flex items-center gap-3 cursor-pointer group">
+                              <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${isChecked ? 'bg-[#135D66] border-[#135D66]' : 'border-gray-300 group-hover:border-[#135D66]'}`}>
+                                {isChecked && <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                              </div>
+                              
+                              <input 
+                                type="checkbox" 
+                                className="hidden" 
+                                checked={isChecked} 
+                                onChange={() => toggleFilter(filterGroup.category, optionValue)} 
+                              />
+                              
+                              <span className={`text-sm ${isChecked ? 'font-bold text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                                {optionValue}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* --- RIGHT GRID: SEARCH & PACKAGE CARDS --- */}
-          <div className="w-full lg:w-3/4">
+          <div className={`w-full ${availableFilters.length > 0 ? 'lg:w-3/4' : ''}`}>
             
             <div className="mb-10">
               <div className="relative">
@@ -427,9 +442,8 @@ export default function LocationLandingPage() {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${availableFilters.length === 0 ? 'lg:grid-cols-3' : ''} gap-8 mb-12`}>
                   {currentPackages.map((pkg) => (
-                    // NEW: Updated Link to include the dynamic language prefix
                     <Link href={`/${lang}/${normalizeSlugPath(pkg.canonicalSlug || pkg.slug)}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       
                       <div className="relative w-full h-56 overflow-hidden bg-gray-100">
@@ -441,7 +455,6 @@ export default function LocationLandingPage() {
                           </div>
                         )}
                         <div className="absolute top-4 left-4">
-                          {/* NEW: notranslate class added */}
                           <span className="notranslate bg-white/90 backdrop-blur-sm text-[#135D66] text-xs font-bold px-3 py-1.5 rounded-md uppercase tracking-wider shadow-sm">
                             {pkg.category}
                           </span>
@@ -449,15 +462,12 @@ export default function LocationLandingPage() {
                       </div>
                       
                       <div className="p-6 flex flex-col flex-grow">
-                        {/* NEW: notranslate class added */}
-                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-[#fe6e00] transition-colors">{pkg.title}</h3>
+                        <h3 className="notranslate text-2xl font-extrabold text-gray-900 mb-2 transition-colors">{pkg.title}</h3>
                         
                         {pkg.badgeText && (
-                          /* NEW: notranslate class added */
                           <p className="notranslate text-sm font-bold text-[#fe6e00] mb-3">{pkg.badgeText}</p>
                         )}
                         
-                        {/* NEW: notranslate class added */}
                         <p className="notranslate text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3 break-words">
                           {stripHtml(pkg.description?.replace(/&nbsp;/g, ' ') || "")}
                         </p>

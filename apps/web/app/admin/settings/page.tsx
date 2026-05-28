@@ -583,7 +583,14 @@ export default function SettingsPage() {
 
   // ── Footer column handlers ─────────────────────────────────────────────────
 
-  const addFooterColumn = () => setFooterColumns([...footerColumns, { title: "", links: [] }]);
+  // const addFooterColumn = () => setFooterColumns([...footerColumns, { title: "", links: [] }]);
+  const addFooterColumn = () => {
+  if (footerColumns.length >= 3) {
+    alert("You can only add up to 3 footer columns.");
+    return;
+  }
+  setFooterColumns([...footerColumns, { title: "", links: [] }]);
+};
 
   const updateColTitle = (idx: number, title: string) => {
     const n = [...footerColumns];
@@ -868,9 +875,10 @@ export default function SettingsPage() {
             <p className="text-sm text-gray-500">Add custom link columns (e.g. Services, Legal, Resources).</p>
           </div>
           <button type="button" onClick={addFooterColumn}
-            className="px-4 py-2 bg-adventure-100 text-adventure-700 hover:bg-adventure-200 font-medium rounded-lg text-sm transition-colors">
-            + Add New Column
-          </button>
+  disabled={footerColumns.length >= 3}
+  className="px-4 py-2 bg-adventure-100 text-adventure-700 hover:bg-adventure-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium rounded-lg text-sm transition-colors">
+  {footerColumns.length >= 3 ? "Limit Reached (3/3)" : "+ Add New Column"}
+</button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -38,7 +38,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-4 lg:py-12 bg-[#F8F9FA] overflow-hidden">
+    <section className="py-4 lg:py-12 bg-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
         
         {/* Left Col: Image */}
@@ -83,7 +83,7 @@ export default function Testimonials() {
           <motion.div variants={itemVariants} className="mb-10">
             <p className="text-[#fe6e00] font-medium text-xl mb-1">~ Sarah b</p>
             <p className="text-black text-[13px] mb-3">Date of experience: February 2024</p>
-            <a href="#" className="text-black text-[13px] font-medium hover:text-[#fe6e00] transition-colors flex items-center gap-1">
+            <a href="https://www.tripadvisor.com/Attraction_Review-g317084-d17594298-Reviews-Habari_Adventure-Moshi_Kilimanjaro_Region.html" target="_blank" rel="noopener noreferrer" className="text-black text-[13px] font-medium hover:text-[#fe6e00] transition-colors flex items-center gap-1">
               Read full testimonial 
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
             </a>
@@ -96,21 +96,21 @@ export default function Testimonials() {
             
             {/* Logos */}
             <div className="flex items-center gap-8">
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://www.tripadvisor.com/Attraction_Review-g317084-d17594298-Reviews-Habari_Adventure-Moshi_Kilimanjaro_Region.html" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <img 
                   src="/tripadvisor-logo.png" // Update path
                   alt="Tripadvisor" 
                   className="h-10 object-contain" 
                 />
               </a>
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://maps.app.goo.gl/FEywkHZTxTBr7dCZ6" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <img 
                   src="/google-reviews-logo.png" // Update path
                   alt="Google Reviews" 
                   className="h-10 object-contain" 
                 />
               </a>
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://www.bookmundi.com/companies/habari-adventure/c2300" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <img 
                   src="/bookmundi-logo.png" // Update path
                   alt="Bookmundi" 

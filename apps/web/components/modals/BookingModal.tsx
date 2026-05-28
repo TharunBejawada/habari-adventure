@@ -11,7 +11,7 @@ interface BookingModalProps {
     bookingType: string;
     location?: string;
     packageName?: string;
-    groupSize?: string;
+    groupSize?: string; // Restored
     departureDate?: string;
   };
 }
@@ -25,8 +25,8 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
     lastName: "",
     email: "",
     phone: "",
-    monthYear: "",
-    length: "",
+    // monthYear: "",
+    // length: "",
     message: "",
   });
 
@@ -38,8 +38,8 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
         lastName: "",
         email: "",
         phone: "",
-        monthYear: "",
-        length: "",
+        // monthYear: "",
+        // length: "",
         message: "",
       });
       setSuccess(false);
@@ -110,9 +110,12 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
               
               {/* Pre-filled Read-Only Context (Optional Visual Confirmation) */}
               <div className="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                {initialData.location && <span className="text-xs font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">📍 {initialData.location}</span>}
-                {initialData.groupSize && <span className="text-xs font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">👥 {initialData.groupSize}</span>}
-                {initialData.departureDate && <span className="text-xs font-bold bg-white px-3 py-1.5 rounded-md text-[#135D66] border border-[#135D66]/20">📅 {initialData.departureDate}</span>}
+                {initialData.location && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">📍 {initialData.location}</span>}
+                
+                {/* Restored Group Size Badge */}
+                {initialData.groupSize && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">👥 {initialData.groupSize}</span>}
+                
+                {initialData.departureDate && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-[#135D66] border border-[#135D66]/20">📅 {initialData.departureDate}</span>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -139,7 +142,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                     value={formData.phone} 
                     onChange={e => setFormData({...formData, phone: e.target.value})} 
                     onKeyDown={(e) => {
-                      // Allow numbers and standard phone symbols (+ - ( ) space), plus navigation keys
                       if (!/^[0-9+\-() ]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                         e.preventDefault();
                       }
@@ -148,8 +150,8 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                 </div>
               </div>
 
-              {/* Only show flexible date inputs if it's NOT a fixed departure date booking */}
-              {!initialData.departureDate && (
+              {/* Flexible dates remain commented out */}
+              {/* {!initialData.departureDate && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Month & Year</label>
@@ -159,7 +161,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                       value={formData.monthYear} 
                       onChange={e => setFormData({...formData, monthYear: e.target.value})} 
                       onKeyDown={(e) => {
-                        // Allow only numbers and hyphens (YYYY-MM format fallback), plus navigation keys
                         if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                           e.preventDefault();
                         }
@@ -176,7 +177,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                       value={formData.length} 
                       onChange={e => setFormData({...formData, length: e.target.value})} 
                       onKeyDown={(e) => {
-                        // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.'), plus navigation keys
                         if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                           e.preventDefault();
                         }
@@ -185,6 +185,7 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                   </div>
                 </div>
               )}
+              */}
 
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>

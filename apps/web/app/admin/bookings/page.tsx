@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 // Use your existing API client setup!
 import { apiFetch, getAdminToken } from "../../../lib/apiClient"; 
 
@@ -103,7 +104,18 @@ export default function AdminBookingsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Back to Dashboard Link */}
+          <Link 
+            href="/admin" 
+            className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] transition-colors mb-3 group"
+          >
+            <svg className="w-4 h-4 mr-1.5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+        
         <div>
           <h2 className="text-2xl font-extrabold text-[#135D66]">Booking Inquiries</h2>
           <p className="text-gray-500 text-sm mt-1">Manage all quotes, package requests, and departure bookings.</p>

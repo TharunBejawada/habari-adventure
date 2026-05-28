@@ -13,6 +13,10 @@ export default function ContactFormSection() {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // NEW: State for the Success Modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  
   const sectionRef = useRef<HTMLElement>(null);
 
   // Form State Updated for Client Feedback
@@ -71,16 +75,16 @@ export default function ContactFormSection() {
     setIsSubmitting(true);
 
     try {
-      // NEW: Adapt the payload for the Universal Booking API
+      // Adapt the payload for the Universal Booking API
       const payload = {
         bookingType: "Contact", // Tag it explicitly
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        monthYear: formData.monthYear,
-        length: formData.length,
-        groupSize: formData.groupSize,
+        // monthYear: formData.monthYear,
+        // length: formData.length,
+        // groupSize: formData.groupSize,
         // Safely map the specific inclusion dropdown to the top of the message
         message: `[Interested in: ${formData.include}]\n\n${formData.message}`
       };
@@ -91,12 +95,20 @@ export default function ContactFormSection() {
       });
 
       if (ok) {
-        alert("Quote request sent successfully! We will get back to you shortly.");
+        // NEW: Show Success Modal instead of Alert
+        setShowSuccessModal(true);
+        
         // Clear the form on success
         setFormData({
           firstName: "", lastName: "", email: "", phone: "",
           monthYear: "", length: "", groupSize: "", include: "", message: ""
         });
+        
+        // Auto-close modal after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+        }, 3000);
+        
         // Optional: Reset captcha here if you have a ref to it
       } else {
         alert("Something went wrong. Please try again.");
@@ -113,10 +125,10 @@ export default function ContactFormSection() {
   const isFormValid = 
     formData.firstName.trim() !== "" &&
     formData.email.trim() !== "" &&
-    formData.monthYear.trim() !== "" &&
-    formData.length.trim() !== "" &&
-    formData.groupSize.trim() !== "" &&
-    formData.include.trim() !== "" &&
+    // formData.monthYear.trim() !== "" &&
+    // formData.length.trim() !== "" &&
+    // formData.groupSize.trim() !== "" &&
+    // formData.include.trim() !== "" &&
     formData.message.trim() !== "" &&
     isCaptchaVerified;
 
@@ -139,6 +151,13 @@ export default function ContactFormSection() {
           }
           .animate-fade-right-scroll {
             animation: fadeInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+          @keyframes fadeInModal {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+          }
+          .animate-fade-in-modal {
+            animation: fadeInModal 0.3s ease-out forwards;
           }
         `
       }} />
@@ -237,12 +256,12 @@ export default function ContactFormSection() {
                 <input 
                   type="text" name="firstName" placeholder="First Name *" required
                   value={formData.firstName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
                 <input 
                   type="text" name="lastName" placeholder="Last Name (Optional)"
                   value={formData.lastName} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
               </div>
 
@@ -251,7 +270,7 @@ export default function ContactFormSection() {
                 <input 
                   type="email" name="email" placeholder="Email *" required
                   value={formData.email} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
                 <input 
                   type="tel" name="phone" placeholder="WhatsApp / Phone (Optional)"
@@ -262,14 +281,14 @@ export default function ContactFormSection() {
                       e.preventDefault();
                     }
                   }}
-                  className="bg-white w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-full border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700"
                 />
               </div>
 
               {/* Row 3: Month/Year & Trip Length */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div className="relative">
-                  {/* Floating label fallback for Month input since placeholders behave weirdly on native date pickers */}
+                  
                   <span className="absolute -top-2 left-6 bg-[#FFF9F0] px-1 text-xs font-bold text-gray-500">
                     Month & Year of Travel *
                   </span>
@@ -278,7 +297,7 @@ export default function ContactFormSection() {
                     min={minMonth}
                     value={formData.monthYear} onChange={handleInputChange}
                     onKeyDown={(e) => {
-                      // Allow only numbers and hyphens for fallback browsers (YYYY-MM format)
+                      
                       if (!/^[0-9\-]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                         e.preventDefault();
                       }
@@ -290,7 +309,7 @@ export default function ContactFormSection() {
                   type="number" name="length" min="1" placeholder="Total Trip Length (days) *" required
                   value={formData.length} onChange={handleInputChange}
                   onKeyDown={(e) => {
-                    // Strictly allow ONLY numbers (blocks 'e', '+', '-', '.')
+                   
                     if (!/^[0-9]$/.test(e.key) && !["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(e.key)) {
                       e.preventDefault();
                     }
@@ -299,7 +318,7 @@ export default function ContactFormSection() {
                 />
               </div>
 
-              {/* Row 4: Group Size & Inclusions */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <select 
                   name="groupSize" required
@@ -326,14 +345,14 @@ export default function ContactFormSection() {
                   <option value="safari-zanzibar">Safari + Zanzibar</option>
                   <option value="all">Combined (Kili + Safari + Zanzibar)</option>
                 </select>
-              </div>
+              </div> */}
 
               {/* Row 5: Message */}
               <div>
                 <textarea 
                   name="message" placeholder="Message (must-see experiences, constraints) *" rows={4} required
                   value={formData.message} onChange={handleInputChange}
-                  className="bg-white w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-sm text-gray-700 resize-none"
+                  className="descCSS bg-[#F0F9FA] w-full px-6 py-4 rounded-3xl border border-gray-200 focus:outline-none focus:border-[#fe6e00] focus:ring-1 focus:ring-[#fe6e00] transition-colors text-base text-gray-700 resize-none"
                 ></textarea>
               </div>
 
@@ -380,6 +399,35 @@ export default function ContactFormSection() {
         </div>
 
       </div>
+
+      {/* NEW: SUCCESS MODAL */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div 
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setShowSuccessModal(false)}
+          ></div>
+          
+          <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden z-10 animate-fade-in-modal flex flex-col p-6">
+            <button 
+              onClick={() => setShowSuccessModal(false)} 
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+            >
+              ✕
+            </button>
+            <div className="text-center py-8">
+              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Received!</h2>
+              <p className="text-gray-600">Our team will get back to you shortly.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }

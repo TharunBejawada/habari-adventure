@@ -35,7 +35,7 @@ export default function NextJourneyCTA() {
 
   return (
     // Added pt-12 to give a little breathing room at the top, removed min-h entirely
-    <section className="relative pt-12 bg-[#FAFAFA] border-b-[6px] border-[#fe6e00] overflow-hidden flex items-end">
+    <section className="relative pt-12 bg-white border-b-[6px] border-[#fe6e00] overflow-hidden flex items-end">
     
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20 relative z-10 w-full">
         
@@ -95,7 +95,8 @@ export default function NextJourneyCTA() {
             
             {/* WhatsApp */}
             <motion.a 
-              href="#" 
+              href="https://wa.me/255762992308" 
+              target="_blank" rel="noopener noreferrer" 
               variants={iconVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -111,7 +112,7 @@ export default function NextJourneyCTA() {
 
             {/* Email / Enquiry */}
             <motion.a 
-              href="#" 
+              href="mailto:info@habariadventure.com" 
               variants={iconVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

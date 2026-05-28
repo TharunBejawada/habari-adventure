@@ -3,7 +3,12 @@ import { prisma } from "../prisma";
 
 export const getStats = async (req: Request, res: Response) => {
   try {
+    // NEW: Allow optional filtering by page via query params
+    const { page } = req.query;
+    const whereClause: any = page ? { page: page as string } : undefined;
+
     const stats = await prisma.stat.findMany({
+      where: whereClause,
       orderBy: { order: 'asc' },
     });
     res.status(200).json({ status: "success", data: stats });
@@ -14,9 +19,10 @@ export const getStats = async (req: Request, res: Response) => {
 
 export const createStat = async (req: Request, res: Response) => {
   try {
-    const { label, value, suffix, order } = req.body;
+    const { label, value, suffix, order, page } = req.body;
     const newStat = await prisma.stat.create({
-      data: { label, value: Number(value), suffix, order: Number(order) }
+      // NEW: Include page in creation (defaults to Home if missing)
+      data: { label, value: Number(value), suffix, order: Number(order), page: page || "Home" }
     });
     res.status(201).json({ status: "success", data: newStat });
   } catch (error: any) {
@@ -27,10 +33,11 @@ export const createStat = async (req: Request, res: Response) => {
 export const updateStat = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { label, value, suffix, order } = req.body;
+    const { label, value, suffix, order, page } = req.body;
     const updatedStat = await prisma.stat.update({
       where: { id: id as string },
-      data: { label, value: Number(value), suffix, order: Number(order) }
+      // NEW: Include page in update
+      data: { label, value: Number(value), suffix, order: Number(order), page: page || "Home" }
     });
     res.status(200).json({ status: "success", data: updatedStat });
   } catch (error: any) {

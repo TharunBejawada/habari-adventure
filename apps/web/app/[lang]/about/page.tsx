@@ -63,7 +63,8 @@ const AnimatedCounter = ({ target, duration = 2000 }: { target: number, duration
 };
 
 export default function AboutUsPage() {
-    const [featuredCrew, setFeaturedCrew] = useState<any[]>([]);
+  const [featuredCrew, setFeaturedCrew] = useState<any[]>([]);
+  const [stats, setStats] = useState<any[]>([]); // NEW: State for dynamic stats
 
   // Fetch the first 4 members of the first team for the featured section
   useEffect(() => {
@@ -76,6 +77,25 @@ export default function AboutUsPage() {
       })
       .catch((err) => console.error("Failed to fetch crew data:", err));
   }, []);
+
+  // NEW: Fetch dynamic stats for the About page
+  useEffect(() => {
+    apiFetch("/stats?page=About")
+      .then(res => {
+        if (res.ok && Array.isArray(res.data)) {
+          setStats(res.data);
+        }
+      })
+      .catch(err => console.error("Failed to fetch stats", err));
+  }, []);
+
+  // Collection of the original icons to map dynamically
+  const statIcons = [
+    <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+    <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>,
+    <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+  ];
+
   return (
     <div className="bg-[#FDFEFE] min-h-screen font-sans text-gray-800">
       
@@ -102,54 +122,22 @@ export default function AboutUsPage() {
         }} />
 
         <div className="absolute inset-0 z-0">
-          {/* <Image src="/contact-mountains.png" alt="Mountains Background" fill sizes="100vw" className="object-cover object-bottom opacity-90" priority /> */}
           <Image src="/about-us.png" alt="Mountains Background" fill sizes="100vw" className="object-cover object-bottom opacity-90" priority />
           <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
           <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
         </div>
 
-        {/* <div className="absolute top-[25%] lg:top-[30%] w-full z-10 pointer-events-none">
-          <div className="inline-block animate-cloud-horizontal">
-            <Image src="/Cloud3.png" alt="Cloud" width={320} height={183} sizes="(max-width: 768px) 180px, 320px" className="w-[180px] md:w-[320px] opacity-80" />
-          </div>
-        </div> */}
-
-        {/* <div className="absolute top-[10%] lg:top-[15%] w-full z-10 pointer-events-none">
-          <div className="inline-block animate-plane-diagonal">
-            <Image src="/plane.png" alt="Airplane" width={300} height={150} sizes="(max-width: 768px) 180px, 300px" className="w-[180px] md:w-[300px] drop-shadow-xl" />
-          </div>
-        </div> */}
-
-        {/* <div className="absolute top-[10%] right-0 lg:right-5 z-10 pointer-events-none hidden md:block">
-          <div className="relative w-[200px] h-[350px]">
-            <div className="absolute top-0 right-14 animate-balloon-1">
-              <Image src="/balloon-blue.png" alt="Hot Air Balloon" width={130} height={176} sizes="(max-width: 1024px) 100px, 130px" className="w-[100px] lg:w-[130px] drop-shadow-xl" />
-            </div>
-            <div className="absolute top-32 right-[-10px] animate-balloon-2">
-              <Image src="/balloon-red.png" alt="Hot Air Balloon" width={90} height={130} sizes="(max-width: 1024px) 70px, 90px" className="w-[70px] lg:w-[90px] drop-shadow-lg" />
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
-          <h1 className="animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-            Discover <span className={`${caveat.className} text-[#fe6e00] font-normal`}>Our Story</span>
+        <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
+          <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
+            <span className="text-[0.85em]">Discover</span>{' '}
+            <span className={`${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>
+              Our Story
+            </span>
           </h1>
-          <p className="animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
+          <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
             Learn about our mission, our deep passion for Tanzania, and the dedicated, locally-owned team that makes your ultimate adventure possible.
           </p>
-        </div> */}
-        <div className="max-w-[1000px] mx-auto w-[96%] z-20 flex flex-col items-center text-center px-4">
-  <h1 className="headingCSS animate-fade-right text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 drop-shadow-sm" style={{ animationDelay: '0.2s' }}>
-    <span className="text-[0.85em]">Discover</span>{' '}
-    <span className={`${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>
-      Our Story
-    </span>
-  </h1>
-  <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
-    Learn about our mission, our deep passion for Tanzania, and the dedicated, locally-owned team that makes your ultimate adventure possible.
-  </p>
-</div>
+        </div>
       </section>
 
       {/* ========================================== */}
@@ -230,12 +218,9 @@ export default function AboutUsPage() {
                 {/* Highlight Quote Box */}
                 <div className="bg-[#F0F9FA] p-6 md:p-8 rounded-r-3xl shadow-sm">
                   <h4 className="headingCSS font-extrabold text-[#135D66] text-xl mb-3">Why did we start the company?</h4>
-                  {/* <p className="text-gray-700 italic text-lg leading-relaxed">
-                    "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
-                  </p> */}
                   <blockquote>
-  "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
-</blockquote>
+                    "We hope to build an entirely sustainable company that provides top-quality service to visitors, while at the same time, supporting the community and conserving our natural environment against global warming."
+                  </blockquote>
                 </div>
               </div>
             </div>
@@ -274,41 +259,25 @@ export default function AboutUsPage() {
       {/* ========================================== */}
       {/* 3. STATS BANNER                            */}
       {/* ========================================== */}
-      <section className="bg-[#135D66] py-16 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 divide-y md:divide-y-0 md:divide-x divide-white/20">
-            <div className="text-center md:pt-0 pt-6 first:pt-0">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              </div>
-              <h3 className="text-5xl font-black text-white mb-2">
-                <AnimatedCounter target={1730} duration={2500} />+
-              </h3>
-              <p className="text-lg text-white/80 font-medium uppercase tracking-wider">Happy Customers</p>
-            </div>
-            
-            <div className="text-center pt-8 md:pt-0">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-              </div>
-              <h3 className="text-5xl font-black text-white mb-2">
-                <AnimatedCounter target={88} duration={2000} />
-              </h3>
-              <p className="text-lg text-white/80 font-medium uppercase tracking-wider">Travel Guides</p>
-            </div>
-            
-            <div className="text-center pt-8 md:pt-0">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
-                <svg className="w-8 h-8 text-[#fe6e00]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-              </div>
-              <h3 className="text-5xl font-black text-white mb-2">
-                <AnimatedCounter target={180} duration={2200} />
-              </h3>
-              <p className="text-lg text-white/80 font-medium uppercase tracking-wider">Awards Won</p>
+      {stats.length > 0 && (
+        <section className="bg-[#135D66] py-16 relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 sm:px-12 relative z-10">
+            <div className={`grid grid-cols-1 md:grid-cols-${stats.length > 4 ? 4 : stats.length} gap-10 divide-y md:divide-y-0 md:divide-x divide-white/20`}>
+              {stats.map((stat, idx) => (
+                <div key={stat.id} className={`text-center ${idx === 0 ? 'md:pt-0 pt-6 first:pt-0' : 'pt-8 md:pt-0'}`}>
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4">
+                    {statIcons[idx % statIcons.length]}
+                  </div>
+                  <h3 className="text-5xl font-black text-white mb-2">
+                    <AnimatedCounter target={stat.value} duration={2000 + (idx * 200)} />{stat.suffix}
+                  </h3>
+                  <p className="text-lg text-white/80 font-medium uppercase tracking-wider">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ========================================== */}
       {/* 4. OUR GOALS & VALUES (GRID)               */}
@@ -361,9 +330,6 @@ export default function AboutUsPage() {
                   "Made by Tanzanians"
                 ].map((value, idx) => (
                   <li key={idx} className="flex items-start gap-4">
-                    {/* <div className="w-6 h-6 rounded-full bg-[#135D66]/10 flex items-center justify-center shrink-0 mt-0.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#135D66]"></div>
-                    </div> */}
                     <FaCheckCircle className="text-[#fe6e00] mt-1 shrink-0 text-xl" />
                     <span className="descCSS text-gray-800 font-medium text-lg">{value}</span>
                   </li>

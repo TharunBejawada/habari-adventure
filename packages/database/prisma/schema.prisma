@@ -49,6 +49,7 @@ model Package {
   whyChoose       Json?    // { image, heading, description, items: [{title, desc}], table: [] }
   itineraryMeta   Json?    // { heading, description, included: [""], notIncluded: [""] }
   itineraries     Json?    // Array of tabs: [{ tabName: "8-Day", days: [{ dayNumber, heading, description, timeTaken, image }] }]
+  filters            Json?    @default("{}") // NEW: Package Filters
   
   metaTitle       String?
   metaDescription String?
@@ -364,7 +365,25 @@ model Stat {
   value     Int      // e.g., 2000
   suffix    String?  @default("+") // e.g., "+", "%", or "k"
   order     Int      @default(0)
+  page      String   @default("Home") // NEW: "Home" or "About"
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model GalleryItem {
+  id          String    @id @default(cuid())
+  type        MediaType 
+  url         String    // Server file path for images, or YouTube URL for videos
+  category    String?   // "Climbing", "Safari", etc. (Nullable for videos)
+  title       String?   // Optional: For image alt-tags (SEO) or video titles
+  isPublished Boolean   @default(true)
+  order       Int       @default(0) // Useful for custom sorting later
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

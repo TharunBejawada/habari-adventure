@@ -290,6 +290,35 @@ function LocationEditorForm() {
         </div>
       </div>
 
+      {/* PUBLISHING STATUS WITH CENTERED TOGGLE (MOVED TO TOP) */}
+      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+        <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
+        
+        <label className="flex items-center justify-center p-5 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+          {activeLang === 'en' ? (
+            <div className="flex items-center gap-4">
+              <span className={`text-sm font-bold transition-colors duration-300 ${!formData.isPublished ? 'text-gray-800' : 'text-gray-400'}`}>
+                Draft
+              </span>
+              
+              <div className="relative inline-flex items-center">
+                <input 
+                  type="checkbox" className="sr-only peer" checked={formData.isPublished} 
+                  onChange={(e) => setFormData({...formData, isPublished: e.target.checked})} 
+                />
+                <div className="relative w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#fe6e00]"></div>
+              </div>
+
+              <span className={`text-sm font-bold transition-colors duration-300 ${formData.isPublished ? 'text-[#fe6e00]' : 'text-gray-400'}`}>
+                Published
+              </span>
+            </div>
+          ) : (
+            <span className="text-sm font-bold text-[#fe6e00]">Visibility Managed in English Tab</span>
+          )}
+        </label>
+      </div>
+
       <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
   {SUPPORTED_LANGUAGES.map(lang => (
     <button
@@ -537,35 +566,6 @@ function LocationEditorForm() {
             OG, Twitter, Canonical, Robots, and Structured Data are global and managed in the English tab.
           </div>
         )}
-      </div>
-
-      {/* PUBLISHING STATUS WITH CENTERED TOGGLE */}
-      <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
-        <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
-        
-        <label className="flex items-center justify-center p-5 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
-          {activeLang === 'en' ? (
-            <div className="flex items-center gap-4">
-              <span className={`text-sm font-bold transition-colors duration-300 ${!formData.isPublished ? 'text-gray-800' : 'text-gray-400'}`}>
-                Draft
-              </span>
-              
-              <div className="relative inline-flex items-center">
-                <input 
-                  type="checkbox" className="sr-only peer" checked={formData.isPublished} 
-                  onChange={(e) => setFormData({...formData, isPublished: e.target.checked})} 
-                />
-                <div className="relative w-14 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#fe6e00]"></div>
-              </div>
-
-              <span className={`text-sm font-bold transition-colors duration-300 ${formData.isPublished ? 'text-[#fe6e00]' : 'text-gray-400'}`}>
-                Published
-              </span>
-            </div>
-          ) : (
-            <span className="text-sm font-bold text-[#fe6e00]">Visibility Managed in English Tab</span>
-          )}
-        </label>
       </div>
 
     </form>

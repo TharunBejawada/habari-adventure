@@ -71,7 +71,7 @@ export default function ClimbingSection() {
           alt="Rock Climber"
           fill
           sizes="(max-width: 640px) 200px, (max-width: 1024px) 300px, 450px"
-          className="object-cover object-right-top drop-shadow-2xl"
+          className="object-contain object-right-top drop-shadow-2xl"
         />
       </div>
 
@@ -80,7 +80,8 @@ export default function ClimbingSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           {/* CARD 1: Kilimanjaro */}
-          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <Link href={getLocalizedUrl("/climbing/Kilimanjaro")}>
+          <div className="cursor-pointer bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/kili-mount.jpg" alt="Mount Kilimanjaro" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -110,9 +111,11 @@ export default function ClimbingSection() {
               </div>
             </div>
           </div>
+          </Link>
 
           {/* CARD 2: Mount Meru */}
-          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <Link href={getLocalizedUrl("/climbing/meru")}>
+          <div className="cursor-pointer bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/meru-mount.jpg" alt="Mount Meru" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -142,9 +145,11 @@ export default function ClimbingSection() {
               </div>
             </div>
           </div>
+          </Link>
 
           {/* CARD 3: Mount Kenya */}
-          <div className="bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
+          <Link href={getLocalizedUrl("/climbing/mount-kenya")}>
+          <div className="cursor-pointer bg-[#0A484F] rounded-[30px] p-7 border border-white/10 shadow-2xl flex flex-col group hover:-translate-y-2 transition-transform duration-300">
             {/* Image Header */}
             <div className="w-full h-[220px] relative rounded-[20px] overflow-hidden">
               <Image src="/kenya-mount.jpg" alt="Mount Kenya" fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -174,6 +179,7 @@ export default function ClimbingSection() {
               </div>
             </div>
           </div>
+          </Link>
 
         </div>
       </div>

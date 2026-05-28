@@ -37,7 +37,7 @@ export default function WhyChooseHabari() {
   };
 
   return (
-    <section className="relative pt-16 lg:pt-24 pb-0 bg-[#FAFAFA] overflow-hidden min-h-[600px] flex items-center">
+    <section className="relative pt-16 lg:pt-24 pb-0 bg-[#f9fafb] overflow-hidden min-h-[600px] flex items-center">
       
       {/* --- BACKGROUND IMAGES --- */}
       {/* Top Line Art (Clouds, Plane, Balloon) with subtle float animation */}

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
+import { sendEmail } from "../utils/mailer";
 
 // POST: Create a new booking/quote request
 export const createBooking = async (req: Request, res: Response) => {
@@ -45,6 +46,55 @@ export const createBooking = async (req: Request, res: Response) => {
         message: message || null,
       }
     });
+
+    // --- EMAIL LOGIC START ---
+    
+    const clientHtml = `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2>Booking Request Received</h2>
+        <p>Hi ${firstName},</p>
+        <p>Thank you for reaching out! We have successfully received your inquiry.</p>
+        <p>One of our travel experts will review your details and get back to you shortly.</p>
+        <br/>
+        <p>Best regards,<br/><strong>Habari Adventure</strong></p>
+      </div>
+    `;
+
+    const adminHtml = `
+      <div style="font-family: Arial, sans-serif; color: #333;">
+        <h2>New Booking Inquiry: ${bookingType || 'General'}</h2>
+        <p><strong>Name:</strong> ${firstName} ${lastName || ''}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
+        <p><strong>Package:</strong> ${packageName || 'N/A'}</p>
+        <p><strong>Location:</strong> ${location || 'N/A'}</p>
+        <p><strong>Travel Date:</strong> ${departureDate || monthYear || 'N/A'}</p>
+        <p><strong>Group Size:</strong> ${groupSize || 'N/A'}</p>
+        <p><strong>Trip Days:</strong> ${length || 'N/A'}</p>
+        <br/>
+        <p><strong>Message:</strong><br/>${message || 'No additional message.'}</p>
+      </div>
+    `;
+
+    // Dispatch Client Email (Fire & Forget to avoid blocking the HTTP response)
+    sendEmail({
+      to: email,
+      subject: "Booking inquiry! || Habari Adventure",
+      html: clientHtml
+    }).catch(console.error);
+
+    // Dispatch Admin Email
+    if (process.env.ADMIN_RECIPIENT_EMAIL) {
+      sendEmail({
+        to: process.env.ADMIN_RECIPIENT_EMAIL,
+        cc: process.env.ADMIN_CC_EMAIL,
+        bcc: process.env.ADMIN_BCC_EMAIL, 
+        subject: `New Booking: ${firstName} - ${packageName || bookingType}`,
+        html: adminHtml
+      }).catch(console.error);
+    }
+    
+    // --- EMAIL LOGIC END ---
 
     res.status(201).json({ 
       status: "success", 

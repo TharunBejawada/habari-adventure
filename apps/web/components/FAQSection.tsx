@@ -127,7 +127,7 @@ export default function FAQSection() {
                   </h3>
                   
                   {/* Plus/Minus Icon */}
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isActive ? "bg-[#135D66] text-[#fe6e00]" : "bg-gray-100 text-gray-500"}`}>
+                  <div className={`cursor-pointer w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors duration-300 ${isActive ? "bg-[#135D66] text-[#fe6e00]" : "bg-gray-100 text-gray-500"}`}>
                     <svg
                       className={`w-5 h-5 transform transition-transform duration-300 ${isActive ? "rotate-180" : "rotate-0"}`}
                       fill="none"

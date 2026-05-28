@@ -60,7 +60,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
 
   if (!isLoading && dates.length === 0) {
     return (
-      <section className="py-16 lg:py-24 bg-white border-b border-gray-100">
+      <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 text-center">
           <h2 className="headingCSS text-3xl font-extrabold text-gray-900 mb-4">
             Upcoming <span className="text-[#fe6e00]">Dates</span>
@@ -77,7 +77,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
   }
 
   return (
-    <section className="py-16 lg:py-24 bg-white border-b border-gray-100 reveal-on-scroll">
+    <section className="py-16 lg:py-24 bg-[#f9fafb] border-b border-gray-100 reveal-on-scroll">
       <div className="max-w-7xl mx-auto px-6 sm:px-12">
         
         <div className="mb-10">
@@ -179,7 +179,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                         ) : (
                           <button 
                             onClick={() => onBook && onBook(startDate)}
-                            className="inline-block bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
+                            className="cursor-pointer inline-block bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-bold py-2.5 px-6 rounded-full text-xs uppercase tracking-wider transition-transform shadow-md hover:-translate-y-0.5"
                           >
                             BOOK NOW
                           </button>

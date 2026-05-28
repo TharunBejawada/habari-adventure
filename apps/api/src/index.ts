@@ -1,9 +1,10 @@
 // apps/api/src/index.ts
+import dotenv from "dotenv";
 import path from "path";
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
+
 
 import apiRoutes from "./routes";
 import { globalLimiter } from "./middleware/rateLimiter";
