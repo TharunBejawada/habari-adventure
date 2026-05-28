@@ -299,7 +299,7 @@ export default function LocationLandingPage() {
             <span className="text-[0.85em]">Explore</span>{' '}<span className={`notranslate ${caveat.className} text-[#fe6e00] font-normal text-[1.1em]`}>{displayTitle}</span>
           </h1>
           <p className="descCSS animate-fade-left font-medium text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mb-12 drop-shadow-md" style={{ animationDelay: '0.3s' }}>
-            Discover our curated selection of routes and adventures designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
+            Discover our curated selection of routes and adventures <br /> designed for the ultimate <span className="notranslate">{displayTitle}</span> experience.
           </p>
         </div>
       </section>
@@ -316,7 +316,8 @@ export default function LocationLandingPage() {
                 {locationData.youtubeVideoUrl ? (
                   <iframe 
                     className="absolute inset-0 w-full h-full object-cover"
-                    src={getYouTubeEmbedUrl(locationData.youtubeVideoUrl) || ""}
+                    // src={getYouTubeEmbedUrl(locationData.youtubeVideoUrl) || ""}
+                    src={`${getYouTubeEmbedUrl(locationData.youtubeVideoUrl)}${getYouTubeEmbedUrl(locationData.youtubeVideoUrl)?.includes('?') ? '&' : '?'}rel=0`}
                     title={`${locationData.title || displayTitle} Video`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                     allowFullScreen
@@ -338,6 +339,7 @@ export default function LocationLandingPage() {
                   __html: locationData.overviewText
                     .replace(/<ul>/g, '<ul style="list-style-type: disc; padding-left: 1.5rem;">')
                     .replace(/<ol>/g, '<ol style="list-style-type: decimal; padding-left: 1.5rem;">') 
+                    .replace(/&nbsp;/g, ' ') || ""
                 }}
               />
             </div>

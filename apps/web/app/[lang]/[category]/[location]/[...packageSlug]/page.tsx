@@ -17,6 +17,7 @@ import NextJourneyCTA from "../../../../../components/packages/NextJourneyCTA";
 // NEW: Import the Booking Modal
 import BookingModal from "../../../../../components/modals/BookingModal";
 
+
 export default function PackageLandingPage() {
   const params = useParams();
   const router = useRouter();
@@ -205,7 +206,7 @@ export default function PackageLandingPage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 pt-16">
           <div className="max-w-2xl reveal-on-scroll is-visible overflow-hidden">
             
-            <h1 className="headingCSS notranslate text-white text-5xl sm:text-6xl font-extrabold uppercase tracking-tight mb-2 drop-shadow-lg break-words">
+            <h1 className="font-caveat notranslate text-white text-5xl sm:text-6xl font-extrabold tracking-tight mb-2 drop-shadow-lg break-words">
               {pkg.title}
             </h1>
             
@@ -225,13 +226,13 @@ export default function PackageLandingPage() {
             <div className="flex flex-wrap items-center gap-4">
               <button 
                 onClick={() => { document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' }); }}
-                className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
+                className="cursor-pointer bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1"
               >
                 See Dates & Prices
               </button>
               
               {pkg.tripPlanPdf && (
-                <a href={pkg.tripPlanPdf} target="_blank" rel="noreferrer" className="bg-white text-gray-900 hover:bg-gray-100 font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
+                <a href={pkg.tripPlanPdf} target="_blank" rel="noreferrer" className="cursor-pointer bg-white text-gray-900 hover:bg-gray-100 font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
                   Download Trip Plan
                 </a>
               )}
@@ -244,7 +245,7 @@ export default function PackageLandingPage() {
       {/* 2. QUICK FACTS                             */}
       {/* ========================================== */}
       {pkg.quickFacts && (
-        <section className="py-12 lg:py-20 bg-white border-b border-gray-100 overflow-hidden">
+        <section className="py-12 lg:py-20 bg-[#F9FAFB] border-b border-gray-100 overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 sm:px-12 flex flex-col lg:flex-row gap-10 lg:gap-16 items-center">
             
             <div className="w-full lg:w-3/5 reveal-on-scroll">
@@ -309,7 +310,7 @@ export default function PackageLandingPage() {
             </div>
             
             {hasCompareTable && (
-                <button onClick={() => setIsCompareModalOpen(true)} className="bg-[#111827] hover:bg-black mb-8 text-white font-bold py-3.5 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
+                <button onClick={() => setIsCompareModalOpen(true)} className="cursor-pointer bg-[#111827] hover:bg-black mb-8 text-white font-bold py-3.5 px-8 rounded-full text-xs uppercase tracking-widest transition-colors shrink-0 shadow-md">
                   Compare with other routes
                 </button>
               )}
@@ -574,7 +575,7 @@ export default function PackageLandingPage() {
             <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
               <button 
                 onClick={() => openBooking("")}
-                className="bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
+                className="cursor-pointer bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
               >
                 Book This Trip Now
               </button>

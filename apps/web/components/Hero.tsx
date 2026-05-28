@@ -83,7 +83,7 @@ export default function Hero() {
   const [stats, setStats] = useState<any[]>([]);
 
   useEffect(() => {
-    apiFetch("/stats")
+    apiFetch("/stats?page=Home")
       .then(res => {
         if (res.ok && Array.isArray(res.data)) {
           setStats(res.data);

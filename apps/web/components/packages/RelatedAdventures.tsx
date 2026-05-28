@@ -31,21 +31,15 @@ export default function RelatedAdventures({ currentCategory, currentPackageTitle
     lastName: "",
     email: "",
     phone: "",
-    monthYear: "",
-    tripDays: "",
+    // monthYear: "",
+    // tripDays: "",
     message: ""
   });
 
   const categoryStr = currentCategory?.toLowerCase() || "";
   const isClimbing = categoryStr.includes("climbing");
-  const isSafari = categoryStr.includes("safari");
 
   useEffect(() => {
-    if (!isClimbing && !isSafari) {
-      setIsLoading(false);
-      return;
-    }
-
     const loadData = async () => {
       try {
         const [pkgResult, pricingResult] = await Promise.all([
@@ -61,12 +55,12 @@ export default function RelatedAdventures({ currentCategory, currentPackageTitle
             return { ...pkg, startingPrice: matchedPricing?.tier1 || null };
           });
 
-          const targetPackages = mergedPackages.filter(p => {
+          const targetPackages = mergedPackages.filter((p: any) => {
             if (p.isPublished === false) return false;
             const cat = (typeof p.category === "string" ? p.category : p.category?.name || "").toLowerCase();
-            if (isClimbing) return cat.includes("safari");
-            if (isSafari) return cat.includes("climbing");
-            return false;
+            
+            // Return true if the package category does NOT match the current category
+            return cat && !cat.includes(categoryStr) && !categoryStr.includes(cat);
           });
 
           setPackages(targetPackages);
@@ -79,17 +73,17 @@ export default function RelatedAdventures({ currentCategory, currentPackageTitle
     };
 
     loadData();
-  }, [isClimbing, isSafari]);
+  }, [categoryStr]);
 
-  if ((!isClimbing && !isSafari) || (!isLoading && packages.length === 0)) {
+  if (!isLoading && packages.length === 0) {
     return null; 
   }
 
-  const title = isClimbing ? "Add a Safari" : "Add a Trek";
+  const title = "Add an Adventure";
   const subtitle = isClimbing 
     ? "Turn your summit into a full Tanzania adventure." 
-    : "Conquer the roof of Africa before you unwind.";
-  const buttonText = isClimbing ? "BUILD MY TREK + SAFARI" : "BUILD MY SAFARI + TREK";
+    : "Discover more of Tanzania to complete your journey.";
+  const buttonText = "BUILD YOUR ADVENTURE";
 
   // --- CAROUSEL SCROLL LOGIC ---
   const totalPages = Math.ceil(packages.length / 3); // Assuming 3 items per view on desktop
@@ -133,8 +127,6 @@ export default function RelatedAdventures({ currentCategory, currentPackageTitle
     const fullMessage = `Combo Trip Request:
 Base Package: ${currentPackageTitle}
 Added Package: ${formData.otherPackage}
-Travel Date: ${formData.monthYear || "Not specified"}
-Total Trip Days: ${formData.tripDays || "Not specified"}
 
 Message: 
 ${formData.message}`;
@@ -146,8 +138,8 @@ ${formData.message}`;
       email: formData.email,
       phone: formData.phone,
       packageName: `${currentPackageTitle} + ${formData.otherPackage}`,
-      monthYear: formData.monthYear,
-      tripDays: formData.tripDays,
+      // monthYear: formData.monthYear,
+      // tripDays: formData.tripDays,
       message: fullMessage
     };
 
@@ -171,8 +163,8 @@ ${formData.message}`;
             lastName: "", 
             email: "", 
             phone: "", 
-            monthYear: "", 
-            tripDays: "", 
+            // monthYear: "", 
+            // tripDays: "", 
             message: "" 
           });
         }, 3000);
@@ -356,7 +348,7 @@ ${formData.message}`;
                     <input type="text" readOnly value={currentPackageTitle} className="w-full px-4 py-2.5 bg-gray-100 border border-gray-200 rounded-lg text-gray-700 font-medium outline-none cursor-not-allowed" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#fe6e00] uppercase tracking-wide mb-1">Select {isClimbing ? "Safari" : "Trek"} to Add *</label>
+                    <label className="block text-xs font-bold text-[#fe6e00] uppercase tracking-wide mb-1">Select Adventure to Add *</label>
                     <select 
                       required 
                       value={formData.otherPackage} 
@@ -392,7 +384,7 @@ ${formData.message}`;
                 </div>
 
                 {/* Travel Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-gray-500 mb-1">Expected Month & Year</label>
                     <input 
@@ -407,7 +399,7 @@ ${formData.message}`;
                     <label className="block text-xs font-bold text-gray-500 mb-1">Total Trip Days</label>
                     <input type="number" min="1" value={formData.tripDays} onChange={e => setFormData({...formData, tripDays: e.target.value})} className="w-full px-4 py-2.5 border rounded-lg outline-none focus:border-[#fe6e00]" />
                   </div>
-                </div>
+                </div> */}
 
                 {/* Message */}
                 <div>

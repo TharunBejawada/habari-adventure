@@ -95,7 +95,8 @@ export default function NextJourneyCTA() {
             
             {/* WhatsApp */}
             <motion.a 
-              href="#" 
+              href="https://wa.me/255762992308" 
+              target="_blank" rel="noopener noreferrer" 
               variants={iconVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -111,7 +112,7 @@ export default function NextJourneyCTA() {
 
             {/* Email / Enquiry */}
             <motion.a 
-              href="#" 
+              href="mailto:info@habariadventure.com" 
               variants={iconVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
