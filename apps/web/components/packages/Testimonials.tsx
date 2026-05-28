@@ -38,7 +38,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-4 lg:py-12 bg-white overflow-hidden">
+    <section className="pt-4 lg:pt-12 bg-white overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-20 flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
         
         {/* Left Col: Image */}

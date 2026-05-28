@@ -17,6 +17,19 @@ function normalizeSlug(slug: string): string {
 export interface NavItem     { title: string; slug: string; }
 export interface NavCategory { category: string; slug: string; items: NavItem[]; }
 
+export interface MenuTreePackage { id: string; title: string; slug: string; url: string; }
+export interface MenuTreeLocation {
+  title: string;
+  slug: string;
+  url: string;
+  packages: MenuTreePackage[];
+}
+export interface MenuTreeCategory {
+  category: string;
+  slug: string;
+  locations: MenuTreeLocation[];
+}
+
 /**
  * GET /api/v1/navigation[?lang=fr]
  *
@@ -83,5 +96,76 @@ export const getNavigation = async (req: Request, res: Response): Promise<void> 
   } catch (error: any) {
     console.error("[getNavigation] error:", error.message);
     res.status(500).json({ status: "error", message: "Failed to fetch navigation data" });
+  }
+};
+
+/**
+ * GET /api/v1/navigation/menu-tree
+ *
+ * Returns published content grouped as Category -> Location -> Package
+ * for the admin menu builder picker only.
+ */
+export const getMenuTree = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const [locations, packages] = await Promise.all([
+      prisma.location.findMany({
+        where: { isPublished: true },
+        orderBy: { title: "asc" },
+        select: { title: true, slug: true, category: true },
+      }),
+      prisma.package.findMany({
+        where: { isPublished: true },
+        orderBy: { title: "asc" },
+        select: { id: true, title: true, slug: true, category: true, location: true },
+      }),
+    ]);
+
+    const categoryOrder: string[] = [];
+    const grouped: Record<string, MenuTreeLocation[]> = {};
+
+    for (const loc of locations) {
+      const locSlug = normalizeSlug(loc.slug);
+      if (!grouped[loc.category]) {
+        grouped[loc.category] = [];
+        categoryOrder.push(loc.category);
+      }
+
+      const locPackages: MenuTreePackage[] = packages
+        .filter((pkg) => {
+          const pkgSlug = normalizeSlug(pkg.slug);
+          if (pkgSlug.startsWith(`${locSlug}/`)) return true;
+          if (pkg.category === loc.category && pkg.location.toLowerCase() === loc.title.toLowerCase()) {
+            return true;
+          }
+          return false;
+        })
+        .map((pkg) => {
+          const pkgSlug = normalizeSlug(pkg.slug);
+          return {
+            id: pkg.id,
+            title: pkg.title,
+            slug: pkgSlug,
+            url: `/${pkgSlug}`,
+          };
+        });
+
+      grouped[loc.category].push({
+        title: loc.title,
+        slug: locSlug,
+        url: `/${locSlug}`,
+        packages: locPackages,
+      });
+    }
+
+    const tree: MenuTreeCategory[] = categoryOrder.map((category) => ({
+      category,
+      slug: category.toLowerCase().replace(/\s+/g, "-"),
+      locations: grouped[category] ?? [],
+    }));
+
+    res.status(200).json({ status: "success", data: tree });
+  } catch (error: any) {
+    console.error("[getMenuTree] error:", error.message);
+    res.status(500).json({ status: "error", message: "Failed to fetch menu tree" });
   }
 };
