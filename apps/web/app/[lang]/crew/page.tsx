@@ -122,7 +122,7 @@ export default function OurCrewPage() {
         <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-[#FDFEFE] to-transparent z-0"></div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className={`${caveat.className} text-[#fe6e00] text-3xl md:text-4xl mb-2 block tracking-wide`}>
+          <span className={`${caveat.className} text-[#fe6e00] text-5xl md:text-5xl mb-2 block tracking-normal`}>
             Meet the Experts
           </span>
           <h1 className="headingCSS text-white text-5xl md:text-7xl font-extrabold uppercase tracking-tight mb-6 drop-shadow-xl">

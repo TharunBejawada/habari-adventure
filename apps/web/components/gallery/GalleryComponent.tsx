@@ -230,14 +230,14 @@ export default function GalleryComponent() {
         )}
 
         {/* --- 4. RIGHT ALIGNED TEXT --- */}
-        <div className="mt-16 mb-20 text-right border-r-4 border-[#fe6e00] pr-6">
+        {/* <div className="mt-16 mb-20 text-right border-r-4 border-[#fe6e00] pr-6">
           <h3 className="headingCSS text-lg md:text-xl font-bold text-[#135D66] mb-1">
             Explore the Most Beautiful
           </h3>
           <h2 className="headingCSS text-4xl md:text-6xl font-black text-[#fe6e00] uppercase tracking-wide">
             Place In The World
           </h2>
-        </div>
+        </div> */}
 
         {/* --- 5. YOUTUBE VIDEOS SECTION --- */}
         {videos.length > 0 && (

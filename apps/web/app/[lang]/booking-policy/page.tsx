@@ -99,7 +99,7 @@ export default function BookingPolicyPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 text-center reveal-on-scroll is-visible">
-          <span className="headingCSS text-[#fe6e00] font-bold text-sm uppercase tracking-widest mb-4 block">
+          <span className="font-caveat text-[#fe6e00] font-bold text-5xl tracking-normal mb-4 block">
             Terms & Conditions
           </span>
           <h1 className="headingCSS text-white text-5xl md:text-6xl font-extrabold uppercase tracking-tight mb-4 drop-shadow-lg">
