@@ -11,6 +11,7 @@ import upcomingDateRoutes from "./upcomingDateRoutes"
 import pricingRoutes from "./pricingRoutes";
 import statRoutes from "./statRoutes";
 import galleryRoutes from "./galleryRoutes";
+import emailSettingsRoutes from "./emailSettingsRoutes";
 import { upload } from "../utils/upload";
 import { uploadFile } from "../controllers/uploadController";
 import { getSettings, updateSettings } from "../controllers/settingsController";
@@ -46,6 +47,8 @@ router.use("/pricing", pricingRoutes);
 router.use("/stats", statRoutes);
 
 router.use("/gallery", galleryRoutes);
+
+router.use("/settings", emailSettingsRoutes);
 
 router.post("/upload", upload.single("asset"), uploadFile);
 

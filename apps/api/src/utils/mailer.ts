@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 let transporter: nodemailer.Transporter | null = null;
 
 interface EmailPayload {
+  from?: string; // NEW: Allow dynamic sender override
   to: string | string[];
   subject: string;
   html: string;
@@ -34,7 +35,8 @@ export const sendEmail = async (payload: EmailPayload) => {
     }
 
     const info = await transporter.sendMail({
-      from: `"${process.env.SMTP_SENDER_NAME}" <${process.env.SMTP_SENDER_EMAIL}>`,
+      // NEW: Use the dynamic payload.from, or fallback to the .env variables
+      from: payload.from || `"${process.env.SMTP_SENDER_NAME}" <${process.env.SMTP_SENDER_EMAIL}>`,
       to: payload.to,
       cc: payload.cc,
       bcc: payload.bcc,

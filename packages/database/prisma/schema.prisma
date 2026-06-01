@@ -387,3 +387,14 @@ model GalleryItem {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
+
+model EmailSettings {
+  id            String   @id @default("default")
+  senderName    String   // e.g., "Habari Adventure Info"
+  senderEmail   String   // e.g., "info@habariadventure.com"
+  recipientTo   String   
+  ccEmails      String?  // Optional comma-separated
+  bccEmails     String?  // Optional comma-separated
+  
+  updatedAt     DateTime @updatedAt
+}

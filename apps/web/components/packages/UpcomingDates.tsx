@@ -59,21 +59,22 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
   }, [fullDbSlug]);
 
   if (!isLoading && dates.length === 0) {
-    return (
-      <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 text-center">
-          <h2 className="headingCSS text-3xl font-extrabold text-gray-900 mb-4">
-            Upcoming <span className="text-[#fe6e00]">Dates</span>
-          </h2>
-          <p className="descCSS text-gray-600 text-lg mb-6">
-            We are currently organizing our next group departures for this route.
-          </p>
-          <Link href={`/${lang}/contact`} className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3 px-8 rounded-full transition-all shadow-md">
-            Request Private Dates
-          </Link>
-        </div>
-      </section>
-    );
+    // return (
+    //   <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100">
+    //     <div className="max-w-7xl mx-auto px-6 sm:px-12 text-center">
+    //       <h2 className="headingCSS text-3xl font-extrabold text-gray-900 mb-4">
+    //         Upcoming <span className="text-[#fe6e00]">Dates</span>
+    //       </h2>
+    //       <p className="descCSS text-gray-600 text-lg mb-6">
+    //         We are currently organizing our next group departures for this route.
+    //       </p>
+    //       <Link href={`/${lang}/contact`} className="bg-[#fe6e00] hover:bg-[#fe6e00]/70 text-white font-bold py-3 px-8 rounded-full transition-all shadow-md">
+    //         Request Private Dates
+    //       </Link>
+    //     </div>
+    //   </section>
+    // );
+    return null;
   }
 
   return (

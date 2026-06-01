@@ -1,3 +1,4 @@
+// apps/api/src/controllers/bookingController.ts
 import { Request, Response } from "express";
 import { prisma } from "../prisma";
 import { sendEmail } from "../utils/mailer";
@@ -48,6 +49,19 @@ export const createBooking = async (req: Request, res: Response) => {
     });
 
     // --- EMAIL LOGIC START ---
+
+    // NEW: Fetch Email Settings from Database
+    const emailConfig = await prisma.emailSettings.findFirst();
+
+    // NEW: Define variables (fallback to .env if DB is empty to prevent crashes)
+    const senderName = emailConfig?.senderName || process.env.SMTP_SENDER_NAME || "Habari Adventure Info";
+    const senderEmail = emailConfig?.senderEmail || process.env.SMTP_SENDER_EMAIL || "info@habariadventure.com";
+    const adminTo = emailConfig?.recipientTo || process.env.ADMIN_RECIPIENT_EMAIL;
+    const adminCc = emailConfig?.ccEmails || process.env.ADMIN_CC_EMAIL;
+    const adminBcc = emailConfig?.bccEmails || process.env.ADMIN_BCC_EMAIL;
+
+    // Properly formatted dynamic "From" string
+    const fromString = `"${senderName}" <${senderEmail}>`;
     
     const clientHtml = `
       <div style="font-family: Arial, sans-serif; color: #333;">
@@ -56,7 +70,7 @@ export const createBooking = async (req: Request, res: Response) => {
         <p>Thank you for reaching out! We have successfully received your inquiry.</p>
         <p>One of our travel experts will review your details and get back to you shortly.</p>
         <br/>
-        <p>Best regards,<br/><strong>Habari Adventure</strong></p>
+        <p>Best regards,<br/><strong>${senderName}</strong></p>
       </div>
     `;
 
@@ -78,17 +92,19 @@ export const createBooking = async (req: Request, res: Response) => {
 
     // Dispatch Client Email (Fire & Forget to avoid blocking the HTTP response)
     sendEmail({
+      from: fromString, // NEW
       to: email,
       subject: "Booking inquiry! || Habari Adventure",
       html: clientHtml
     }).catch(console.error);
 
     // Dispatch Admin Email
-    if (process.env.ADMIN_RECIPIENT_EMAIL) {
+    if (adminTo) {
       sendEmail({
-        to: process.env.ADMIN_RECIPIENT_EMAIL,
-        cc: process.env.ADMIN_CC_EMAIL,
-        bcc: process.env.ADMIN_BCC_EMAIL, 
+        from: fromString, // NEW
+        to: adminTo,
+        cc: adminCc || undefined, // NEW
+        bcc: adminBcc || undefined, // NEW
         subject: `New Booking: ${firstName} - ${packageName || bookingType}`,
         html: adminHtml
       }).catch(console.error);
