@@ -560,17 +560,44 @@ export default function PackageLandingPage() {
               {/* Category Mode Tabs - ONLY renders if there is data */}
               {!isStandard && (hasCamping || hasMidRange || hasLuxury) && (
                 <div className="flex justify-center mb-12 reveal-on-scroll">
-                  <div className="inline-flex bg-gray-50 p-1.5 rounded-2xl border border-gray-200 shadow-inner overflow-x-auto max-w-full">
-                    {hasCamping && (
-                      <button onClick={() => setActivePricingTab("Camping")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'Camping' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>🏕️ Camping</button>
-                    )}
-                    {hasMidRange && (
-                      <button onClick={() => setActivePricingTab("MidRange")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'MidRange' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>🏨 Mid-Range</button>
-                    )}
-                    {hasLuxury && (
-                      <button onClick={() => setActivePricingTab("Luxury")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'Luxury' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>💎 Luxury</button>
-                    )}
-                  </div>
+                  <div className="headingCSS flex flex-wrap justify-center gap-3 overflow-x-auto max-w-full">
+  {hasCamping && (
+    <button 
+      onClick={() => setActivePricingTab("Camping")} 
+      className={`cursor-pointer whitespace-nowrap px-6 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${
+        effectiveActiveTab === 'Camping' 
+          ? "bg-[#135D66] text-white shadow-md" 
+          : "bg-white text-[#135D66]/70 border border-[#135D66]/10 hover:bg-[#135D66]/5"
+      }`}
+    >
+      🏕️ Camping
+    </button>
+  )}
+  {hasMidRange && (
+    <button 
+      onClick={() => setActivePricingTab("MidRange")} 
+      className={`cursor-pointer whitespace-nowrap px-6 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${
+        effectiveActiveTab === 'MidRange' 
+          ? "bg-[#135D66] text-white shadow-md" 
+          : "bg-white text-[#135D66]/70 border border-[#135D66]/10 hover:bg-[#135D66]/5"
+      }`}
+    >
+      🏨 Mid-Range
+    </button>
+  )}
+  {hasLuxury && (
+    <button 
+      onClick={() => setActivePricingTab("Luxury")} 
+      className={`cursor-pointer whitespace-nowrap px-6 py-2.5 rounded-full text-sm md:text-base font-bold transition-all duration-300 ${
+        effectiveActiveTab === 'Luxury' 
+          ? "bg-[#135D66] text-white shadow-md" 
+          : "bg-white text-[#135D66]/70 border border-[#135D66]/10 hover:bg-[#135D66]/5"
+      }`}
+    >
+      💎 Luxury
+    </button>
+  )}
+</div>
                 </div>
               )}
 

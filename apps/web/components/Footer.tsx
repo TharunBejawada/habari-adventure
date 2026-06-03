@@ -164,21 +164,21 @@ export default function Footer() {
             <div className="w-10 h-10 rounded-full bg-[#E8EFEF] flex items-center justify-center shrink-0">
               <svg className="w-4 h-4 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
             </div>
-            <span className="font-bold italic text-lg">{settings.phoneNumber}</span>
+            <a href="https://wa.me/255762992308"  target="_blank" rel="noopener noreferrer" className="font-bold italic text-lg">{settings.phoneNumber}</a>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-[#E8EFEF] flex items-center justify-center shrink-0">
               <svg className="w-4 h-4 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v10a2 2 0 002 2z" /></svg>
             </div>
-            <span className="font-medium text-sm text-[#135D66]/80 break-all">{settings.email}</span>
+            <a href="mailto:habariadventure@gmail.com" target="_blank" rel="noopener noreferrer" className="font-medium text-sm text-[#135D66]/80 break-all">{settings.email}</a>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-[#E8EFEF] flex items-center justify-center shrink-0">
               <svg className="w-4 h-4 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
             </div>
-            <span className="font-medium text-sm leading-relaxed text-[#135D66]/80">{settings.address}</span>
+            <a href="https://maps.google.com/?q=Moshi,Kilimanjaro,Tanzania" target="_blank" rel="noopener noreferrer" className="font-medium text-sm leading-relaxed text-[#135D66]/80">{settings.address}</a>
           </div>
         </div>
       </div>

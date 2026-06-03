@@ -199,7 +199,7 @@ export default function AdminBookingsPage() {
                 <th className="p-4 font-bold text-gray-600">Client</th>
                 <th className="p-4 font-bold text-gray-600">Inquiry Type</th>
                 <th className="p-4 font-bold text-gray-600">Trip Context</th>
-                <th className="p-4 font-bold text-gray-600">Status</th>
+                {/* <th className="p-4 font-bold text-gray-600">Status</th> */}
                 <th className="p-4 font-bold text-gray-600 text-right">Action</th>
               </tr>
             </thead>
@@ -224,7 +224,7 @@ export default function AdminBookingsPage() {
                     <td className="p-4 max-w-[200px] truncate text-gray-700">
                       {booking.packageName || booking.location || "General Inquiry"}
                     </td>
-                    <td className="p-4">
+                    {/* <td className="p-4">
                       <select
                         value={booking.status}
                         onChange={(e) => updateStatus(booking.id, e.target.value)}
@@ -234,7 +234,7 @@ export default function AdminBookingsPage() {
                         <option value="Contacted">Contacted</option>
                         <option value="Closed">Closed</option>
                       </select>
-                    </td>
+                    </td> */}
                     <td className="p-4 text-right">
                       <button
                         onClick={() => setSelectedBooking(booking)}
@@ -276,9 +276,9 @@ export default function AdminBookingsPage() {
                 <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getTypeColor(selectedBooking.bookingType)}`}>
                   Type: {selectedBooking.bookingType}
                 </span>
-                <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusColor(selectedBooking.status)}`}>
+                {/* <span className={`px-3 py-1.5 rounded-full text-xs font-bold border ${getStatusColor(selectedBooking.status)}`}>
                   Status: {selectedBooking.status}
-                </span>
+                </span> */}
               </div>
 
               {/* Client Info Grid */}
