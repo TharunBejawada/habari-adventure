@@ -8,7 +8,8 @@ import { useLocalizedUrl } from "../hooks/useLocalizedUrl";
 export default function ClimbingSection() {
   const { getLocalizedUrl } = useLocalizedUrl();
   return (
-    <section className="w-full bg-[#135D66] relative pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden z-20">
+    <section className="w-full bg-[#F9FAFB] py-10 px-4 sm:px-6 lg:px-8">
+    <div className="w-full bg-[#135D66] relative pt-16 pb-24 lg:pt-24 lg:pb-32 overflow-hidden z-20 rounded-[40px]">
       
       {/* Decorative Background Elements */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] aspect-square rounded-full bg-white/5 blur-[120px] pointer-events-none z-0"></div>
@@ -183,7 +184,7 @@ export default function ClimbingSection() {
 
         </div>
       </div>
-
+    </div>
     </section>
   );
 }

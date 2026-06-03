@@ -13,6 +13,7 @@ interface BookingModalProps {
     packageName?: string;
     groupSize?: string; // Restored
     departureDate?: string;
+    accommodation?: string; // NEW
   };
 }
 
@@ -54,8 +55,15 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
     setIsSubmitting(true);
 
     try {
+      let finalGroupSize = initialData.groupSize;
+      if (initialData.accommodation) {
+        finalGroupSize = initialData.groupSize 
+          ? `${initialData.groupSize} (${initialData.accommodation})` 
+          : `Any Size (${initialData.accommodation})`;
+      }
+
       // Merge user inputs with the pre-filled data passed from the parent component
-      const payload = { ...formData, ...initialData };
+      const payload = { ...formData, ...initialData, groupSize: finalGroupSize };
 
       const { ok } = await apiFetch("/bookings", { 
         method: "POST",
@@ -112,6 +120,8 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
               <div className="flex flex-wrap gap-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
                 {initialData.location && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">📍 {initialData.location}</span>}
                 
+                {/* NEW: Display Accommodation Type visually */}
+                {initialData.accommodation && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">⛺ {initialData.accommodation}</span>}
                 {/* Restored Group Size Badge */}
                 {initialData.groupSize && <span className="text-2xl font-bold bg-white px-3 py-1.5 rounded-md text-gray-600 border border-gray-200">👥 {initialData.groupSize}</span>}
                 

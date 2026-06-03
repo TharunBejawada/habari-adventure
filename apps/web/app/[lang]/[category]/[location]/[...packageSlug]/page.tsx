@@ -44,18 +44,21 @@ export default function PackageLandingPage() {
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const tabsScrollRef = useRef<HTMLDivElement>(null);
 
+  const [activePricingTab, setActivePricingTab] = useState<"Camping" | "MidRange" | "Luxury">("Camping");
+
   // NEW: Booking Modal State
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [bookingModalData, setBookingModalData] = useState<any>({});
 
   // NEW: Universal Booking Handler
-  const openBooking = (groupSize: string = "", departureDate: string = "") => {
+  const openBooking = (groupSize: string = "", departureDate: string = "", accommodation: string = "") => {
     setBookingModalData({
       bookingType: departureDate ? "UpcomingDate" : "Package",
       location: pkg?.location || locationParam,
       packageName: pkg?.title || "",
       groupSize: groupSize,
       departureDate: departureDate,
+      accommodation: accommodation,
     });
     setIsBookingModalOpen(true);
   };
@@ -500,91 +503,154 @@ export default function PackageLandingPage() {
       {/* ========================================== */}
       {/* 5. PRICING SECTION                         */}
       {/* ========================================== */}
-      {pricing && (
-        <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100 scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-6 sm:px-12">
-            
-            <div className="text-center max-w-3xl mx-auto mb-16 reveal-on-scroll">
-              <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
-                Pricing & <span className="text-[#fe6e00]">Group Sizes</span>
-              </h2>
-              <p className="descCSS text-gray-600 text-lg">
-                Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!
-              </p>
-            </div>
+      {pricing && (() => {
+        // Determine Pricing Mode
+        const isStandard = !pricing.pricingType || pricing.pricingType === "Standard";
+        
+        // NEW: Check which category tabs actually have data (> 0)
+        const hasCamping = !!(pricing.campTier1 || pricing.campTier2 || pricing.campTier3 || pricing.campTier4);
+        const hasMidRange = !!(pricing.midTier1 || pricing.midTier2 || pricing.midTier3 || pricing.midTier4);
+        const hasLuxury = !!(pricing.luxTier1 || pricing.luxTier2 || pricing.luxTier3 || pricing.luxTier4);
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        // NEW: Smart Fallback - Ensure the active tab falls back to an available option if the default one is empty
+        let effectiveActiveTab = activePricingTab;
+        if (!isStandard) {
+          if (effectiveActiveTab === "Camping" && !hasCamping) {
+            effectiveActiveTab = hasMidRange ? "MidRange" : hasLuxury ? "Luxury" : "Camping";
+          } else if (effectiveActiveTab === "MidRange" && !hasMidRange) {
+            effectiveActiveTab = hasCamping ? "Camping" : hasLuxury ? "Luxury" : "MidRange";
+          } else if (effectiveActiveTab === "Luxury" && !hasLuxury) {
+            effectiveActiveTab = hasCamping ? "Camping" : hasMidRange ? "MidRange" : "Luxury";
+          }
+        }
+        
+        const currentTiers = isStandard 
+          ? { t1: pricing.tier1, t2: pricing.tier2, t3: pricing.tier3, t4: pricing.tier4 }
+          : effectiveActiveTab === "Camping"
+            ? { t1: pricing.campTier1, t2: pricing.campTier2, t3: pricing.campTier3, t4: pricing.campTier4 }
+            : effectiveActiveTab === "MidRange"
+              ? { t1: pricing.midTier1, t2: pricing.midTier2, t3: pricing.midTier3, t4: pricing.midTier4 }
+              : { t1: pricing.luxTier1, t2: pricing.luxTier2, t3: pricing.luxTier3, t4: pricing.luxTier4 };
+
+        const labels = isStandard 
+          ? ["1 Person", "2 to 4 People", "5 to 9 People", "10+ People"]
+          : ["1 Person", "2 People", "3 People", "4+ People"];
+        
+        const titles = isStandard 
+          ? ["Solo Traveler", "Small Group", "Medium Group", "Large Group"]
+          : ["Solo Traveler", "Couple / Duo", "Triple Group", "Small Group"];
+
+        const currentAccommodation = !isStandard ? (effectiveActiveTab === "MidRange" ? "Mid-Range" : effectiveActiveTab) : "";
+
+        return (
+          <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100 scroll-mt-24">
+            <div className="max-w-7xl mx-auto px-6 sm:px-12">
               
-              <div 
-                onClick={() => openBooking("1 Person")}
-                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll cursor-pointer"
-              >
-                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Solo Traveler</h4>
-                <p className="text-sm text-gray-400 font-medium mb-6">1 Person</p>
-                <p className="notranslate text-4xl font-black text-gray-900 mb-2">${pricing.tier1}</p>
-                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              <div className="text-center max-w-3xl mx-auto mb-10 reveal-on-scroll">
+                <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
+                  Pricing & <span className="text-[#fe6e00]">{isStandard ? "Group Sizes" : "Accommodation"}</span>
+                </h2>
+                <p className="descCSS text-gray-600 text-lg">
+                  {isStandard 
+                    ? "Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!" 
+                    : "Select your preferred accommodation style. Our per-person pricing adapts based on your group size."}
+                </p>
               </div>
 
-              <div 
-                onClick={() => openBooking("2 to 4 People")}
-                className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100 cursor-pointer"
-              >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
-                  Most Popular
+              {/* Category Mode Tabs - ONLY renders if there is data */}
+              {!isStandard && (hasCamping || hasMidRange || hasLuxury) && (
+                <div className="flex justify-center mb-12 reveal-on-scroll">
+                  <div className="inline-flex bg-gray-50 p-1.5 rounded-2xl border border-gray-200 shadow-inner overflow-x-auto max-w-full">
+                    {hasCamping && (
+                      <button onClick={() => setActivePricingTab("Camping")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'Camping' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>🏕️ Camping</button>
+                    )}
+                    {hasMidRange && (
+                      <button onClick={() => setActivePricingTab("MidRange")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'MidRange' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>🏨 Mid-Range</button>
+                    )}
+                    {hasLuxury && (
+                      <button onClick={() => setActivePricingTab("Luxury")} className={`whitespace-nowrap px-6 md:px-10 py-3 rounded-xl font-bold text-sm md:text-base transition-all ${effectiveActiveTab === 'Luxury' ? 'bg-white text-[#135D66] shadow-sm border border-gray-100' : 'text-gray-500 hover:text-gray-700'}`}>💎 Luxury</button>
+                    )}
+                  </div>
                 </div>
-                <div className="w-16 h-16 mx-auto bg-[#F0F9FA] rounded-full flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+                
+                {/* TIER 1 */}
+                <div 
+                  onClick={() => openBooking(labels[0], "", currentAccommodation)}
+                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll cursor-pointer"
+                >
+                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[0]}</h4>
+                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[0]}</p>
+                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t1 || 0}</p>
+                  <p className="text-sm font-bold text-gray-400">Per Person</p>
                 </div>
-                <h4 className="text-lg font-bold text-[#135D66] uppercase tracking-widest mb-2">Small Group</h4>
-                <p className="text-sm text-gray-500 font-medium mb-6">2 to 4 People</p>
-                <p className="notranslate text-4xl font-black text-gray-900 mb-2">${pricing.tier2}</p>
-                <p className="text-sm font-bold text-gray-400">Per Person</p>
+
+                {/* TIER 2 */}
+                <div 
+                  onClick={() => openBooking(labels[1], "", currentAccommodation)}
+                  className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100 cursor-pointer"
+                >
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
+                    Most Popular
+                  </div>
+                  <div className="w-16 h-16 mx-auto bg-[#F0F9FA] rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                  </div>
+                  <h4 className="text-lg font-bold text-[#135D66] uppercase tracking-widest mb-2">{titles[1]}</h4>
+                  <p className="text-sm text-gray-500 font-medium mb-6">{labels[1]}</p>
+                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t2 || 0}</p>
+                  <p className="text-sm font-bold text-gray-400">Per Person</p>
+                </div>
+
+                {/* TIER 3 */}
+                <div 
+                  onClick={() => openBooking(labels[2], "", currentAccommodation)}
+                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200 cursor-pointer"
+                >
+                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[2]}</h4>
+                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[2]}</p>
+                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t3 || 0}</p>
+                  <p className="text-sm font-bold text-gray-400">Per Person</p>
+                </div>
+
+                {/* TIER 4 */}
+                <div 
+                  onClick={() => openBooking(labels[3], "", currentAccommodation)}
+                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300 cursor-pointer"
+                >
+                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[3]}</h4>
+                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[3]}</p>
+                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t4 || 0}</p>
+                  <p className="text-sm font-bold text-gray-400">Per Person</p>
+                </div>
+
               </div>
 
-              <div 
-                onClick={() => openBooking("5 to 9 People")}
-                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200 cursor-pointer"
-              >
-                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Medium Group</h4>
-                <p className="text-sm text-gray-400 font-medium mb-6">5 to 9 People</p>
-                <p className="notranslate text-4xl font-black text-gray-900 mb-2">${pricing.tier3}</p>
-                <p className="text-sm font-bold text-gray-400">Per Person</p>
-              </div>
-
-              <div 
-                onClick={() => openBooking("10+ People")}
-                className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300 cursor-pointer"
-              >
-                <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                </div>
-                <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">Large Group</h4>
-                <p className="text-sm text-gray-400 font-medium mb-6">10+ People</p>
-                <p className="notranslate text-4xl font-black text-gray-900 mb-2">${pricing.tier4}</p>
-                <p className="text-sm font-bold text-gray-400">Per Person</p>
+              <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
+                <button 
+                  onClick={() => openBooking("", "", currentAccommodation)}
+                  className="cursor-pointer bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
+                >
+                  Book This Trip Now
+                </button>
+                <p className="text-gray-500 text-sm font-medium mt-4">Want to customize this trip? <Link href={`/${lang}/contact`} className="text-[#135D66] hover:text-[#fe6e00] hover:underline font-bold transition-colors">Contact us for a bespoke quote.</Link></p>
               </div>
 
             </div>
-
-            <div className="flex flex-col items-center justify-center reveal-on-scroll delay-300">
-              <button 
-                onClick={() => openBooking("")}
-                className="cursor-pointer bg-[#fe6e00] hover:bg-[#fe6e00] text-white font-black text-lg py-4 px-12 rounded-full uppercase tracking-widest transition-transform hover:-translate-y-1 shadow-xl shadow-[#fe6e00]/30"
-              >
-                Book This Trip Now
-              </button>
-              <p className="text-gray-500 text-sm font-medium mt-4">Want to customize this trip? <Link href={`/${lang}/contact`} className="text-[#135D66] hover:text-[#fe6e00] hover:underline font-bold transition-colors">Contact us for a bespoke quote.</Link></p>
-            </div>
-
-          </div>
-        </section>
-      )}
+          </section>
+        );
+      })()}
 
       {/* External Components */}
       {/* NEW: Passed the onBook prop so UpcomingDates can trigger the modal */}

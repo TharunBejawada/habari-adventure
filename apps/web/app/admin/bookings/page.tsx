@@ -98,6 +98,53 @@ export default function AdminBookingsPage() {
     }
   };
 
+  const handleDownloadExcel = () => {
+    // 1. Define CSV headers
+    const headers = [
+      "Date Received", "First Name", "Last Name", "Email", "Phone", 
+      "Inquiry Type", "Package Name", "Location", "Departure Date", 
+      "Flexible Month", "Duration (Days)", "Group Size", "Status", "Message"
+    ];
+
+    // 2. Escape function for CSV cells (handles commas and line breaks in messages)
+    const escapeCsv = (str: string | undefined | null) => {
+      if (!str) return '""';
+      const escaped = String(str).replace(/"/g, '""');
+      return `"${escaped}"`;
+    };
+
+    // 3. Map bookings to CSV rows
+    const csvRows = bookings.map(b => [
+      escapeCsv(formatDate(b.createdAt)),
+      escapeCsv(b.firstName),
+      escapeCsv(b.lastName),
+      escapeCsv(b.email),
+      escapeCsv(b.phone),
+      escapeCsv(b.bookingType),
+      escapeCsv(b.packageName),
+      escapeCsv(b.location),
+      escapeCsv(b.departureDate),
+      escapeCsv(b.monthYear),
+      escapeCsv(b.length),
+      escapeCsv(b.groupSize),
+      escapeCsv(b.status),
+      escapeCsv(b.message)
+    ].join(","));
+
+    // 4. Combine headers and rows
+    const csvContent = [headers.join(","), ...csvRows].join("\n");
+
+    // 5. Create Blob and trigger download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Habari_Bookings_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) {
     return <div className="p-10 text-center font-bold text-gray-500">Loading Inquiries...</div>;
   }
@@ -115,13 +162,31 @@ export default function AdminBookingsPage() {
             Back to Dashboard
           </Link>
       <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-        
         <div>
           <h2 className="text-2xl font-extrabold text-[#135D66]">Booking Inquiries</h2>
           <p className="text-gray-500 text-sm mt-1">Manage all quotes, package requests, and departure bookings.</p>
         </div>
-        <div className="text-sm font-bold text-gray-400 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
-          Total: {bookings.length}
+        
+        {/* UPDATED: Wrapped Total badge and Download button together */}
+        <div className="flex items-center gap-4">
+          <div className="text-sm font-bold text-gray-400 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200">
+            Total Inquiries: {bookings.length}
+          </div>
+          
+          <button 
+            onClick={handleDownloadExcel}
+            disabled={bookings.length === 0}
+            className={`flex items-center gap-2 text-sm font-bold px-4 py-2 rounded-lg transition-colors shadow-sm ${
+              bookings.length === 0 
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed" 
+                : "bg-[#135D66] hover:bg-[#0f4a52] text-white cursor-pointer"
+            }`}
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export to Excel
+          </button>
         </div>
       </div>
 

@@ -274,10 +274,32 @@ model PackagePricing {
   packageId     String   @unique // @unique enforces the 1-to-1 rule
   package       Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
+  // Determines which layout is active in the frontend
+  pricingType   String   @default("Standard") // "Standard" | "Category"
+
+  // Standard Tiers
   tier1         Float    // 1 Person
   tier2         Float    // 2-4 People
   tier3         Float    // 5-9 People
   tier4         Float    // 10+ People
+
+  // Category Tiers - Camping
+  campTier1     Float?
+  campTier2     Float?
+  campTier3     Float?
+  campTier4     Float?
+
+  // Category Tiers - Mid-Range
+  midTier1      Float?
+  midTier2      Float?
+  midTier3      Float?
+  midTier4      Float?
+
+  // Category Tiers - Luxury
+  luxTier1      Float?
+  luxTier2      Float?
+  luxTier3      Float?
+  luxTier4      Float?
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
