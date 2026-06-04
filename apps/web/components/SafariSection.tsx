@@ -77,7 +77,7 @@ export default function SafariSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
             
             {/* Card 1: Serengeti */}
-            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+            <Link href={getLocalizedUrl("/safari/safari/4-days-wildlife-safari")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
               <div className="w-24 h-24 mx-auto mb-4 text-[#3B82F6]">
                 {/* Safari Icon */}
                 {/* <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" /></svg> */}
@@ -94,7 +94,7 @@ export default function SafariSection() {
             </Link>
 
             {/* Card 2: Ngorongoro */}
-            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+            <Link href={getLocalizedUrl("/safari/safari/5-days-safari-expedition")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
               <div className="w-24 h-24 mx-auto mb-4 text-[#fe6e00]">
                 {/* Crater/Mountain Icon */}
                 <img src="/crater.png" alt="Ngorongoro Crater Icon" className="w-24 h-24 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
@@ -110,7 +110,7 @@ export default function SafariSection() {
             </Link>
 
             {/* Card 3: Tarangire */}
-            <Link href={getLocalizedUrl("/contact")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
+            <Link href={getLocalizedUrl("/safari/safari")} className="bg-white rounded-[30px] rounded-br-none p-7 pt-8 pb-12 relative shadow-xl transform transition-transform hover:-translate-y-2">
               <div className="w-24 h-24 mx-auto mb-4 text-[#fe6e00]">
                 {/* Tree/Nature Icon */}
                 <img src="/tarangiri.png" alt="Tarangire Icon" className="w-24 h-24 mb-3 mt-4 group-hover:scale-110 transition-transform duration-300 object-contain" />
