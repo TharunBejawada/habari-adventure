@@ -359,7 +359,7 @@ export default function ContactFormSection() {
               {/* Real Google ReCaptcha */}
               <div className="mt-2">
                 <ReCAPTCHA
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Google's public testing key. REPLACE THIS!
+                  sitekey="6LeK2Q8tAAAAAPE2P3AOoSNCfm9Kjt9g_fSlrsIH"
                   onChange={handleCaptchaChange}
                 />
               </div>

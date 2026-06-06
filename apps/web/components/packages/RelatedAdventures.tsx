@@ -48,11 +48,37 @@ export default function RelatedAdventures({ currentCategory, currentPackageTitle
         ]);
 
         if (pkgResult.ok && Array.isArray(pkgResult.data)) {
+          // const mergedPackages = pkgResult.data.map((pkg: any) => {
+          //   const matchedPricing = Array.isArray(pricingResult.data) 
+          //     ? pricingResult.data.find((p: any) => p.packageId === pkg.id) 
+          //     : null;
+          //   return { ...pkg, startingPrice: matchedPricing?.tier1 || null };
           const mergedPackages = pkgResult.data.map((pkg: any) => {
             const matchedPricing = Array.isArray(pricingResult.data) 
               ? pricingResult.data.find((p: any) => p.packageId === pkg.id) 
               : null;
-            return { ...pkg, startingPrice: matchedPricing?.tier1 || null };
+              
+            let startingPrice = null;
+
+            if (matchedPricing) {
+              const isStandard = !matchedPricing.pricingType || matchedPricing.pricingType === "Standard";
+              
+              if (isStandard) {
+                // Find lowest > 0 in Standard Tiers
+                const prices = [matchedPricing.tier1, matchedPricing.tier2, matchedPricing.tier3, matchedPricing.tier4].filter(p => p > 0);
+                if (prices.length > 0) startingPrice = Math.min(...prices);
+              } else {
+                // Find lowest > 0 in Category Tiers
+                const prices = [
+                  matchedPricing.campTier1, matchedPricing.campTier2, matchedPricing.campTier3, matchedPricing.campTier4,
+                  matchedPricing.midTier1, matchedPricing.midTier2, matchedPricing.midTier3, matchedPricing.midTier4,
+                  matchedPricing.luxTier1, matchedPricing.luxTier2, matchedPricing.luxTier3, matchedPricing.luxTier4
+                ].filter(p => p && p > 0);
+                if (prices.length > 0) startingPrice = Math.min(...prices);
+              }
+            }
+
+            return { ...pkg, startingPrice };
           });
 
           const targetPackages = mergedPackages.filter((p: any) => {

@@ -480,9 +480,9 @@ export default function DeparturesPage() {
                                   <div className="text-left md:text-right">
                                     <p className="text-sm font-bold text-gray-400">From</p>
                                     <p className="text-3xl font-black text-gray-900">${d.price}</p>
-                                    <p className={`text-xs font-bold mt-1 ${isSoldOut ? 'text-red-500' : isLowAvailability ? 'text-orange-500' : 'text-gray-500'}`}>
+                                    {/* <p className={`text-xs font-bold mt-1 ${isSoldOut ? 'text-red-500' : isLowAvailability ? 'text-orange-500' : 'text-gray-500'}`}>
                                       {isSoldOut ? '0 Seats Left' : `${d.availableSeats} of ${d.totalSeats} Seats Left`}
-                                    </p>
+                                    </p> */}
                                   </div>
                                   
                                   {isSoldOut ? (
