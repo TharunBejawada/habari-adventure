@@ -110,7 +110,13 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                 {dates.map((row) => {
                   const isSoldOut = row.status === "Sold Out" || row.availableSeats === 0;
                   const isGuaranteed = row.status === "Guaranteed";
-                  const startDate = new Date(row.startDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+                  // const startDate = new Date(row.startDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+                  const startDate = new Date(row.startDate).toLocaleDateString('en-US', { 
+  timeZone: 'UTC', 
+  day: 'numeric', 
+  month: 'short', 
+  year: 'numeric' 
+});
 
                   return (
                     <tr key={row.id} className="hover:bg-gray-50 transition-colors group">

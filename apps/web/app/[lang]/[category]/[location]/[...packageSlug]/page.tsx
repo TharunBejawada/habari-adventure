@@ -534,7 +534,7 @@ export default function PackageLandingPage() {
 
         const labels = isStandard 
           ? ["1 Person", "2 to 4 People", "5 to 9 People", "10+ People"]
-          : ["1 Person", "2 People", "3 People", "4+ People"];
+          : ["1 Person", "2 to 4 People", "5 to 9 People", "10+ People"];
         
         const titles = isStandard 
           ? ["Solo Traveler", "Small Group", "Medium Group", "Large Group"]
@@ -558,11 +558,13 @@ export default function PackageLandingPage() {
                 <h2 className="headingCSS text-4xl font-extrabold text-gray-900 mb-4">
                   Pricing & <span className="text-[#fe6e00]">{isStandard ? "Group Sizes" : "Accommodation"}</span>
                 </h2>
+                {cardsCount > 0 && (
                 <p className="descCSS text-gray-600 text-lg">
                   {isStandard 
                     ? "Our per-person pricing decreases as your group size increases. Travel with friends or join a scheduled climb to save!" 
                     : "Select your preferred accommodation style. Our per-person pricing adapts based on your group size."}
                 </p>
+                )}
               </div>
 
               {/* Category Mode Tabs - ONLY renders if there is data */}

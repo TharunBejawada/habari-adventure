@@ -259,7 +259,8 @@ export default function PricingAdminPage() {
 
               {/* Tier 2 (2 Pax) */}
               <div className="grid grid-cols-[1fr_auto] items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                <label className="text-sm font-bold text-gray-700">{isStandard ? "2-4 People (Small Group)" : "2 People"}</label>
+                {/* <label className="text-sm font-bold text-gray-700">{isStandard ? "2-4 People (Small Group)" : "2 People"}</label> */}
+                <label className="text-sm font-bold text-gray-700">2-4 People (Small Group)</label>
                 <div className="relative w-32">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
                   <input type="number" required min="0" className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-[#135D66] font-bold" 
@@ -277,7 +278,8 @@ export default function PricingAdminPage() {
 
               {/* Tier 3 (3 Pax) */}
               <div className="grid grid-cols-[1fr_auto] items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                <label className="text-sm font-bold text-gray-700">{isStandard ? "5-9 People (Medium Group)" : "3 People"}</label>
+                {/* <label className="text-sm font-bold text-gray-700">{isStandard ? "5-9 People (Medium Group)" : "3 People"}</label> */}
+                <label className="text-sm font-bold text-gray-700">5-9 People (Medium Group)</label>
                 <div className="relative w-32">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
                   <input type="number" required min="0" className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-[#135D66] font-bold" 
@@ -295,7 +297,8 @@ export default function PricingAdminPage() {
 
               {/* Tier 4 (4+ Pax) */}
               <div className="grid grid-cols-[1fr_auto] items-center gap-4 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                <label className="text-sm font-bold text-gray-700">{isStandard ? "10+ People (Large Group)" : "4+ People"}</label>
+                {/* <label className="text-sm font-bold text-gray-700">{isStandard ? "10+ People (Large Group)" : "4+ People"}</label> */}
+                <label className="text-sm font-bold text-gray-700">10+ People (Large Group)</label>
                 <div className="relative w-32">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
                   <input type="number" required min="0" className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg outline-none focus:border-[#135D66] font-bold" 
@@ -393,7 +396,8 @@ export default function PricingAdminPage() {
                           </td>
                           
                           <td className="p-4 text-center align-top">
-                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "2-4 Pax" : "2 Pax"}</div>
+                            {/* <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "2-4 Pax" : "2 Pax"}</div> */}
+                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">2-4 Pax</div>
                             {isStd ? (
                               <div className="font-bold text-gray-800">${p.tier2}</div>
                             ) : (
@@ -406,7 +410,8 @@ export default function PricingAdminPage() {
                           </td>
                           
                           <td className="p-4 text-center align-top">
-                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "5-9 Pax" : "3 Pax"}</div>
+                            {/* <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "5-9 Pax" : "3 Pax"}</div> */}
+                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">5-9 Pax</div>
                             {isStd ? (
                               <div className="font-bold text-gray-800">${p.tier3}</div>
                             ) : (
@@ -419,7 +424,8 @@ export default function PricingAdminPage() {
                           </td>
                           
                           <td className="p-4 text-center align-top">
-                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "10+ Pax" : "4+ Pax"}</div>
+                            {/* <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">{isStd ? "10+ Pax" : "4+ Pax"}</div> */}
+                            <div className="text-[10px] text-gray-400 font-bold uppercase mb-2">10+ Pax</div>
                             {isStd ? (
                               <div className="font-bold text-gray-800">${p.tier4}</div>
                             ) : (
