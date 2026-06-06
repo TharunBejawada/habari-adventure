@@ -101,7 +101,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                 <tr className="border-b border-gray-200">
                   <th className="pb-4 font-bold text-[#fe6e00] w-1/5 pl-4">Start Date</th>
                   <th className="pb-4 font-bold text-[#fe6e00] w-1/4">Departure Details</th>
-                  <th className="pb-4 font-bold text-[#fe6e00] w-1/5">Availability</th>
+                  {/* <th className="pb-4 font-bold text-[#fe6e00] w-1/5">Availability</th> */}
                   <th className="pb-4 font-bold text-[#fe6e00] w-1/6">Price (USD)</th>
                   <th className="pb-4 w-1/5 text-right pr-4"></th>
                 </tr>
@@ -156,7 +156,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                         </div>
                       </td>
 
-                      <td className="py-5">
+                      {/* <td className="py-5">
                         <div className="flex flex-col gap-1">
                           <span className={`font-semibold ${isSoldOut ? 'text-red-500' : 'text-gray-700'}`}>
                             {isSoldOut ? '0 Spots Left' : `${row.availableSeats} Spots Left`}
@@ -168,7 +168,7 @@ export default function UpcomingDates({ onBook }: UpcomingDatesProps) {
                             {row.status}
                           </span>
                         </div>
-                      </td>
+                      </td> */}
 
                       <td className="py-5 font-bold text-gray-900">${row.price}</td>
                       

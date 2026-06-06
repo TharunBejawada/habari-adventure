@@ -538,9 +538,17 @@ export default function PackageLandingPage() {
         
         const titles = isStandard 
           ? ["Solo Traveler", "Small Group", "Medium Group", "Large Group"]
-          : ["Solo Traveler", "Couple / Duo", "Triple Group", "Small Group"];
+          : ["Solo Traveler", "Small Group", "Medium Group", "Large Group"];
 
         const currentAccommodation = !isStandard ? (effectiveActiveTab === "MidRange" ? "Mid-Range" : effectiveActiveTab) : "";
+
+        const cardsCount = [currentTiers.t1, currentTiers.t2, currentTiers.t3, currentTiers.t4].filter(t => t && t > 0).length;
+        
+        let gridClass = "grid gap-6 mb-16 mx-auto ";
+        if (cardsCount === 1) gridClass += "grid-cols-1 max-w-sm";
+        else if (cardsCount === 2) gridClass += "grid-cols-1 sm:grid-cols-2 max-w-2xl";
+        else if (cardsCount === 3) gridClass += "grid-cols-1 sm:grid-cols-3 max-w-5xl";
+        else gridClass += "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-full";
 
         return (
           <section id="pricing-section" className="py-16 lg:py-24 bg-white border-b border-gray-100 scroll-mt-24">
@@ -601,66 +609,74 @@ export default function PackageLandingPage() {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+              <div className={gridClass}>
                 
                 {/* TIER 1 */}
-                <div 
-                  onClick={() => openBooking(labels[0], "", currentAccommodation)}
-                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll cursor-pointer"
-                >
-                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                {!!currentTiers.t1 && currentTiers.t1 > 0 && (
+                  <div 
+                    onClick={() => openBooking(labels[0], "", currentAccommodation)}
+                    className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll cursor-pointer"
+                  >
+                    <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[0]}</h4>
+                    <p className="text-sm text-gray-400 font-medium mb-6">{labels[0]}</p>
+                    <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t1}</p>
+                    <p className="text-sm font-bold text-gray-400">Per Person</p>
                   </div>
-                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[0]}</h4>
-                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[0]}</p>
-                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t1 || 0}</p>
-                  <p className="text-sm font-bold text-gray-400">Per Person</p>
-                </div>
+                )}
 
                 {/* TIER 2 */}
-                <div 
-                  onClick={() => openBooking(labels[1], "", currentAccommodation)}
-                  className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100 cursor-pointer"
-                >
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
-                    Most Popular
+                {!!currentTiers.t2 && currentTiers.t2 > 0 && (
+                  <div 
+                    onClick={() => openBooking(labels[1], "", currentAccommodation)}
+                    className="bg-white border-2 border-[#135D66] rounded-3xl p-8 text-center shadow-lg relative hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-100 cursor-pointer"
+                  >
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#135D66] text-white text-xs font-bold uppercase tracking-widest py-1.5 px-4 rounded-full">
+                      Most Popular
+                    </div>
+                    <div className="w-16 h-16 mx-auto bg-[#F0F9FA] rounded-full flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <h4 className="text-lg font-bold text-[#135D66] uppercase tracking-widest mb-2">{titles[1]}</h4>
+                    <p className="text-sm text-gray-500 font-medium mb-6">{labels[1]}</p>
+                    <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t2}</p>
+                    <p className="text-sm font-bold text-gray-400">Per Person</p>
                   </div>
-                  <div className="w-16 h-16 mx-auto bg-[#F0F9FA] rounded-full flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                  </div>
-                  <h4 className="text-lg font-bold text-[#135D66] uppercase tracking-widest mb-2">{titles[1]}</h4>
-                  <p className="text-sm text-gray-500 font-medium mb-6">{labels[1]}</p>
-                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t2 || 0}</p>
-                  <p className="text-sm font-bold text-gray-400">Per Person</p>
-                </div>
+                )}
 
                 {/* TIER 3 */}
-                <div 
-                  onClick={() => openBooking(labels[2], "", currentAccommodation)}
-                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200 cursor-pointer"
-                >
-                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                {!!currentTiers.t3 && currentTiers.t3 > 0 && (
+                  <div 
+                    onClick={() => openBooking(labels[2], "", currentAccommodation)}
+                    className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-200 cursor-pointer"
+                  >
+                    <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[2]}</h4>
+                    <p className="text-sm text-gray-400 font-medium mb-6">{labels[2]}</p>
+                    <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t3}</p>
+                    <p className="text-sm font-bold text-gray-400">Per Person</p>
                   </div>
-                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[2]}</h4>
-                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[2]}</p>
-                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t3 || 0}</p>
-                  <p className="text-sm font-bold text-gray-400">Per Person</p>
-                </div>
+                )}
 
                 {/* TIER 4 */}
-                <div 
-                  onClick={() => openBooking(labels[3], "", currentAccommodation)}
-                  className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300 cursor-pointer"
-                >
-                  <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
-                    <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                {!!currentTiers.t4 && currentTiers.t4 > 0 && (
+                  <div 
+                    onClick={() => openBooking(labels[3], "", currentAccommodation)}
+                    className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-center hover:shadow-xl hover:-translate-y-1 transition-all duration-300 reveal-on-scroll delay-300 cursor-pointer"
+                  >
+                    <div className="w-16 h-16 mx-auto bg-white rounded-full shadow-sm flex items-center justify-center mb-6">
+                      <svg className="w-8 h-8 text-[#135D66]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                    </div>
+                    <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[3]}</h4>
+                    <p className="text-sm text-gray-400 font-medium mb-6">{labels[3]}</p>
+                    <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t4}</p>
+                    <p className="text-sm font-bold text-gray-400">Per Person</p>
                   </div>
-                  <h4 className="text-lg font-bold text-gray-500 uppercase tracking-widest mb-2">{titles[3]}</h4>
-                  <p className="text-sm text-gray-400 font-medium mb-6">{labels[3]}</p>
-                  <p className="notranslate text-4xl font-black text-gray-900 mb-2">${currentTiers.t4 || 0}</p>
-                  <p className="text-sm font-bold text-gray-400">Per Person</p>
-                </div>
+                )}
 
               </div>
 

@@ -172,7 +172,7 @@ export default function AboutUsPage() {
                       width={500} 
                       height={700} 
                       unoptimized
-                      className="w-full object-contain aspect-[3/4]"
+                      className="w-full object-contain"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function AboutUsPage() {
                     width={350} 
                     height={350} 
                     unoptimized
-                    className="w-full object-cover aspect-square"
+                    className="w-full object-cover"
                   />
                 </div>
 
