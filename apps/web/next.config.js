@@ -1,6 +1,35 @@
 // apps/web/next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/Climbing/Kilimanjaro/Packages/8DaysLemosho.html',
+        destination: '/en/climbing/kilimanjaro/8-days-lemosho-route-climb-kosovo',
+        permanent: true,
+      },
+      {
+        source: '/Climbing/Kilimanjaro/index.html',
+        destination: '/en/climbing/kilimanjaro',
+        permanent: true,
+      },
+      {
+        source: '/Climbing/Kilimanjaro/Packages/7DaysLemosho.html',
+        destination: '/en/climbing/kilimanjaro/7-days-lemosho-route-climb',
+        permanent: true,
+      },
+      {
+        source: '/Safari/index.html',
+        destination: '/en/safari/safari',
+        permanent: true,
+      },
+      {
+        source: '/About/AboutUs.html',
+        destination: '/en/about',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
