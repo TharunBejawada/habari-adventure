@@ -573,7 +573,7 @@ export default function BlogPostPage() {
   if (!blog) return null;
 
   return (
-    <div className="min-h-screen bg-[#FDFEFE] pt-30 pb-24 relative overflow-hidden -mt-[120px] z-0">
+    <div className="min-h-screen bg-[#FDFEFE] pt-30 pb-24 relative overflow-hidden -mt-[150px] z-0">
       
       <style dangerouslySetInnerHTML={{
         __html: `
@@ -640,7 +640,7 @@ export default function BlogPostPage() {
           <div
             className="notranslate blog-content animate-fade-up"
             style={{ animationDelay: '0.3s' }}
-            dangerouslySetInnerHTML={{ __html: blog.content }}
+            dangerouslySetInnerHTML={{ __html: blog.content.replace(/&nbsp;/g, ' ') }}
           />
 
           {/* FAQ Section — renders only when the blog has FAQ data */}
@@ -668,7 +668,7 @@ export default function BlogPostPage() {
                       </button>
                       {isOpen && (
                         <div className="p-5 bg-white text-gray-600 leading-relaxed border-t border-gray-100">
-                          {faq.answer || ""}
+                          {faq.answer?.replace(/&nbsp;/g, ' ') || ""}
                         </div>
                       )}
                     </div>
