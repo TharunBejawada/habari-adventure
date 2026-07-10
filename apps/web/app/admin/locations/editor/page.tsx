@@ -42,24 +42,21 @@ function LocationEditorForm() {
 
   const [isLoading, setIsLoading] = useState(isEditMode);
   const [isSaving, setIsSaving] = useState(false);
-  
-  // NEW: State to track if we should auto-fill the slug
   const [autoSlug, setAutoSlug] = useState(!isEditMode);
-
   const [activeLang, setActiveLang] = useState('en');
   const [snapshot, setSnapshot] = useState<string>("");
 
   const [formData, setFormData] = useState({
     id: "",
     title: "",
+    h1Text: "", // NEW
     slug: "",
-    category: "", // Global
+    category: "",
     bannerImage: "",
-    heroImage: "", // Global
+    heroImage: "",
     overviewText: "",
     youtubeVideoUrl: "",
     isPublished: false,
-    // SEO fields
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
@@ -83,6 +80,7 @@ function LocationEditorForm() {
             setFormData({
               id: p.id || "",
               title: p.title || "",
+              h1Text: p.h1Text || "", // NEW
               slug: p.slug || "",
               category: p.category || "",
               bannerImage: p.bannerImage || "",
@@ -103,7 +101,12 @@ function LocationEditorForm() {
               robots: p.robots || "index, follow",
               structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
             });
-            setSnapshot(JSON.stringify({ title: p.title || "", slug: p.slug || "", overviewText: p.overviewText || "" }));
+            setSnapshot(JSON.stringify({ 
+              title: p.title || "", 
+              h1Text: p.h1Text || "", // NEW
+              slug: p.slug || "", 
+              overviewText: p.overviewText || "" 
+            }));
           }
         })
         .catch(err => console.error("Failed to fetch location data", err))
@@ -111,7 +114,6 @@ function LocationEditorForm() {
     }
   }, [editSlug, isEditMode]);
 
-  // NEW: Auto-generate the slug based on Category and Title if we are creating a new location
   useEffect(() => {
     if (!isEditMode && autoSlug) {
       const catPart = formData.category ? toSlug(formData.category) : '';
@@ -144,27 +146,33 @@ function LocationEditorForm() {
         setFormData({
           id: p.id || "",
           title: p.title || "",
+          h1Text: p.h1Text || "", // NEW
           slug: p.slug || "",
-          category: p.category || "", // Global
-          bannerImage: p.bannerImage || "", // Global
-          heroImage: p.heroImage || "", // Global
+          category: p.category || "", 
+          bannerImage: p.bannerImage || "", 
+          heroImage: p.heroImage || "", 
           overviewText: p.overviewText || "",
-          youtubeVideoUrl: p.youtubeVideoUrl || "", // Global
-          isPublished: p.isPublished || false, // Global
+          youtubeVideoUrl: p.youtubeVideoUrl || "", 
+          isPublished: p.isPublished || false, 
           metaTitle: p.metaTitle || "",
           metaDescription: p.metaDescription || "",
           metaKeywords: p.metaKeywords || "",
-          canonicalUrl: p.canonicalUrl || "", // Global
-          ogTitle: p.ogTitle || "", // Global
-          ogDescription: p.ogDescription || "", // Global
-          ogImage: p.ogImage || "", // Global
-          twitterTitle: p.twitterTitle || "", // Global
-          twitterDescription: p.twitterDescription || "", // Global
-          twitterImage: p.twitterImage || "", // Global
-          robots: p.robots || "index, follow", // Global
-          structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "", // Global
+          canonicalUrl: p.canonicalUrl || "", 
+          ogTitle: p.ogTitle || "", 
+          ogDescription: p.ogDescription || "", 
+          ogImage: p.ogImage || "", 
+          twitterTitle: p.twitterTitle || "", 
+          twitterDescription: p.twitterDescription || "", 
+          twitterImage: p.twitterImage || "", 
+          robots: p.robots || "index, follow", 
+          structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
         });
-        setSnapshot(JSON.stringify({ title: p.title || "", slug: p.slug || "", overviewText: p.overviewText || "" }));
+        setSnapshot(JSON.stringify({ 
+          title: p.title || "", 
+          h1Text: p.h1Text || "", // NEW
+          slug: p.slug || "", 
+          overviewText: p.overviewText || "" 
+        }));
       }
     } catch (err) {
       console.error("Failed to load translation");
@@ -173,7 +181,6 @@ function LocationEditorForm() {
     }
   };
 
-  // Reusable Image Upload Handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: 'bannerImage' | 'heroImage') => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -198,7 +205,6 @@ function LocationEditorForm() {
     }
     setIsSaving(true);
     try {
-      // Parse structuredData JSON if provided; ignore if invalid
       let parsedStructuredData: object | null = null;
       if (formData.structuredData?.trim()) {
         try { parsedStructuredData = JSON.parse(formData.structuredData); } catch { /* keep null */ }
@@ -212,6 +218,7 @@ function LocationEditorForm() {
       if (activeLang !== 'en') {
         const currentDataToSave = {
           title: payload.title,
+          h1Text: payload.h1Text, // NEW
           slug: payload.slug,
           overviewText: payload.overviewText,
           metaTitle: payload.metaTitle,
@@ -240,7 +247,15 @@ function LocationEditorForm() {
           router.push("/admin/locations");
         } else {
           alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
-          setSnapshot(JSON.stringify({ title: payload.title, slug: payload.slug, overviewText: payload.overviewText, metaTitle: payload.metaTitle, metaDescription: payload.metaDescription, metaKeywords: payload.metaKeywords }));
+          setSnapshot(JSON.stringify({ 
+            title: payload.title, 
+            h1Text: payload.h1Text, 
+            slug: payload.slug, 
+            overviewText: payload.overviewText, 
+            metaTitle: payload.metaTitle, 
+            metaDescription: payload.metaDescription, 
+            metaKeywords: payload.metaKeywords 
+          }));
         }
       }
       else if (error?.includes("Unique constraint failed")) {
@@ -256,8 +271,9 @@ function LocationEditorForm() {
 
   return (
     <form onSubmit={handleSave} className="space-y-8 max-w-[1000px] mx-auto p-4 sm:p-6 lg:p-8">
+      {/* ... (Header, publish toggle, and language tabs remain unchanged) ... */}
       <Link href="/admin/locations" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-[#135D66] mb-3">
-         ← Back to Locations
+          ← Back to Locations
       </Link>
       
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
@@ -290,7 +306,6 @@ function LocationEditorForm() {
         </div>
       </div>
 
-      {/* PUBLISHING STATUS WITH CENTERED TOGGLE (MOVED TO TOP) */}
       <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm space-y-6">
         <h3 className="font-bold text-[#135D66] text-lg border-b border-gray-100 pb-3">Publishing Status</h3>
         
@@ -320,26 +335,26 @@ function LocationEditorForm() {
       </div>
 
       <div className="flex flex-wrap gap-2 pt-2 border-b border-gray-200">
-  {SUPPORTED_LANGUAGES.map(lang => (
-    <button
-      key={lang.code} 
-      type="button" 
-      onClick={() => handleLanguageSwitch(lang.code)}
-      className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
-        activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
-      }`}
-    >
-      <img 
-        src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
-        srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
-        width="20" 
-        alt={lang.name}
-        className="mr-2 inline-block rounded-sm"
-      />
-      {lang.name}
-    </button>
-  ))}
-</div>
+        {SUPPORTED_LANGUAGES.map(lang => (
+          <button
+            key={lang.code} 
+            type="button" 
+            onClick={() => handleLanguageSwitch(lang.code)}
+            className={`px-6 py-3 rounded-t-xl font-bold transition-colors border border-b-0 flex items-center ${
+              activeLang === lang.code ? 'bg-[#135D66] text-white border-[#135D66]' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'
+            }`}
+          >
+            <img 
+              src={`https://flagcdn.com/w20/${lang.countryCode}.png`} 
+              srcSet={`https://flagcdn.com/w40/${lang.countryCode}.png 2x`}
+              width="20" 
+              alt={lang.name}
+              className="mr-2 inline-block rounded-sm"
+            />
+            {lang.name}
+          </button>
+        ))}
+      </div>
 
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
         
@@ -387,7 +402,6 @@ function LocationEditorForm() {
               type="text" required placeholder="e.g., safari/serengeti"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-gray-900 placeholder-gray-400 bg-gray-50 focus:bg-white transition-colors" 
               value={formData.slug} 
-              // Turn off auto-filling the moment the admin types manually into this box
               onChange={e => {
                 setAutoSlug(false);
                 setFormData({...formData, slug: e.target.value});
@@ -443,6 +457,21 @@ function LocationEditorForm() {
           </div>
         </div>
 
+        {/* NEW: H1 Text Override added exactly above Overview Text */}
+        <div className="pt-4 border-t border-gray-100">
+          <label className="block text-sm font-bold text-gray-700 mb-2">H1 Header Text</label>
+          <input 
+            type="text" 
+            placeholder={formData.title || "Enter a custom main heading..."} 
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-[#135D66] text-gray-900 placeholder-gray-400 bg-white focus:bg-gray-50 transition-colors" 
+            value={formData.h1Text} 
+            onChange={e => setFormData({...formData, h1Text: e.target.value})} 
+          />
+          <p className="text-xs text-gray-500 mt-2 italic">
+            If not added, fallback text would be the location title.
+          </p>
+        </div>
+
         <div className="pt-4 border-t border-gray-100">
           <label className="block text-sm font-bold text-gray-700 mb-2">Overview Text *</label>
           <BasicRTE value={formData.overviewText} onChange={(val) => setFormData({...formData, overviewText: val})} />
@@ -450,14 +479,13 @@ function LocationEditorForm() {
 
       </div>
 
-      {/* SEO SECTION */}
+      {/* SEO SECTION (Unchanged) */}
       <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
         <div className="flex justify-between items-center border-b border-gray-100 pb-3">
           <h3 className="font-bold text-[#135D66] text-lg">Search Engine Optimization</h3>
           {activeLang !== 'en' && <span className="text-xs font-bold text-[#fe6e00] bg-orange-50 px-2 py-1 rounded">Localized SEO</span>}
         </div>
 
-        {/* Per-language: metaTitle, metaDescription, metaKeywords */}
         <div>
           <label className="block text-sm font-bold text-gray-700 mb-2">Meta Title</label>
           <input
@@ -492,9 +520,9 @@ function LocationEditorForm() {
           />
         </div>
 
-        {/* English-only: og, twitter, canonical, robots, structuredData */}
         {activeLang === 'en' ? (
           <>
+            {/* Open Graph, Twitter, and Technical SEO sections remain unchanged */}
             <div className="pt-4 border-t border-gray-100">
               <p className="text-xs font-bold text-[#135D66] uppercase tracking-wider mb-4">Open Graph (Social Sharing)</p>
               <div className="space-y-4">

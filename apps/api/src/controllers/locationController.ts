@@ -38,11 +38,13 @@ const applyTranslationLocation = (record: any) => {
   // These are used for stable internal relations that must never depend on translated text.
   record.canonicalTitle = record.title;
   record.canonicalSlug  = record.slug;
+  record.canonicalH1Text = record.h1Text;
 
   if (record.translations && record.translations.length > 0) {
     const t = record.translations[0];
     if (t.title) record.title = t.title;
     if (t.slug) record.slug = t.slug;
+    if (t.h1Text) record.h1Text = t.h1Text;
     if (t.overviewText) record.overviewText = t.overviewText;
     // Apply localized SEO if present in translation
     if (t.metaTitle) record.metaTitle = t.metaTitle;
@@ -150,6 +152,7 @@ export const updateLocation = async (req: Request, res: Response) => {
         update: {
           title: data.title,
           slug: translationSlug,
+          h1Text: data.h1Text,
           overviewText: data.overviewText,
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,
@@ -160,6 +163,7 @@ export const updateLocation = async (req: Request, res: Response) => {
           languageCode,
           title: data.title,
           slug: translationSlug,
+          h1Text: data.h1Text,
           overviewText: data.overviewText,
           metaTitle: data.metaTitle,
           metaDescription: data.metaDescription,

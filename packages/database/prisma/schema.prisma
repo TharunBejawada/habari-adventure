@@ -219,6 +219,7 @@ model Location {
   id              String    @id @default(uuid())
   slug            String    @unique
   title           String
+  h1Text          String?
   category        String    // NEW: Category dropdown value
   heroImage       String?   // NEW: Secondary hero image
   bannerImage     String?
@@ -313,6 +314,7 @@ model LocationTranslation {
   languageCode String   // "fr", "es", etc.
   slug         String   // Localized URL (e.g., /fr/destinations/mont-kilimanjaro)
   title        String
+  h1Text       String?
   overviewText String   @db.Text
 
   // Localized SEO Fields
