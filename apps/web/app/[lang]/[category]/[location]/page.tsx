@@ -340,8 +340,13 @@ export default function LocationLandingPage() {
               {/* <h2 className="notranslate headingCSS text-3xl font-extrabold text-[#135D66] mb-4 truncate">
                 {locationData.title || displayTitle}
               </h2> */}
-              <h1 className="notranslate headingCSS text-[#135D66] mb-4 truncate">
+              {/* <h1 className="notranslate headingCSS text-[#135D66] mb-4 truncate">
   <span className="block !text-[32px] !font-[600] !leading-[1.2]">
+    {locationData.h1Text || locationData.title || displayTitle}
+  </span>
+</h1> */}
+<h1 className="notranslate headingCSS text-[#135D66] mb-4 w-full">
+  <span className="block !text-[28px] md:!text-[32px] !font-[600] !leading-[1.3] break-words whitespace-normal hyphens-auto">
     {locationData.h1Text || locationData.title || displayTitle}
   </span>
 </h1>
