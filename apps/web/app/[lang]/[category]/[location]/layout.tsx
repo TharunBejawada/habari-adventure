@@ -5,26 +5,34 @@
 
 import type { Metadata } from "next";
 import { cache } from "react";
-import { stripHtmlForSeo, truncate, buildLocationJsonLd } from "../../../../lib/seo";
+import { stripHtmlForSeo, truncate, buildLocationJsonLd, buildFaqJsonLd } from "../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../lib/slugify";
 
 // ─── Cached data fetch (deduped per render cycle) ─────────────────────────────
 
 const fetchLocationData = cache(async (slug: string, lang: string) => {
   try {
+    // SSR requires an absolute URL. Ensure this env variable includes "https://" or "http://"
     const base = process.env.NEXT_PUBLIC_API_URL;
     if (!base) return null;
+    
     const encodedSlug = slug.split("/").map(encodeURIComponent).join("/");
     const res = await fetch(
       `${base}/locations/${encodedSlug}?lang=${lang}`,
       { next: { revalidate: 3600 } },
     );
+    
     if (!res.ok) return null;
     const text = await res.text();
     if (!text) return null;
+    
     const json = JSON.parse(text);
-    return json?.data ?? null;
-  } catch {
+    
+    // FIX: Client wrappers like `apiFetch` often append `.data`. 
+    // This ensures we return the data whether it's wrapped in { data: ... } or returned directly.
+    return json?.data ?? json ?? null;
+  } catch (error) {
+    console.error("Layout Fetch Error:", error);
     return null;
   }
 });
@@ -38,18 +46,24 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const { lang, category, location } = await params;
+  const resolvedParams = await params;
+  const lang = resolvedParams.lang;
+  
+  // FIX: Decode params to ensure DB slug matches correctly
+  const category = decodeURIComponent(resolvedParams.category);
+  const location = decodeURIComponent(resolvedParams.location);
+  
   const fullDbSlug = `${category}/${location}`;
-  // Normalize so canonical URLs never contain spaces or encoded chars
+  
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
   const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}`;
 
   const loc = await fetchLocationData(fullDbSlug, lang);
+  const fallbackTitle = location.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
   if (!loc) {
-    const fallbackTitle = location.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
     return {
       title: `${fallbackTitle} | Habari Adventure`,
       description: "Explore this destination with Habari Adventure. Discover curated routes and adventures.",
@@ -57,9 +71,10 @@ export async function generateMetadata({
     };
   }
 
-  const title = loc.metaTitle || `${loc.title} | Habari Adventure`;
-  const rawDesc = stripHtmlForSeo(loc.overviewText ?? "");
-  const description = loc.metaDescription || truncate(rawDesc, 160);
+  // FIX: Make fallback logic more robust if loc exists but specific fields are empty
+  const title = loc.metaTitle || (loc.title ? `${loc.title} | Habari Adventure` : `${fallbackTitle} | Habari Adventure`);
+  const rawDesc = loc.overviewText ? stripHtmlForSeo(loc.overviewText) : "";
+  const description = loc.metaDescription || (rawDesc ? truncate(rawDesc, 160) : "Explore this destination with Habari Adventure.");
   const image = loc.ogImage || loc.bannerImage || loc.heroImage || "";
   const canonical = loc.canonicalUrl || pageUrl;
   const robots = loc.robots || "index, follow";
@@ -76,7 +91,7 @@ export async function generateMetadata({
       url: canonical,
       type: "website",
       siteName: "Habari Adventure",
-      ...(image && { images: [{ url: image, alt: loc.title }] }),
+      ...(image && { images: [{ url: image, alt: loc.title || fallbackTitle }] }),
     },
     twitter: {
       card: "summary_large_image",
@@ -100,7 +115,11 @@ export default async function LocationLayout({
   children: React.ReactNode;
   params: Params;
 }) {
-  const { lang, category, location } = await params;
+  const resolvedParams = await params;
+  const lang = resolvedParams.lang;
+  const category = decodeURIComponent(resolvedParams.category);
+  const location = decodeURIComponent(resolvedParams.location);
+  
   const fullDbSlug = `${category}/${location}`;
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
@@ -109,10 +128,9 @@ export default async function LocationLayout({
 
   const loc = await fetchLocationData(fullDbSlug, lang);
 
-  // Build JSON-LD — use admin-provided structuredData if present, else auto-generate
-  const jsonLd = loc
-    ? (loc.structuredData ?? buildLocationJsonLd(loc, pageUrl))
-    : null;
+  // 2. Generate schemas
+  const jsonLd = loc ? (loc.structuredData ?? buildLocationJsonLd(loc, pageUrl)) : null;
+  const faqJsonLd = loc?.faqs ? buildFaqJsonLd(loc.faqs) : null; // <-- NEW
 
   return (
     <>
@@ -120,6 +138,13 @@ export default async function LocationLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      {/* 3. Inject FAQ Schema */}
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       )}
       {children}

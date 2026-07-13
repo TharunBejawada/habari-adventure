@@ -74,6 +74,7 @@ model Package {
   pricing       PackagePricing?
 
   translations    PackageTranslation[]
+  faqs            Json?
 }
 
 model Blog {
@@ -247,6 +248,7 @@ model Location {
   // Optional for later: If you want to link packages directly to this model
   // packages      Package[]
   translations    LocationTranslation[]
+  faqs            Json?
 }
 
 model UpcomingDate {
@@ -326,6 +328,7 @@ model LocationTranslation {
   // Ensures the localized slug is unique within that language
   @@unique([locationId, languageCode])
   @@unique([languageCode, slug])
+  faqs            Json?
 }
 
 model PackageTranslation {
@@ -353,6 +356,7 @@ model PackageTranslation {
 
   @@unique([packageId, languageCode])
   @@unique([languageCode, slug])
+  faqs            Json?
 }
 
 model BlogTranslation {

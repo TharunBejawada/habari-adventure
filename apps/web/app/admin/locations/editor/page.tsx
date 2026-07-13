@@ -46,6 +46,16 @@ function LocationEditorForm() {
   const [activeLang, setActiveLang] = useState('en');
   const [snapshot, setSnapshot] = useState<string>("");
 
+  // FAQ State
+  const [faqs, setFaqs] = useState<{question: string, answer: string}[]>([]);
+
+  const addFaq = () => setFaqs([...faqs, { question: "", answer: "" }]);
+  const updateFaq = (index: number, field: "question" | "answer", value: string) => {
+    const newFaqs = [...faqs];
+    if (newFaqs[index]) { newFaqs[index][field] = value; setFaqs(newFaqs); }
+  };
+  const removeFaq = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
+
   const [formData, setFormData] = useState({
     id: "",
     title: "",
@@ -101,11 +111,13 @@ function LocationEditorForm() {
               robots: p.robots || "index, follow",
               structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
             });
+            setFaqs(p.faqs || []);
             setSnapshot(JSON.stringify({ 
               title: p.title || "", 
               h1Text: p.h1Text || "", // NEW
               slug: p.slug || "", 
-              overviewText: p.overviewText || "" 
+              overviewText: p.overviewText || "",
+              faqs: p.faqs || []
             }));
           }
         })
@@ -167,11 +179,13 @@ function LocationEditorForm() {
           robots: p.robots || "index, follow", 
           structuredData: p.structuredData ? JSON.stringify(p.structuredData, null, 2) : "",
         });
+        setFaqs(p.faqs || []);
         setSnapshot(JSON.stringify({ 
           title: p.title || "", 
           h1Text: p.h1Text || "", // NEW
           slug: p.slug || "", 
-          overviewText: p.overviewText || "" 
+          overviewText: p.overviewText || "",
+          faqs: p.faqs || [] 
         }));
       }
     } catch (err) {
@@ -209,7 +223,7 @@ function LocationEditorForm() {
       if (formData.structuredData?.trim()) {
         try { parsedStructuredData = JSON.parse(formData.structuredData); } catch { /* keep null */ }
       }
-      const payload = { ...formData, languageCode: activeLang, structuredData: parsedStructuredData ?? undefined };
+      const payload = { ...formData, languageCode: activeLang, structuredData: parsedStructuredData ?? undefined, faqs };
       const updateIdentifier = payload.id || editSlug;
 
       if (!isEditMode) delete (payload as any).id;
@@ -224,6 +238,7 @@ function LocationEditorForm() {
           metaTitle: payload.metaTitle,
           metaDescription: payload.metaDescription,
           metaKeywords: payload.metaKeywords,
+          faqs: payload.faqs
         };
         if (JSON.stringify(currentDataToSave) === snapshot) {
           alert("No translation changes detected. Save aborted to protect the automatic English fallback.");
@@ -254,7 +269,8 @@ function LocationEditorForm() {
             overviewText: payload.overviewText, 
             metaTitle: payload.metaTitle, 
             metaDescription: payload.metaDescription, 
-            metaKeywords: payload.metaKeywords 
+            metaKeywords: payload.metaKeywords,
+            faqs: payload.faqs
           }));
         }
       }
@@ -477,6 +493,29 @@ function LocationEditorForm() {
           <BasicRTE value={formData.overviewText} onChange={(val) => setFormData({...formData, overviewText: val})} />
         </div>
 
+      </div>
+
+      {/* FAQs SECTION */}
+      <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm space-y-6">
+        <div className="flex justify-between items-center border-b border-gray-100 pb-3">
+          <h3 className="font-bold text-[#135D66] text-lg">Frequently Asked Questions</h3>
+          <button type="button" onClick={addFaq} className="px-4 py-2 bg-[#E9F4F5] text-[#135D66] font-bold text-sm rounded-lg hover:bg-[#135D66] hover:text-white transition-colors">
+            + Add FAQ
+          </button>
+        </div>
+        
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
+            <div key={index} className="p-5 bg-gray-50 rounded-xl border border-gray-200 relative group">
+              <button type="button" onClick={() => removeFaq(index)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+              <div className="space-y-3 pr-6">
+                <input type="text" placeholder="Question..." className="w-full px-4 py-2 border border-gray-300 outline-none focus:border-[#135D66] rounded-lg text-gray-900 font-bold" value={faq.question} onChange={(e) => updateFaq(index, "question", e.target.value)} />
+                <textarea rows={2} placeholder="Answer..." className="w-full px-4 py-2 border border-gray-300 outline-none focus:border-[#135D66] rounded-lg text-gray-900 resize-none" value={faq.answer} onChange={(e) => updateFaq(index, "answer", e.target.value)} />
+              </div>
+            </div>
+          ))}
+          {faqs.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No FAQs added yet.</p>}
+        </div>
       </div>
 
       {/* SEO SECTION (Unchanged) */}

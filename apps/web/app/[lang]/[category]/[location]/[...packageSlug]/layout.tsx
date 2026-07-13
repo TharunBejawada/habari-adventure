@@ -4,7 +4,7 @@
 
 import type { Metadata } from "next";
 import { cache } from "react";
-import { stripHtmlForSeo, truncate, buildPackageJsonLd } from "../../../../../lib/seo";
+import { stripHtmlForSeo, truncate, buildPackageJsonLd, buildFaqJsonLd } from "../../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../../lib/slugify";
 
 // ─── Cached data fetches ──────────────────────────────────────────────────────
@@ -22,9 +22,12 @@ const fetchPackageData = cache(async (slug: string, lang: string) => {
     const text = await res.text();
     if (!text) return null;
     const json = JSON.parse(text);
-    const pkg = json?.data;
+    
+    // FIX: Safely fallback to the root JSON object if `.data` is undefined
+    const pkg = json?.data ?? json;
     return pkg?.isPublished ? pkg : null;
-  } catch {
+  } catch (error) {
+    console.error("Package Layout Fetch Error:", error);
     return null;
   }
 });
@@ -59,21 +62,30 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const { lang, category, location, packageSlug } = await params;
-  const pkgParam = (packageSlug ?? []).map((p) => decodeURIComponent(p)).join("/");
+  const resolvedParams = await params;
+  const lang = resolvedParams.lang;
+  
+  // FIX: Decode ALL parameters to construct an accurate database slug
+  const category = decodeURIComponent(resolvedParams.category);
+  const location = decodeURIComponent(resolvedParams.location);
+  const pkgParam = (resolvedParams.packageSlug ?? []).map((p) => decodeURIComponent(p)).join("/");
+  
   const fullDbSlug = `${category}/${location}/${pkgParam}`;
+  
   // Normalize so canonical URLs never contain spaces or encoded chars
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
   const normPkgParam = normalizeSlugPath(pkgParam);
+  
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
   const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}/${normPkgParam}`;
 
   const pkg = await fetchPackageData(fullDbSlug, lang);
 
   if (!pkg) {
+    const fallbackTitle = pkgParam.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
     return {
-      title: "Adventure Package | Habari Adventure",
+      title: `${fallbackTitle} | Habari Adventure`,
       description: "Explore adventure packages with Habari Adventure.",
       robots: "noindex, follow",
     };
@@ -81,7 +93,7 @@ export async function generateMetadata({
 
   const rawDesc = stripHtmlForSeo(pkg.description ?? "");
   const title = pkg.metaTitle || `${pkg.title} | Habari Adventure`;
-  const description = pkg.metaDescription || truncate(rawDesc, 160);
+  const description = pkg.metaDescription || (rawDesc ? truncate(rawDesc, 160) : "Explore adventure packages with Habari Adventure.");
   const image = pkg.ogImage || pkg.bannerImage || "";
   const canonical = pkg.canonicalUrl || pageUrl;
   const robots = pkg.robots || "index, follow";
@@ -122,8 +134,12 @@ export default async function PackageLayout({
   children: React.ReactNode;
   params: Params;
 }) {
-  const { lang, category, location, packageSlug } = await params;
-  const pkgParam = (packageSlug ?? []).map((p) => decodeURIComponent(p)).join("/");
+  const resolvedParams = await params;
+  const lang = resolvedParams.lang;
+  const category = decodeURIComponent(resolvedParams.category);
+  const location = decodeURIComponent(resolvedParams.location);
+  const pkgParam = (resolvedParams.packageSlug ?? []).map((p) => decodeURIComponent(p)).join("/");
+  
   const fullDbSlug = `${category}/${location}/${pkgParam}`;
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
@@ -133,6 +149,7 @@ export default async function PackageLayout({
 
   const pkg = await fetchPackageData(fullDbSlug, lang);
 
+  // 2. Generate schemas
   let jsonLd: Record<string, unknown> | null = null;
   if (pkg) {
     if (pkg.structuredData) {
@@ -142,6 +159,8 @@ export default async function PackageLayout({
       jsonLd = buildPackageJsonLd(pkg, pageUrl, pricing);
     }
   }
+  
+  const faqJsonLd = pkg?.faqs ? buildFaqJsonLd(pkg.faqs) : null; // <-- NEW
 
   return (
     <>
@@ -149,6 +168,13 @@ export default async function PackageLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      )}
+      {/* 3. Inject FAQ Schema */}
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       )}
       {children}

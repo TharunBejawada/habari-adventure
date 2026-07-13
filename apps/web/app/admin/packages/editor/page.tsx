@@ -189,6 +189,16 @@ function PackageEditorForm() {
     { tabName: "8-Day Recommended", image: "", documentPdf: "", days: [{ dayNumber: "Day 1", heading: "", description: "", timeTaken: "" }] }
   ]);
 
+  // --- 5. FAQ STATE ---
+  const [faqs, setFaqs] = useState<{question: string, answer: string}[]>([]);
+
+  const addFaq = () => setFaqs([...faqs, { question: "", answer: "" }]);
+  const updateFaq = (index: number, field: "question" | "answer", value: string) => {
+    const newFaqs = [...faqs];
+    if (newFaqs[index]) { newFaqs[index][field] = value; setFaqs(newFaqs); }
+  };
+  const removeFaq = (index: number) => setFaqs(faqs.filter((_, i) => i !== index));
+
   // Safely Register Divider Blot
   useEffect(() => {
     import("react-quill-new").then((ReactQuillModule) => {
@@ -242,11 +252,12 @@ function PackageEditorForm() {
             if (p.whyChoose) setWhyChoose(p.whyChoose);
             if (p.itineraryMeta) setItineraryMeta(p.itineraryMeta);
             if (p.itineraries) setItineraries(p.itineraries);
+            if (p.faqs) setFaqs(p.faqs);
             
             const currentPayload = {
               title: p.title, slug: p.slug, description: p.description, 
               quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
+              itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters, faqs: p.faqs || []
             };
             setSnapshot(JSON.stringify(currentPayload));
           }
@@ -325,11 +336,12 @@ function PackageEditorForm() {
         if (p.whyChoose) setWhyChoose(p.whyChoose);
         if (p.itineraryMeta) setItineraryMeta(p.itineraryMeta);
         if (p.itineraries) setItineraries(p.itineraries);
+        if (p.faqs) setFaqs(p.faqs);
         
         const currentPayload = {
           title: p.title, slug: p.slug, description: p.description, 
           quickFacts: p.quickFacts, whyChoose: p.whyChoose, 
-          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters
+          itineraryMeta: p.itineraryMeta, itineraries: p.itineraries, filters: safeFilters, faqs: p.faqs || []
         };
         setSnapshot(JSON.stringify(currentPayload));
       }
@@ -452,7 +464,7 @@ function PackageEditorForm() {
       if (activeLang !== 'en') {
         const currentDataToSave = {
           title: coreInfo.title, slug: fullSlugToSave, description: coreInfo.description, 
-          quickFacts, whyChoose, itineraryMeta, itineraries, filters: coreInfo.filters
+          quickFacts, whyChoose, itineraryMeta, itineraries, filters: coreInfo.filters, faqs
         };
         
         if (JSON.stringify(currentDataToSave) === snapshot) {
@@ -479,7 +491,7 @@ function PackageEditorForm() {
         }
       }
 
-      const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries, languageCode: activeLang };
+      const payload = { ...coreData, quickFacts, whyChoose, itineraryMeta, itineraries, faqs, languageCode: activeLang };
       
       const path = isEditMode
         ? `/packages/${updateIdentifier}`
@@ -499,7 +511,7 @@ function PackageEditorForm() {
           alert(`${activeLang.toUpperCase()} Translation Saved Successfully!`);
           const currentPayload = {
             title: payload.title, slug: payload.slug, description: payload.description,
-            quickFacts, whyChoose, itineraryMeta, itineraries, filters: payload.filters
+            quickFacts, whyChoose, itineraryMeta, itineraries, filters: payload.filters, faqs
           };
           setSnapshot(JSON.stringify(currentPayload));
         }
@@ -902,6 +914,30 @@ function PackageEditorForm() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+          {/* 5. FAQs Builder */}
+          <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-bold border-b pb-2 text-[#135D66] w-full flex justify-between">
+                <span>5. Frequently Asked Questions</span>
+                <button type="button" onClick={addFaq} className="px-4 py-1.5 bg-[#E9F4F5] text-[#135D66] font-bold text-sm rounded-lg hover:bg-[#135D66] hover:text-white transition-colors border-none">
+                  + Add FAQ
+                </button>
+              </h3>
+            </div>
+            
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div key={index} className="p-5 bg-gray-50 rounded-xl border border-gray-200 relative group">
+                  <button type="button" onClick={() => removeFaq(index)} className="absolute top-4 right-4 text-gray-400 hover:text-red-500 bg-white rounded-full p-1 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                  <div className="space-y-3 pr-6">
+                    <input type="text" placeholder="Question..." className="w-full px-4 py-2 border border-gray-300 outline-none focus:border-[#135D66] rounded-lg text-gray-900 font-bold" value={faq.question} onChange={(e) => updateFaq(index, "question", e.target.value)} />
+                    <textarea rows={2} placeholder="Answer..." className="w-full px-4 py-2 border border-gray-300 outline-none focus:border-[#135D66] rounded-lg text-gray-900 resize-none" value={faq.answer} onChange={(e) => updateFaq(index, "answer", e.target.value)} />
+                  </div>
+                </div>
+              ))}
+              {faqs.length === 0 && <p className="text-sm text-gray-400 text-center py-4">No FAQs added yet.</p>}
             </div>
           </div>
         </div>

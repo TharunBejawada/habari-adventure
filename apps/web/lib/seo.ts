@@ -94,3 +94,26 @@ export function buildPackageJsonLd(pkg: {
 
   return schema;
 }
+
+export function buildFaqJsonLd(faqs?: { question: string; answer: string }[] | null) {
+  // Return null if there are no FAQs or if it's not an array
+  if (!faqs || !Array.isArray(faqs) || faqs.length === 0) return null;
+
+  // Filter out any empty rows just in case
+  const validFaqs = faqs.filter(faq => faq.question?.trim() && faq.answer?.trim());
+  if (validFaqs.length === 0) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": validFaqs.map((faq) => ({
+      "@type": "Question",
+      "name": faq.question.trim(),
+      "acceptedAnswer": {
+        "@type": "Answer",
+        // Strip out any accidental HTML tags/entities for the schema text
+        "text": faq.answer.replace(/&nbsp;/g, ' ').replace(/<[^>]*>?/gm, '').trim()
+      }
+    }))
+  };
+}
