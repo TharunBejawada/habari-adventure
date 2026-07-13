@@ -7,6 +7,9 @@ import { cache } from "react";
 import { stripHtmlForSeo, truncate, buildPackageJsonLd, buildFaqJsonLd } from "../../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../../lib/slugify";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // ─── Cached data fetches ──────────────────────────────────────────────────────
 
 const fetchPackageData = cache(async (slug: string, lang: string) => {
@@ -16,7 +19,7 @@ const fetchPackageData = cache(async (slug: string, lang: string) => {
     const encodedSlug = slug.split("/").map(encodeURIComponent).join("/");
     const res = await fetch(
       `${base}/packages/${encodedSlug}?lang=${lang}`,
-      { next: { revalidate: 3600 } },
+      { cache: "no-store" }
     );
     if (!res.ok) return null;
     const text = await res.text();
@@ -36,7 +39,7 @@ const fetchPricingData = cache(async (packageId: string) => {
   try {
     const base = process.env.NEXT_PUBLIC_API_URL;
     if (!base) return null;
-    const res = await fetch(`${base}/pricing`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${base}/pricing`, { cache: "no-store" });
     if (!res.ok) return null;
     const text = await res.text();
     if (!text) return null;

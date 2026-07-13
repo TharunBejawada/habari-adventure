@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { Caveat } from "next/font/google";
 import { apiFetch } from "../../../lib/apiClient";
+import FaqSection from "../../../components/common/FaqSection";
 
 const caveat = Caveat({ subsets: ["latin"], weight: ["700"] });
 
@@ -61,6 +62,14 @@ const AnimatedCounter = ({ target, duration = 2000 }: { target: number, duration
 
   return <span ref={countRef}>{count}</span>;
 };
+
+const aboutFaqs = [
+  { question: "Where is Habari Adventure based?", answer: "We are based in Moshi, Tanzania, at the foot of Kilimanjaro — the ideal hub for both mountain expeditions and northern Tanzania safari operations." },
+  { question: "How long has Habari Adventure been operating?", answer: "Habari Adventure has been guiding Tanzania safaris and Kilimanjaro climbs for over a decade, building an experienced team of certified guides and field specialists." },
+  { question: "Are Habari Adventure guides certified?", answer: "Yes. All Kilimanjaro guides hold KINAPA certification. Our safari guides hold relevant Tanzanian Wildlife Authority credentials and complete regular first-aid and CPR training." },
+  { question: "Is Habari Adventure a responsible tourism operator?", answer: "We are committed to responsible travel. We cap group sizes, work with conservation-aligned camps and lodges, and contribute to community and wildlife protection funds." },
+  { question: "Can I speak to a guide before booking?", answer: "Yes. We encourage all potential clients to have a direct conversation with our team before booking to ensure the experience we design is the right fit for them." }
+];
 
 export default function AboutUsPage() {
   const [featuredCrew, setFeaturedCrew] = useState<any[]>([]);
@@ -470,6 +479,7 @@ export default function AboutUsPage() {
           </div>
         </section>
       )}
+      <FaqSection faqs={aboutFaqs} />
 
     </div>
   );
