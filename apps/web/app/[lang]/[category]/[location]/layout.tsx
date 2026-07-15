@@ -8,6 +8,9 @@ import { cache } from "react";
 import { stripHtmlForSeo, truncate, buildLocationJsonLd, buildFaqJsonLd } from "../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../lib/slugify";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // ─── Cached data fetch (deduped per render cycle) ─────────────────────────────
 
 const fetchLocationData = cache(async (slug: string, lang: string) => {
@@ -19,7 +22,7 @@ const fetchLocationData = cache(async (slug: string, lang: string) => {
     const encodedSlug = slug.split("/").map(encodeURIComponent).join("/");
     const res = await fetch(
       `${base}/locations/${encodedSlug}?lang=${lang}`,
-      { next: { revalidate: 3600 } },
+      { cache: "no-store" }
     );
     
     if (!res.ok) return null;
