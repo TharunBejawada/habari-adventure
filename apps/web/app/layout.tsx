@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import GoogleTranslateProvider from "../components/GoogleTranslateProvider";
 import { SettingsProvider } from "../context/SettingsContext";
 import { Caveat } from "next/font/google";
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -48,6 +49,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable}`}>
+        <BreadcrumbSchema />
         {/* NEW: Google Tag Manager (noscript) */}
         <noscript>
           <iframe 

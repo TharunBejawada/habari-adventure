@@ -1,4 +1,5 @@
 // apps/web/app/page.tsx
+import { Metadata } from 'next';
 import Hero from "../../components/Hero";
 import AboutSection from "../../components/AboutSection";
 import BottomCTA from "../../components/BottomCTA";
@@ -7,6 +8,21 @@ import SafariSection from "../../components/SafariSection";
 import ClimbingSection from "../../components/ClimbingSection";
 import HolidayPackages from "../../components/HolidayPackages";
 import FAQSection from "../../components/FAQSection";
+
+export const metadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+};
 
 export default function HomePage() {
   // const jsonLd = {
