@@ -16,6 +16,7 @@ import NextJourneyCTA from "../../../../../components/packages/NextJourneyCTA";
 
 // NEW: Import the Booking Modal
 import BookingModal from "../../../../../components/modals/BookingModal";
+import { getLangPrefix } from "../../../../../lib/languages";
 
 
 export default function PackageLandingPage() {
@@ -100,7 +101,7 @@ export default function PackageLandingPage() {
             ? rawLocalized
             : `${categoryParam}/${locationParam}/${rawLocalized}`;
           if (fullLocalizedSlug !== fullDbSlug) {
-            window.history.replaceState({}, '', `/${lang}/${fullLocalizedSlug}`);
+            window.history.replaceState({}, '', `${getLangPrefix(lang)}/${fullLocalizedSlug}`);
           }
         }
       } else {
@@ -160,7 +161,7 @@ export default function PackageLandingPage() {
         </div>
         <h1 className="headingCSS text-4xl font-extrabold text-[#135D66] mb-4">Adventure Not Found</h1>
         <p className="descCSS text-gray-600 text-lg mb-8 max-w-md">We couldn't find this package. It may have been moved, deleted, or is currently saved as a draft.</p>
-        <Link href={`/${lang}`} className="bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
+        <Link href={getLangPrefix(lang) || '/'} className="bg-[#fe6e00] hover:bg-[#c98616] text-white font-bold py-3.5 px-8 rounded-full uppercase tracking-wider text-sm transition-all shadow-lg hover:-translate-y-1">
           Explore Other Destinations
         </Link>
       </div>
@@ -691,7 +692,7 @@ export default function PackageLandingPage() {
                 >
                   Book This Trip Now
                 </button>
-                <p className="text-gray-500 text-sm font-medium mt-4">Want to customize this trip? <Link href={`/${lang}/contact`} className="text-[#135D66] hover:text-[#fe6e00] hover:underline font-bold transition-colors">Contact us for a bespoke quote.</Link></p>
+                <p className="text-gray-500 text-sm font-medium mt-4">Want to customize this trip? <Link href={`${getLangPrefix(lang)}/contact`} className="text-[#135D66] hover:text-[#fe6e00] hover:underline font-bold transition-colors">Contact us for a bespoke quote.</Link></p>
               </div>
 
             </div>

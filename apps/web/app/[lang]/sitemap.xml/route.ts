@@ -1,6 +1,7 @@
 // apps/web/app/[lang]/sitemap.xml/route.ts
 import { NextResponse } from 'next/server';
 import { apiFetch } from '../../../lib/apiClient'; // Verify this import path
+import { getLangPrefix } from '../../../lib/languages';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,7 @@ export async function GET(
   ];
 
   let sitemapUrls = staticPaths.map((path) => ({
-    url: `${BASE_URL}/${lang}${path}`,
+    url: `${BASE_URL}${getLangPrefix(lang)}${path}`,
     lastModified: new Date().toISOString(),
     changeFrequency: path === '' ? 'daily' : 'monthly',
     priority: path === '' ? 1.0 : 0.8,
@@ -51,7 +52,7 @@ export async function GET(
     const blogs = blogsResult.value.data.map((blog: any) => {
       const slug = blog.slug.startsWith('/') ? blog.slug : `/${blog.slug}`;
       return {
-        url: `${BASE_URL}/${lang}/blogs${slug}`,
+        url: `${BASE_URL}${getLangPrefix(lang)}/blogs${slug}`,
         lastModified: new Date(blog.updatedAt || blog.createdAt || new Date()).toISOString(),
         changeFrequency: 'weekly',
         priority: 0.7,
@@ -67,7 +68,7 @@ export async function GET(
     const locations = locationsResult.value.data.map((location: any) => {
       const slug = location.slug.startsWith('/') ? location.slug : `/${location.slug}`;
       return {
-        url: `${BASE_URL}/${lang}${slug}`,
+        url: `${BASE_URL}${getLangPrefix(lang)}${slug}`,
         lastModified: new Date(location.updatedAt || location.createdAt || new Date()).toISOString(),
         changeFrequency: 'weekly',
         priority: 0.8,
@@ -85,7 +86,7 @@ export async function GET(
       .map((pkg: any) => {
         const slug = pkg.slug.startsWith('/') ? pkg.slug : `/${pkg.slug}`;
         return {
-          url: `${BASE_URL}/${lang}${slug}`,
+          url: `${BASE_URL}${getLangPrefix(lang)}${slug}`,
           lastModified: new Date(pkg.updatedAt || pkg.createdAt || new Date()).toISOString(),
           changeFrequency: 'weekly',
           priority: 0.9,

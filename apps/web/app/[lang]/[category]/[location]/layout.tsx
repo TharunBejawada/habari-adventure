@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { stripHtmlForSeo, truncate, buildLocationJsonLd, buildFaqJsonLd } from "../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../lib/slugify";
+import { getLangPrefix } from "../../../../lib/languages";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -61,7 +62,7 @@ export async function generateMetadata({
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/${normCategory}/${normLocation}`;
 
   const loc = await fetchLocationData(fullDbSlug, lang);
   const fallbackTitle = location.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
@@ -127,7 +128,7 @@ export default async function LocationLayout({
   const normCategory = normalizeSlugPath(category);
   const normLocation = normalizeSlugPath(location);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/${normCategory}/${normLocation}`;
 
   const loc = await fetchLocationData(fullDbSlug, lang);
 

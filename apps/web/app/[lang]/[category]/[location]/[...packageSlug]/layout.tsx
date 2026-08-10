@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { stripHtmlForSeo, truncate, buildPackageJsonLd, buildFaqJsonLd } from "../../../../../lib/seo";
 import { normalizeSlugPath } from "../../../../../lib/slugify";
+import { getLangPrefix } from "../../../../../lib/languages";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -81,7 +82,7 @@ export async function generateMetadata({
   const normPkgParam = normalizeSlugPath(pkgParam);
   
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}/${normPkgParam}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/${normCategory}/${normLocation}/${normPkgParam}`;
 
   const pkg = await fetchPackageData(fullDbSlug, lang);
 
@@ -148,7 +149,7 @@ export default async function PackageLayout({
   const normLocation = normalizeSlugPath(location);
   const normPkgParam = normalizeSlugPath(pkgParam);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/${normCategory}/${normLocation}/${normPkgParam}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/${normCategory}/${normLocation}/${normPkgParam}`;
 
   const pkg = await fetchPackageData(fullDbSlug, lang);
 
