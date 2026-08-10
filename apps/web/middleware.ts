@@ -16,18 +16,29 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 2. Check if the URL already has a valid language code (e.g., /fr/packages)
+  // 2. If the URL explicitly starts with the default language prefix (e.g. /en or
+  // /en/about), redirect to the prefix-less URL so /en never shows in the address
+  // bar and we avoid duplicate-content URLs for the same page.
+  if (pathname === `/${DEFAULT_LANGUAGE}` || pathname.startsWith(`/${DEFAULT_LANGUAGE}/`)) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.slice(`/${DEFAULT_LANGUAGE}`.length) || '/';
+    return NextResponse.redirect(url);
+  }
+
+  // 3. Check if the URL already has a non-default language code (e.g., /fr/packages)
   const hasLocale = SUPPORTED_LANGUAGES.some(
-    (lang) => pathname.startsWith(`/${lang.code}/`) || pathname === `/${lang.code}`
+    (lang) =>
+      lang.code !== DEFAULT_LANGUAGE &&
+      (pathname.startsWith(`/${lang.code}/`) || pathname === `/${lang.code}`)
   );
 
-  // 3. If there is no language code, we assume it is the Default Language (English).
-  // We rewrite the request so Next.js processes it correctly under the hood.
+  // 4. If there is no language code, we assume it is the Default Language (English).
+  // We rewrite the request internally so Next.js serves the [lang]=en route tree,
+  // while keeping the visible URL free of the /en prefix.
   if (!hasLocale) {
     const url = request.nextUrl.clone();
     url.pathname = `/${DEFAULT_LANGUAGE}${pathname}`;
-    // return NextResponse.rewrite(url);
-    return NextResponse.redirect(url);
+    return NextResponse.rewrite(url);
   }
 
   return NextResponse.next();
