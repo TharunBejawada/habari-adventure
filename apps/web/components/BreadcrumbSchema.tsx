@@ -2,6 +2,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from '../lib/languages';
 
 export default function BreadcrumbSchema() {
   const pathname = usePathname();
@@ -13,9 +14,15 @@ export default function BreadcrumbSchema() {
 
   // Split the path into segments and remove empty strings
   const pathSegments = pathname.split('/').filter(Boolean);
-  
-  // Default to 'en' if accessed at the absolute root without a language param
-  const lang = pathSegments[0] || 'en';
+
+  // Only non-default languages carry a URL prefix (e.g. /fr, /es).
+  // The default language ("en") has no prefix, so its first segment is
+  // a real path segment, not a language code.
+  const hasLangPrefix = SUPPORTED_LANGUAGES.some(
+    (l) => l.code !== DEFAULT_LANGUAGE && l.code === pathSegments[0]
+  );
+  const langPrefix = hasLangPrefix ? `/${pathSegments[0]}` : '';
+  const restSegments = hasLangPrefix ? pathSegments.slice(1) : pathSegments;
 
   const itemListElement = [];
 
@@ -24,13 +31,13 @@ export default function BreadcrumbSchema() {
     "@type": "ListItem",
     "position": 1,
     "name": "Home",
-    "item": `${BASE_URL}/${lang}`
+    "item": `${BASE_URL}${langPrefix || '/'}`
   });
 
   // 2. Loop through the rest of the URL segments to build the breadcrumb chain
-  let currentPath = `/${lang}`;
-  for (let i = 1; i < pathSegments.length; i++) {
-    const segment = pathSegments[i];
+  let currentPath = langPrefix;
+  for (let i = 0; i < restSegments.length; i++) {
+    const segment = restSegments[i];
     if (!segment) continue;
     currentPath += `/${segment}`;
 
@@ -42,7 +49,7 @@ export default function BreadcrumbSchema() {
 
     itemListElement.push({
       "@type": "ListItem",
-      "position": i + 1,
+      "position": i + 2,
       "name": formattedName,
       "item": `${BASE_URL}${currentPath}`
     });

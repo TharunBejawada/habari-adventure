@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { cache } from "react";
 import { normalizeSlugPath } from "../../../../lib/slugify";
 import { buildFaqJsonLd } from "../../../../lib/seo";
+import { getLangPrefix } from "../../../../lib/languages";
 
 
 const fetchBlogData = cache(async (slug: string, lang: string) => {
@@ -47,7 +48,7 @@ export async function generateMetadata({
   // Normalize so canonical URLs never contain spaces or encoded chars
   const normSlug = normalizeSlugPath(slug);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/blog/${normSlug}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/blog/${normSlug}`;
 
   const blog = await fetchBlogData(slug, lang);
   const fallbackTitle = slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
@@ -104,7 +105,7 @@ export default async function BlogLayout({
   
   const normSlug = normalizeSlugPath(slug);
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const pageUrl = `${siteUrl}/${lang}/blog/${normSlug}`;
+  const pageUrl = `${siteUrl}${getLangPrefix(lang)}/blog/${normSlug}`;
 
   const blog = await fetchBlogData(slug, lang);
 

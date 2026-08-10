@@ -23,9 +23,11 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   
-  // Extract the current language from the URL (e.g., "/fr/packages" -> "fr")
-  const currentLangCode = pathname.split('/')[1];
-  const activeLang = SUPPORTED_LANGUAGES.find(lang => lang.code === currentLangCode) 
+  // Extract the current language from the URL (e.g., "/fr/packages" -> "fr").
+  // Only non-default languages carry a URL prefix - the default language has
+  // none, so its first segment is a real path segment, not a language code.
+  const firstSegment = pathname.split('/')[1];
+  const activeLang = SUPPORTED_LANGUAGES.find(lang => lang.code !== DEFAULT_LANGUAGE && lang.code === firstSegment)
                      || SUPPORTED_LANGUAGES.find(lang => lang.code === DEFAULT_LANGUAGE);
 
   // NEW: Hierarchical aggressive cookie handler
@@ -68,9 +70,10 @@ export default function LanguageSwitcher() {
     // 1. Wipe old cookies and set the new ones immediately
     applyGoogleTranslate(langCode);
 
-    // 2. Strip the language prefix to get bare path segments
+    // 2. Strip the language prefix to get bare path segments (only
+    // non-default languages carry a prefix to strip)
     const pathSegments = pathname.split('/').filter(Boolean);
-    if (SUPPORTED_LANGUAGES.some(l => l.code === pathSegments[0])) {
+    if (SUPPORTED_LANGUAGES.some(l => l.code !== DEFAULT_LANGUAGE && l.code === pathSegments[0])) {
       pathSegments.shift();
     }
 

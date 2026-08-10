@@ -417,6 +417,7 @@ import { FaSearch, FaFacebookF, FaTwitter, FaLinkedinIn, FaLink } from "react-ic
 import ContactHero from "../../../../components/blogs/ContactHero";
 import { apiFetch } from "../../../../lib/apiClient";
 import { toSlug } from "../../../../lib/slugify";
+import { getLangPrefix } from "../../../../lib/languages";
 
 interface BlogFaq {
   question: string;
@@ -489,11 +490,11 @@ export default function BlogPostPage() {
             // update the URL bar silently so the correct localized URL is shown/shared.
             // Uses replaceState — does NOT trigger a re-render or a new API fetch.
             if (fetchedBlog.slug && fetchedBlog.slug !== slug) {
-              window.history.replaceState({}, '', `/${lang}/blogs/${fetchedBlog.slug}`);
+              window.history.replaceState({}, '', `${getLangPrefix(lang)}/blogs/${fetchedBlog.slug}`);
             }
           }
         } else {
-          router.push(`/${lang}/blogs`);
+          router.push(`${getLangPrefix(lang)}/blogs`);
           return;
         }
 
@@ -537,7 +538,7 @@ export default function BlogPostPage() {
     e.preventDefault();
     if (searchQuery.trim()) {
       // Adjusted router push to retain language context
-      router.push(`/${lang}/blogs`); 
+      router.push(`${getLangPrefix(lang)}/blogs`); 
     }
   };
 
@@ -686,7 +687,7 @@ export default function BlogPostPage() {
                 {blog.tags && blog.tags.length > 0 ? (
                   blog.tags.map((tag, idx) => (
                     // Updated link with dynamic lang, added notranslate
-                    <Link key={idx} href={`/${lang}/blogs`} className="notranslate bg-[#E9F4F5] text-[#135D66] font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-full hover:bg-[#135D66] hover:text-white transition-colors">
+                    <Link key={idx} href={`${getLangPrefix(lang)}/blogs`} className="notranslate bg-[#E9F4F5] text-[#135D66] font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-full hover:bg-[#135D66] hover:text-white transition-colors">
                       {tag}
                     </Link>
                   ))
@@ -717,7 +718,7 @@ export default function BlogPostPage() {
             
             {prevPost ? (
               // Updated link with dynamic lang
-              <Link href={`/${lang}/blogs/${toSlug(prevPost.slug || prevPost.canonicalSlug || "")}`} className="group flex flex-col items-start max-w-[45%] text-left">
+              <Link href={`${getLangPrefix(lang)}/blogs/${toSlug(prevPost.slug || prevPost.canonicalSlug || "")}`} className="group flex flex-col items-start max-w-[45%] text-left">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
                   <span>←</span> Previous Post
                 </span>
@@ -730,7 +731,7 @@ export default function BlogPostPage() {
 
             {nextPost ? (
               // Updated link with dynamic lang
-              <Link href={`/${lang}/blogs/${toSlug(nextPost.slug || nextPost.canonicalSlug || "")}`} className="group flex flex-col items-end max-w-[45%] text-right">
+              <Link href={`${getLangPrefix(lang)}/blogs/${toSlug(nextPost.slug || nextPost.canonicalSlug || "")}`} className="group flex flex-col items-end max-w-[45%] text-right">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 group-hover:text-[#fe6e00] transition-colors flex items-center gap-2">
                   Next Post <span>→</span>
                 </span>
@@ -773,7 +774,7 @@ export default function BlogPostPage() {
                 return (
                   <div key={post.id} className="relative">
                     {/* Updated link with dynamic lang */}
-                    <Link href={`/${lang}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
+                    <Link href={`${getLangPrefix(lang)}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
                       <div className="bg-[#135D66] text-white rounded-xl p-2 min-w-[55px] h-[55px] flex flex-col items-center justify-center shadow-md group-hover:-translate-y-1 transition-transform">
                         <span className="font-extrabold text-lg leading-none">{day}</span>
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>
@@ -801,7 +802,7 @@ export default function BlogPostPage() {
               {topCategories.map((cat, idx) => (
                 <Link 
                   key={idx}
-                  href={`/${lang}/blogs`}
+                  href={`${getLangPrefix(lang)}/blogs`}
                   className="w-full flex justify-between items-center group py-1"
                 >
                   {/* Added notranslate */}
@@ -821,7 +822,7 @@ export default function BlogPostPage() {
               {topTags.map((t, idx) => (
                 <Link 
                   key={idx}
-                  href={`/${lang}/blogs`}
+                  href={`${getLangPrefix(lang)}/blogs`}
                   // Added notranslate
                   className="notranslate bg-[#E9F4F5] text-[#135D66] font-bold text-xs uppercase tracking-wider px-5 py-2.5 rounded-full hover:bg-[#135D66] hover:text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
                 >

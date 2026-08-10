@@ -367,6 +367,7 @@ import { FaSearch } from "react-icons/fa";
 import ContactHero from "../../../components/blogs/ContactHero";
 import { apiFetch } from "../../../lib/apiClient";
 import { toSlug } from "../../../lib/slugify";
+import { getLangPrefix } from "../../../lib/languages";
 
 interface Blog {
   id: string;
@@ -530,7 +531,7 @@ export default function BlogsListingPage() {
                     // For non-English pages: prefer the localized slug (blog.slug after applyTranslationBlog)
                     // For English: blog.slug and blog.canonicalSlug are identical — either works
                     <Link
-                      href={`/${lang}/blogs/${toSlug(blog.slug || blog.canonicalSlug || "")}`}
+                      href={`${getLangPrefix(lang)}/blogs/${toSlug(blog.slug || blog.canonicalSlug || "")}`}
                       key={blog.id}
                       className="group relative h-[420px] w-full rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 block animate-fade-up"
                       style={{ animationDelay: `${idx * 0.1}s` }}
@@ -636,7 +637,7 @@ export default function BlogsListingPage() {
                 const { day, month } = formatDateForBadge(post.publishedAt);
                 return (
                   <div key={post.id} className="relative">
-                    <Link href={`/${lang}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
+                    <Link href={`${getLangPrefix(lang)}/blogs/${toSlug(post.slug || post.canonicalSlug || "")}`} className="flex gap-4 items-center group py-5">
                       <div className="bg-[#135D66] text-white rounded-xl p-2 min-w-[55px] h-[55px] flex flex-col items-center justify-center shadow-md group-hover:-translate-y-1 transition-transform">
                         <span className="font-extrabold text-lg leading-none">{day}</span>
                         <span className="text-[9px] font-bold uppercase tracking-widest mt-0.5">{month}</span>

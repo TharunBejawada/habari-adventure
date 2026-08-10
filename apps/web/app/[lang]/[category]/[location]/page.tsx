@@ -4,6 +4,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { apiFetch } from "../../../../lib/apiClient";
 import { normalizeSlugPath } from "../../../../lib/slugify";
+import { getLangPrefix } from "../../../../lib/languages";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -106,7 +107,7 @@ export default function LocationLandingPage() {
             ? rawLocalized
             : `${categoryParam}/${rawLocalized}`;
           if (fullLocalizedSlug !== fullDbSlug) {
-            window.history.replaceState({}, '', `/${lang}/${fullLocalizedSlug}`);
+            window.history.replaceState({}, '', `${getLangPrefix(lang)}/${fullLocalizedSlug}`);
           }
         }
 
@@ -464,7 +465,7 @@ export default function LocationLandingPage() {
               <>
                 <div className={`grid grid-cols-1 md:grid-cols-2 ${availableFilters.length === 0 ? 'lg:grid-cols-3' : ''} gap-8 mb-12`}>
                   {currentPackages.map((pkg) => (
-                    <Link href={`/${lang}/${normalizeSlugPath(pkg.canonicalSlug || pkg.slug)}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <Link href={`${getLangPrefix(lang)}/${normalizeSlugPath(pkg.canonicalSlug || pkg.slug)}`} key={pkg.id} className="group flex flex-col bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       
                       <div className="relative w-full h-56 overflow-hidden bg-gray-100">
                         {pkg.bannerImage ? (

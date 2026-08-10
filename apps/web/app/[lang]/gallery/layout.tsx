@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getLangPrefix } from "../../../lib/languages";
 import { buildFaqJsonLd } from "../../../lib/seo";
 
 const pageFaqs = [
@@ -31,7 +32,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://habariadventure.com").replace(/\/$/, "");
-  const canonical = `${siteUrl}/${lang}/gallery`;
+  const canonical = `${siteUrl}${getLangPrefix(lang)}/gallery`;
 
   return {
     title: "Habari Adventure Gallery | Kilimanjaro, Safari & More",
