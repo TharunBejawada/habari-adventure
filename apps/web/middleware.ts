@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
   // while keeping the visible URL free of the /en prefix.
   if (!hasLocale) {
     const url = request.nextUrl.clone();
-    url.pathname = `/${DEFAULT_LANGUAGE}${pathname}`;
+    url.pathname = pathname === '/' ? `/${DEFAULT_LANGUAGE}` : `/${DEFAULT_LANGUAGE}${pathname}`;
     return NextResponse.rewrite(url);
   }
 
