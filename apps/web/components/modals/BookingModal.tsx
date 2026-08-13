@@ -2,7 +2,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { apiFetch } from "../../lib/apiClient"; 
+import { useRouter } from "next/navigation";
+import { apiFetch } from "../../lib/apiClient";
+import { useLocalizedUrl } from "../../hooks/useLocalizedUrl";
+import { getLangPrefix } from "../../lib/languages";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -18,9 +21,10 @@ interface BookingModalProps {
 }
 
 export default function BookingModal({ isOpen, onClose, initialData }: BookingModalProps) {
+  const router = useRouter();
+  const { currentLang } = useLocalizedUrl();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -43,7 +47,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
         // length: "",
         message: "",
       });
-      setSuccess(false);
       setIsSubmitting(false);
     }
   }, [isOpen]);
@@ -71,11 +74,8 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
       });
 
       if (ok) {
-        setSuccess(true);
-        setTimeout(() => {
-          setSuccess(false);
-          onClose();
-        }, 3000);
+        onClose();
+        router.push(`${getLangPrefix(currentLang)}/thank-you`);
       } else {
         alert("Something went wrong. Please try again.");
         setIsSubmitting(false);
@@ -105,15 +105,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
 
         {/* Body */}
         <div className="p-6 overflow-y-auto">
-          {success ? (
-            <div className="text-center py-10">
-              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Received!</h2>
-              <p className="text-gray-600">Our team will get back to you shortly.</p>
-            </div>
-          ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               
               {/* Pre-filled Read-Only Context (Optional Visual Confirmation) */}
@@ -208,7 +199,6 @@ export default function BookingModal({ isOpen, onClose, initialData }: BookingMo
                 </button>
               </div>
             </form>
-          )}
         </div>
       </div>
     </div>

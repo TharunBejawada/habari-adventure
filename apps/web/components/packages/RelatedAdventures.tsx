@@ -2,9 +2,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useLocalizedUrl } from "../../hooks/useLocalizedUrl";
+import { getLangPrefix } from "../../lib/languages";
 import { apiFetch } from "../../lib/apiClient";
 
 interface RelatedAdventuresProps {
@@ -13,12 +15,12 @@ interface RelatedAdventuresProps {
 }
 
 export default function RelatedAdventures({ currentCategory, currentPackageTitle }: RelatedAdventuresProps) {
-  const { getLocalizedUrl } = useLocalizedUrl();
+  const router = useRouter();
+  const { getLocalizedUrl, currentLang } = useLocalizedUrl();
   const [packages, setPackages] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   // Carousel State
   const [currentPage, setCurrentPage] = useState(0);
@@ -176,25 +178,18 @@ ${formData.message}`;
       });
 
       if (ok) {
-        // 1. Show the success message immediately
-        setSuccess(true);
-        
-        // 2. Wait 3 seconds, then close and reset everything
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setSuccess(false);
-          setFormData({ 
-            otherPackage: "", 
-            firstName: "", 
-            lastName: "", 
-            email: "", 
-            phone: "", 
-            // monthYear: "", 
-            // tripDays: "", 
-            message: "" 
-          });
-        }, 3000);
-
+        setIsModalOpen(false);
+        setFormData({
+          otherPackage: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          // monthYear: "",
+          // tripDays: "",
+          message: ""
+        });
+        router.push(`${getLangPrefix(currentLang)}/thank-you`);
       } else {
         alert("Failed to send request. Please try again.");
       }
@@ -356,15 +351,6 @@ ${formData.message}`;
 
             {/* Body */}
             <div className="p-6 overflow-y-auto">
-              {success ? (
-            <div className="text-center py-10">
-              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Request Received!</h2>
-              <p className="text-gray-600">Our team will get back to you shortly.</p>
-            </div>
-          ) : (
               <form id="combo-form" onSubmit={handleSubmit} className="space-y-6">
                 
                 {/* Package Selections */}
@@ -434,20 +420,17 @@ ${formData.message}`;
                 </div>
 
               </form>
-          )}
             </div>
 
             {/* Footer */}
-            {!success && (
-              <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 text-gray-600 font-bold hover:bg-gray-200 rounded-full transition-colors">
-                  Cancel
-                </button>
-                <button type="submit" form="combo-form" disabled={isSubmitting} className="px-8 py-2.5 bg-[#fe6e00] hover:bg-[#fe6e00]/70 cursor-pointer text-white font-bold rounded-full transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
-                  {isSubmitting ? "Sending..." : "Submit Request"}
-                </button>
-              </div>
-            )}
+            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 text-gray-600 font-bold hover:bg-gray-200 rounded-full transition-colors">
+                Cancel
+              </button>
+              <button type="submit" form="combo-form" disabled={isSubmitting} className="px-8 py-2.5 bg-[#fe6e00] hover:bg-[#fe6e00]/70 cursor-pointer text-white font-bold rounded-full transition-colors shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
+                {isSubmitting ? "Sending..." : "Submit Request"}
+              </button>
+            </div>
 
           </div>
         </div>
