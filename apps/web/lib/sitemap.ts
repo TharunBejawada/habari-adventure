@@ -25,6 +25,7 @@ const STATIC_PATHS: Array<{ path: string; changeFrequency: SitemapChangeFreq; pr
   { path: '/gallery', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/services', changeFrequency: 'monthly', priority: 0.8 },
   { path: '/sustainability', changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/thank-you', changeFrequency: 'monthly', priority: 0.3 },
 ];
 
 export async function buildSitemapPaths(lang: string): Promise<SitemapPath[]> {
