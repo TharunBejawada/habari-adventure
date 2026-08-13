@@ -10,8 +10,9 @@ export function useLocalizedUrl() {
   // URL prefix (e.g. /fr, /es) - the default language has none, so its first
   // segment is a real path segment, not a language code.
   const pathSegments = pathname ? pathname.split('/').filter(Boolean) : [];
-  const currentLang = SUPPORTED_LANGUAGES.some(l => l.code !== DEFAULT_LANGUAGE && l.code === pathSegments[0])
-    ? pathSegments[0]
+  const firstSegment = pathSegments[0];
+  const currentLang: string = firstSegment && SUPPORTED_LANGUAGES.some(l => l.code !== DEFAULT_LANGUAGE && l.code === firstSegment)
+    ? firstSegment
     : DEFAULT_LANGUAGE;
 
   // 2. The centralized function
