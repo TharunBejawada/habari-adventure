@@ -14,8 +14,9 @@ applications:
             - cd ../.. && npm ci
         build:
           commands:
+            - cd apps/web
             - npx ampx generate outputs --branch $AWS_BRANCH --app-id $AWS_APP_ID --format json
-            - npm run build
+            - npx next build
       artifacts:
         baseDirectory: .next
         files:
