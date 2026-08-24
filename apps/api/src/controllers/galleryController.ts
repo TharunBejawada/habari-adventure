@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { prisma } from "../prisma";
 import fs from "fs";
 import path from "path";
+import { isCloudStorageEnabled, deleteFromCloud } from "../utils/storage";
 
 // GET: Fetch all gallery items
 export const getAllGalleryItems = async (req: Request, res: Response) => {
@@ -62,21 +63,26 @@ export const deleteGalleryItem = async (req: Request, res: Response) => {
       where: { id: id as string },
     });
 
-    // 3. Clean up the physical file if it's an uploaded image
-    if (item.type === "IMAGE" && item.url.includes("/uploads/gallery/")) {
-      // Extract just the filename from the URL
-      const filename = item.url.split("/uploads/gallery/")[1];
-      
+    // 3. Clean up the stored file if it's an uploaded image
+    if (item.type === "IMAGE" && item.url.includes("/gallery/")) {
+      const filename = item.url.split("/gallery/")[1];
+
       if (filename) {
-        // Construct the path to your uploads folder. 
-        // Adjust this path if your 'uploads' folder is located elsewhere!
-        const filePath = path.join(__dirname, "../../uploads/gallery", filename); 
-        
-        fs.unlink(filePath, (err) => {
-          if (err && err.code !== 'ENOENT') {
-            console.error("Failed to delete physical file:", err);
-          }
-        });
+        if (isCloudStorageEnabled) {
+          deleteFromCloud(`gallery/${filename}`).catch((err) => {
+            console.error("Failed to delete cloud file:", err);
+          });
+        } else {
+          // Construct the path to your uploads folder.
+          // Adjust this path if your 'uploads' folder is located elsewhere!
+          const filePath = path.join(__dirname, "../../uploads/gallery", filename);
+
+          fs.unlink(filePath, (err) => {
+            if (err && err.code !== 'ENOENT') {
+              console.error("Failed to delete physical file:", err);
+            }
+          });
+        }
       }
     }
 

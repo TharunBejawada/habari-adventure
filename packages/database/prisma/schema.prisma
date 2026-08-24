@@ -2,6 +2,11 @@
 
 generator client {
   provider = "prisma-client-js"
+  // "native" covers local dev / the existing VPS. rhel-openssl-3.0.x covers
+  // the Amazon Linux 2023 x86_64 AWS Lambda runtime used by the Amplify
+  // Gen 2 backend function - swap to linux-arm64-openssl-3.0.x instead if
+  // that function is ever configured for the arm64/Graviton architecture.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {

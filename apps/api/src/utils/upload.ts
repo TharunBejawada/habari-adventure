@@ -2,12 +2,20 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { isCloudStorageEnabled } from "./storage";
 
-const storage = multer.diskStorage({
+export function buildUniqueFilename(originalname: string): string {
+  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  const ext = path.extname(originalname);
+  const cleanName = path.basename(originalname, ext).replace(/[^a-zA-Z0-9]/g, "-");
+  return `${cleanName}-${uniqueSuffix}${ext}`;
+}
+
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // 1. Read the folder name sent from the frontend (e.g., "blogs")
-    const folderName = req.body.folder || ""; 
-    
+    const folderName = req.body.folder || "";
+
     // 2. Build the exact dynamic path
     const uploadDir = path.join(process.cwd(), "uploads", folderName);
 
@@ -19,12 +27,14 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    const cleanName = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9]/g, "-");
-    cb(null, `${cleanName}-${uniqueSuffix}${ext}`);
+    cb(null, buildUniqueFilename(file.originalname));
   },
 });
+
+// Lambda has no writable local disk to speak of (aside from /tmp), and even
+// on a persistent host, cloud storage needs the file in memory to stream it
+// to S3. Local disk keeps writing straight to the uploads folder.
+const storage = isCloudStorageEnabled ? multer.memoryStorage() : diskStorage;
 
 const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedMimeTypes = [
