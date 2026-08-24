@@ -4,7 +4,7 @@
 // JWT auth and talks to an external RDS Postgres via Prisma, not
 // Amplify-managed data.
 import { defineBackend } from '@aws-amplify/backend';
-import { FunctionUrlAuthType, HttpMethod } from 'aws-cdk-lib/aws-lambda';
+import { FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda';
 import { Stack } from 'aws-cdk-lib';
 import { apiFunction } from './functions/api/resource';
 import { storage } from './storage/resource';
@@ -27,15 +27,14 @@ backend.apiFunction.addEnvironment(
   `https://${bucket.bucketName}.s3.${Stack.of(bucket).region}.amazonaws.com`
 );
 
-// Expose the Express app over a plain HTTPS Function URL. CORS mirrors the
-// app's own existing `cors({ origin: "*" })` in apps/api/src/app.ts.
+// Expose the Express app over a plain HTTPS Function URL. No CORS config
+// here on purpose: the app already sets its own CORS headers via
+// `cors({ origin: "*" })` in apps/api/src/app.ts (same as the VPS). Setting
+// CORS at both the Function URL and the app layer makes API Gateway/Lambda
+// merge both Access-Control-Allow-Origin headers into one comma-separated
+// value, which browsers reject outright.
 const apiFunctionUrl = backend.apiFunction.resources.lambda.addFunctionUrl({
   authType: FunctionUrlAuthType.NONE,
-  cors: {
-    allowedOrigins: ['*'],
-    allowedMethods: [HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE],
-    allowedHeaders: ['*'],
-  },
 });
 
 backend.addOutput({
