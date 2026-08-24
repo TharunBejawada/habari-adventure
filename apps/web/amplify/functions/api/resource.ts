@@ -12,7 +12,7 @@ export const apiFunction = defineFunction({
   name: 'api',
   // Points at the Express app in the separate `api` workspace so the
   // existing controllers/routes/prisma setup are reused as-is.
-  entry: '../../../../apps/api/src/lambda.ts',
+  entry: '../../../../api/src/lambda.ts',
   timeoutSeconds: 30,
   memoryMB: 512,
   environment: {
