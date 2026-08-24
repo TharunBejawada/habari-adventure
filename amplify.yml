@@ -6,6 +6,16 @@ applications:
         build:
           commands:
             - cd ../.. && npm ci
+            # `npm ci` only installs deps - it does NOT regenerate the Prisma
+            # client for the current schema, and the generated client lives
+            # inside node_modules (never committed to git). Without this,
+            # ampx pipeline-deploy bundles the Lambda with no generated
+            # client at all, which crashes at cold start with
+            # "@prisma/client did not initialize yet". The URL here is only
+            # used to satisfy Prisma's config validation for codegen - it
+            # never connects to it. The real DATABASE_URL secret is wired
+            # into the Lambda's runtime environment separately.
+            - DATABASE_URL="postgresql://user:pass@localhost:5432/db" npm run db:generate --workspace=@repo/database
             - cd apps/web && npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
     frontend:
       phases:
