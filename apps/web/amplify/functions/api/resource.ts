@@ -15,6 +15,13 @@ export const apiFunction = defineFunction({
   entry: '../../../../api/src/lambda.ts',
   timeoutSeconds: 30,
   memoryMB: 512,
+  // Places this function in the same nested stack as storage/resource.ts's
+  // bucket, instead of its own stack. Without this, the two stacks end up
+  // depending on each other in both directions - storage's `access` grant
+  // needs the function's role, and backend.ts wires the bucket name into
+  // the function's environment - which CloudFormation rejects as a
+  // circular nested-stack dependency.
+  resourceGroupName: 'storage',
   environment: {
     DATABASE_URL: secret('DATABASE_URL'),
     JWT_SECRET: secret('JWT_SECRET'),
