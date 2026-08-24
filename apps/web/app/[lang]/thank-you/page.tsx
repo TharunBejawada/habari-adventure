@@ -1,8 +1,4 @@
 // apps/web/app/[lang]/thank-you/page.tsx
-// Shared post-submission page for every form in the app (contact form,
-// booking modal, package inquiry form). Header/Footer come from the root
-// layout automatically. Text is plain English - translated into fr/es by
-// the site's existing Google Translate integration, same as every other page.
 import Link from "next/link";
 import Image from "next/image";
 import { getLangPrefix } from "../../../lib/languages";
@@ -14,7 +10,13 @@ export default async function ThankYouPage({ params }: { params: Params }) {
   const homeHref = getLangPrefix(lang) || "/";
 
   return (
-    <section className="w-full bg-white py-16 md:py-24">
+    // 1. Added `relative`, a near-white background (bg-slate-50), 
+    // negative margin (-mt-[100px]) to pull it under the header, and top padding
+    <section className="relative w-full bg-slate-50 pt-40 pb-4 md:pt-48 md:pb-12 -mt-[150px] min-h-screen">
+      
+      {/* 2. Dark background strip exclusively to make the white header visible */}
+      <div className="absolute top-0 left-0 w-full h-[150px] bg-[#135D66]" />
+
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -58,7 +60,8 @@ export default async function ThankYouPage({ params }: { params: Params }) {
         }}
       />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      {/* 3. Added relative z-10 so the content sits above the dark strip */}
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6">
         <div className="relative rounded-[32px] overflow-hidden min-h-[520px] md:min-h-[600px] flex items-center justify-center shadow-xl">
           <Image
             src="/kili-mount.jpg"
