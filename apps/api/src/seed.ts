@@ -1,8 +1,6 @@
 // apps/api/src/seed.ts
-import { PrismaClient } from "@repo/database";
+import { prisma } from "@repo/database";
 import * as auth from "./utils/auth";
-
-const prisma = new PrismaClient();
 
 async function main() {
   const email = "admin@habariadventure.com";
