@@ -22,7 +22,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { Duration } from 'aws-cdk-lib';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { defineFunction } from '@aws-amplify/backend';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -39,7 +39,12 @@ export const apiFunction = defineFunction(
       timeout: Duration.seconds(30),
       memorySize: 512,
       bundling: {
-        format: OutputFormat.ESM,
+        // CJS (NodejsFunction's default) - not ESM. esbuild's ESM output
+        // shims CJS `require()` calls from bundled deps (e.g. dotenv's
+        // `require("fs")`) with a helper that can't handle dynamic
+        // requires of Node builtins, crashing at cold start with "Dynamic
+        // require of "fs" is not supported". CJS avoids that shim
+        // entirely since require() is native there.
         externalModules: ['@prisma/client', '.prisma/client'],
         commandHooks: {
           beforeInstall: () => [],
