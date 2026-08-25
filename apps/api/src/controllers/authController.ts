@@ -57,7 +57,8 @@ export const loginAdmin = async (req: Request, res: Response): Promise<void> => 
       }
     });
   } catch (error) {
-    console.error("Login Error:", error);
+    // TEMP DEBUG - remove once the sandbox login 500 is diagnosed
+    console.error("Login Error (full):", require("util").inspect(error, { depth: null }));
     res.status(500).json({ status: "error", message: "Internal server error during login" });
   }
 };
