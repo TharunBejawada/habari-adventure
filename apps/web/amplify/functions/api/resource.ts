@@ -1,36 +1,57 @@
 // apps/web/amplify/functions/api/resource.ts
 // Defines the Lambda function that runs the Express API (apps/api), wrapped
-// with serverless-http (see apps/api/src/lambda.ts). DATABASE_URL and
-// JWT_SECRET are pulled from Amplify secrets - set them once per branch
-// with `npx ampx sandbox secret set <NAME>` (sandbox) or in the Amplify
-// Console under App settings > Secrets (deployed branches) before the
-// first deploy. CLOUD_STORAGE_* variables are wired in from the storage
-// resource in backend.ts, not set here.
-import { defineFunction, secret } from '@aws-amplify/backend';
+// with serverless-http (see apps/api/src/lambda.ts).
+//
+// This is built as a raw CDK NodejsFunction via defineFunction's "provided
+// function" form instead of Amplify's default bundling. Reason: the
+// generated Prisma client (node_modules/.prisma/client) ships a WASM query
+// compiler and platform binaries that esbuild can't discover through its
+// static import/require graph - a plain bundle silently drops them, and the
+// client crashes at runtime with "ENOENT ... query_compiler_bg.wasm".
+// Amplify's default function bundling only exposes a `minify` option, no way
+// to control externals or copy extra files, so we need the escape hatch.
+// The fix: mark @prisma/client external (leave `require("@prisma/client")`
+// unbundled) and copy the generated client directory into the bundle output
+// verbatim via an afterBundling hook, so Node resolves it normally at
+// runtime instead of esbuild trying (and failing) to inline it.
+//
+// DATABASE_URL/JWT_SECRET/etc and the CLOUD_STORAGE_* vars are wired onto
+// this function from backend.ts via `addEnvironment`, not here - the
+// provided-function form has no `environment` prop of its own.
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+import { Duration } from 'aws-cdk-lib';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { defineFunction } from '@aws-amplify/backend';
 
-export const apiFunction = defineFunction({
-  name: 'api',
-  // Points at the Express app in the separate `api` workspace so the
-  // existing controllers/routes/prisma setup are reused as-is.
-  entry: '../../../../api/src/lambda.ts',
-  timeoutSeconds: 30,
-  memoryMB: 512,
-  // Places this function in the same nested stack as storage/resource.ts's
-  // bucket, instead of its own stack. Without this, the two stacks end up
-  // depending on each other in both directions - storage's `access` grant
-  // needs the function's role, and backend.ts wires the bucket name into
-  // the function's environment - which CloudFormation rejects as a
-  // circular nested-stack dependency.
-  resourceGroupName: 'storage',
-  environment: {
-    DATABASE_URL: secret('DATABASE_URL'),
-    JWT_SECRET: secret('JWT_SECRET'),
-    SMTP_HOST: secret('SMTP_HOST'),
-    SMTP_PORT: secret('SMTP_PORT'),
-    SMTP_USER: secret('SMTP_USER'),
-    SMTP_PASSWORD: secret('SMTP_PASSWORD'),
-    SMTP_SENDER_NAME: secret('SMTP_SENDER_NAME'),
-    SMTP_SENDER_EMAIL: secret('SMTP_SENDER_EMAIL'),
-    ADMIN_RECIPIENT_EMAIL: secret('ADMIN_RECIPIENT_EMAIL'),
-  },
-});
+const dirname = path.dirname(fileURLToPath(import.meta.url));
+// apps/web/amplify/functions/api -> repo root
+const repoRoot = path.join(dirname, '../../../../../');
+
+export const apiFunction = defineFunction(
+  (scope) =>
+    new NodejsFunction(scope, 'api-lambda', {
+      entry: path.join(repoRoot, 'apps/api/src/lambda.ts'),
+      depsLockFilePath: path.join(repoRoot, 'package-lock.json'),
+      handler: 'handler',
+      runtime: Runtime.NODEJS_22_X,
+      timeout: Duration.seconds(30),
+      memorySize: 512,
+      bundling: {
+        format: OutputFormat.ESM,
+        externalModules: ['@prisma/client', '.prisma/client'],
+        commandHooks: {
+          beforeInstall: () => [],
+          beforeBundling: () => [],
+          afterBundling: (inputDir: string, outputDir: string) => [
+            `mkdir -p ${outputDir}/node_modules/.prisma`,
+            `cp -r ${inputDir}/node_modules/.prisma/client ${outputDir}/node_modules/.prisma/client`,
+            `mkdir -p ${outputDir}/node_modules/@prisma/client`,
+            `cp -r ${inputDir}/node_modules/@prisma/client/. ${outputDir}/node_modules/@prisma/client/`,
+          ],
+        },
+      },
+    }),
+  { resourceGroupName: 'storage' },
+);
