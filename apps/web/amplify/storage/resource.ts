@@ -9,7 +9,11 @@ import { apiFunction } from '../functions/api/resource';
 export const storage = defineStorage({
   name: 'habariUploads',
   isDefault: true,
+  // uploadController.ts writes to folders named directly after the
+  // frontend's `folder` field (gallery/, packages/, crew/, blogs/, ...) at
+  // the bucket root, not nested under "uploads/" - so scope this to the
+  // whole bucket rather than a prefix that doesn't match any real key.
   access: (allow) => ({
-    'uploads/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    '*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
   }),
 });
