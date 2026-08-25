@@ -25,14 +25,36 @@ app.use(
   })
 );
 
-app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ limit: '5mb', extended: true }));
-
-// TEMP DEBUG - remove once the sandbox login 400 is diagnosed
+// serverless-http's mock Lambda request marks itself `complete: true` up
+// front, which makes body-parser's `onFinished.isFinished(req)` check think
+// the body was already read and skip parsing - so under Lambda req.body
+// arrives as the raw unparsed Buffer serverless-http attached. Parse it
+// ourselves in that case; on a real request (local/VPS) req.body is never a
+// Buffer here, so this is a no-op there.
 app.use((req: Request, res: Response, next: express.NextFunction) => {
-  console.log("[DEBUG]", req.method, req.path, "content-type:", req.headers["content-type"], "body:", JSON.stringify(req.body));
+  if (Buffer.isBuffer(req.body)) {
+    const raw = req.body.toString("utf8");
+    const contentType = req.headers["content-type"] || "";
+    try {
+      if (!raw) {
+        req.body = {};
+      } else if (contentType.includes("application/json")) {
+        req.body = JSON.parse(raw);
+      } else if (contentType.includes("application/x-www-form-urlencoded")) {
+        req.body = Object.fromEntries(new URLSearchParams(raw));
+      } else {
+        req.body = raw;
+      }
+    } catch {
+      res.status(400).json({ status: "error", message: "Invalid request body" });
+      return;
+    }
+  }
   next();
 });
+
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
 // Apply global limiter
 app.use(globalLimiter);
