@@ -28,6 +28,12 @@ app.use(
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
+// TEMP DEBUG - remove once the sandbox login 400 is diagnosed
+app.use((req: Request, res: Response, next: express.NextFunction) => {
+  console.log("[DEBUG]", req.method, req.path, "content-type:", req.headers["content-type"], "body:", JSON.stringify(req.body));
+  next();
+});
+
 // Apply global limiter
 app.use(globalLimiter);
 
