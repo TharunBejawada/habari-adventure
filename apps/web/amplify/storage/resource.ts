@@ -10,10 +10,17 @@ export const storage = defineStorage({
   name: 'habariUploads',
   isDefault: true,
   // uploadController.ts writes to folders named directly after the
-  // frontend's `folder` field (gallery/, packages/, crew/, blogs/, ...) at
-  // the bucket root, not nested under "uploads/" - so scope this to the
-  // whole bucket rather than a prefix that doesn't match any real key.
+  // frontend's `folder` field, at the bucket root - not nested under
+  // "uploads/". Amplify's storage access paths can't start with "/" or be a
+  // bare wildcard (both rejected by validation), so there's no single
+  // pattern for "the whole bucket" - list every folder the frontend
+  // actually sends (grep `formData.append("folder", ...)` across apps/web
+  // if this list ever needs updating).
   access: (allow) => ({
-    '*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    'gallery/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    'packages/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    'crew/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    'blogs/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
+    'locations/*': [allow.resource(apiFunction).to(['read', 'write', 'delete'])],
   }),
 });
