@@ -6,6 +6,8 @@
 import { defineBackend, secret } from '@aws-amplify/backend';
 import { FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda';
 import { Stack } from 'aws-cdk-lib';
+import { AnyPrincipal, Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import { CfnBucket } from 'aws-cdk-lib/aws-s3';
 import { apiFunction } from './functions/api/resource';
 import { storage } from './storage/resource';
 
@@ -41,6 +43,33 @@ backend.apiFunction.addEnvironment('CLOUD_STORAGE_REGION', Stack.of(bucket).regi
 backend.apiFunction.addEnvironment(
   'CLOUD_STORAGE_PUBLIC_URL',
   `https://${bucket.bucketName}.s3.${Stack.of(bucket).region}.amazonaws.com`
+);
+
+// The frontend renders uploaded images (gallery, packages, crew, blogs,
+// locations) via that direct public S3 URL - same as the VPS, where
+// /uploads is served publicly with no auth. defineStorage's bucket is
+// private by default (Block Public Access on), which only lets the api
+// Lambda itself read/write it, so uploaded images 403 for anyone else.
+// Allow public GetObject on the same folders the Lambda has write access to
+// (see storage/resource.ts), and relax the bucket's public-access-block
+// settings just enough for that policy to take effect - object ACLs stay
+// blocked since we don't use them, only this bucket policy.
+const cfnBucket = bucket.node.defaultChild as CfnBucket;
+cfnBucket.publicAccessBlockConfiguration = {
+  blockPublicAcls: true,
+  ignorePublicAcls: true,
+  blockPublicPolicy: false,
+  restrictPublicBuckets: false,
+};
+const publicUploadFolders = ['gallery', 'packages', 'crew', 'blogs', 'locations'];
+bucket.addToResourcePolicy(
+  new PolicyStatement({
+    sid: 'PublicReadUploads',
+    effect: Effect.ALLOW,
+    principals: [new AnyPrincipal()],
+    actions: ['s3:GetObject'],
+    resources: publicUploadFolders.map((folder) => bucket.arnForObjects(`${folder}/*`)),
+  })
 );
 
 // Expose the Express app over a plain HTTPS Function URL. No CORS config
