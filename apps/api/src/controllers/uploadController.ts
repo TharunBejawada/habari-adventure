@@ -35,6 +35,7 @@ export const uploadFile = async (req: Request, res: Response): Promise<void> => 
       }
     });
   } catch (error) {
+    console.error("Upload Error:", error);
     res.status(500).json({ status: "error", message: "File upload failed" });
   }
 };
